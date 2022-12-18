@@ -2,3 +2,17 @@
 @import 'style/fonts';
 @import 'style/var';
 @import 'style/style';
+@import 'style/header';
+
+.wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+.block {
+  display:block;
+}
+.flex {
+  display:flex;
+  justify-content:space-between;
+  gap: 1%;
+}

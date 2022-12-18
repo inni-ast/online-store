@@ -1,0 +1,59 @@
+.header {
+  padding: 1%;
+  display:flex;
+  justify-content: space-between;
+  gap:1%;
+&__info {
+  flex: 2;
+  display:flex;
+
+}
+&__logo {
+  width: 80px;
+  margin-right: 4%;
+}
+&__title {
+  font-size: 1.5rem;
+  @media (max-width: 600px) {
+    font-size: 0.8rem;
+  }
+}
+&__basket {
+}
+}
+
+.price {
+  flex: 2;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  @media (max-width: 600px) {
+  flex-direction: column;
+  }
+
+  &__text {
+    margin-right: 1%;
+}
+  &__total {
+}
+}
+
+.basket {
+  flex: 1;
+  display:flex;
+  justify-content:flex-end;
+  position: relative;
+
+&__link {
+}
+&__img {
+  width: 90px;
+}
+&__num {
+  position: absolute;
+  bottom: 2px;
+  font-size: 3rem;
+  font-weight: 700;
+  color: white;
+}
+}

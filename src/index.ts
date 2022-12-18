@@ -1,9 +1,13 @@
 import "./index.html";
 import "./index.scss";
 import { DATA } from "./modules/data";
+
 console.log(DATA[1]);
-const sum = (a: number, b: number) => {
-  return a * b;
-};
-sum(5, 6);
-console.log("hello");
+import { App } from "./pages/app/index-app";
+// import { Header } from "./pages/header";
+
+const app = new App();
+app.run();
+
+// const header = new Header();
+// header.run();
