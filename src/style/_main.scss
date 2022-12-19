@@ -1,0 +1,13 @@
+.main {
+  display: flex;
+  padding: 1%;
+  justify-content: space-between;
+  &__sort{
+
+  }
+  &__items{
+      display:flex;
+      justify-content: space-around;
+      color: white;
+  }
+}

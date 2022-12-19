@@ -8,7 +8,8 @@
     "build-dev": "webpack",
     "build-prod": "webpack --node-env=production",
     "clear": "rd /s /q dist",
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "deploy": "npm run build-prod && npx gh-pages -d dist -e online-store"
   },
   "keywords": [],
   "author": "winni",
