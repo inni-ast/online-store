@@ -11,9 +11,7 @@ export const enum PagesId {
   Product = "products",
 }
 export class App {
-  private static container = document.querySelector(
-    ".main-container"
-  ) as HTMLDivElement;
+  private static container = document.querySelector(".main") as HTMLDivElement;
   private initialPage: MainPage;
   header: Header;
   static renderNewPage(idPage: string) {
