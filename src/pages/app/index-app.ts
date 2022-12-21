@@ -6,24 +6,25 @@ import { Product } from "../product";
 import { ErrorPage, ErrorTypes } from "../error";
 
 export const enum PagesId {
-  MainPage = "main-page",
+  MainPage = "main-container",
   Basket = "basket",
   Product = "products",
 }
 export class App {
-  private static container = document.querySelector(".main") as HTMLDivElement;
+  private static container = document.querySelector(".main") as HTMLElement;
   private initialPage: MainPage;
   header: Header;
+
   static renderNewPage(idPage: string) {
     App.container.innerHTML = "";
     let page: Page | null = null;
 
     if (idPage === PagesId.MainPage) {
-      page = new MainPage(idPage, "main-page", "main");
+      page = new MainPage("div", idPage, "main__container");
     } else if (idPage === PagesId.Basket) {
-      page = new Basket(idPage, "basket", "basket");
+      page = new Basket("div", idPage, "basket");
     } else if (idPage === PagesId.Product) {
-      page = new Product(idPage, "products", "products");
+      page = new Product("div", idPage, "products");
     } else {
       page = new ErrorPage(
         "div",
@@ -39,7 +40,7 @@ export class App {
   }
   constructor() {
     this.header = new Header();
-    this.initialPage = new MainPage("main", "main-page", "main");
+    this.initialPage = new MainPage("div", "main-container", "main__container");
   }
   private routeChange() {
     window.addEventListener("hashchange", () => {
@@ -48,7 +49,7 @@ export class App {
     });
   }
   run() {
-    App.renderNewPage("main-page");
+    App.renderNewPage("main-container");
     this.header.run();
     this.routeChange();
   }

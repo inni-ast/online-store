@@ -5,6 +5,10 @@ export class MainPage extends Page {
   static TextObject = {
     mainTitle: "Main Page",
     total: "Cart total",
+    btnPriceUp: "Price Up",
+    btnPriceDown: "Price Up",
+    btnRatingUp: "Rating Up",
+    btnRatingDown: "Rating Down",
   };
   itemsContainer: HTMLElement;
   buttonSortPriceUp: HTMLElement;
@@ -25,27 +29,27 @@ export class MainPage extends Page {
     this.buttonSortPriceUp.id = "price-up";
     this.buttonSortPriceUp.classList.add("button");
     this.buttonSortPriceUp.classList.add("button_price-up");
-    this.buttonSortPriceUp.textContent = "Price Up";
+    this.buttonSortPriceUp.textContent = MainPage.TextObject.btnPriceUp;
 
     this.buttonSortPriceDown = document.createElement("button");
     this.buttonSortPriceDown.id = "price-down";
     this.buttonSortPriceDown.classList.add("button", "button_price-down");
-    this.buttonSortPriceDown.textContent = "Price Down";
+    this.buttonSortPriceDown.textContent = MainPage.TextObject.btnPriceDown;
 
     this.buttonSortRatingUp = document.createElement("button");
     this.buttonSortRatingUp.id = "rating-up";
     this.buttonSortRatingUp.classList.add("button", "button_rating-up");
-    this.buttonSortRatingUp.textContent = "Rating Up";
+    this.buttonSortRatingUp.textContent = MainPage.TextObject.btnRatingUp;
 
     this.buttonSortRatingDown = document.createElement("button");
     this.buttonSortRatingDown.id = "rating-down";
     this.buttonSortRatingDown.classList.add("button", "button__rating-down");
+    this.buttonSortRatingDown.textContent = MainPage.TextObject.btnRatingDown;
 
     this.inputSearch = document.createElement("input");
     this.inputSearch.setAttribute("type", "text");
     this.inputSearch.setAttribute("placeholder", "Search");
     this.inputSearch.classList.add("input-search");
-    this.buttonSortRatingDown.textContent = "Rating Down";
 
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
@@ -56,7 +60,7 @@ export class MainPage extends Page {
     this.buttonItemsColumn.id = "button-column";
     this.buttonItemsColumn.classList.add("button__column", "button");
     this.buttonItemsColumn.textContent = "Items column";
-    this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
+    this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
   }
   // private createFilters() { }
@@ -120,12 +124,13 @@ export class MainPage extends Page {
       this.itemsContainer.classList.add("row");
     }
   }
-  cardsShowColumn() {
-    console.log(this.itemsContainer);
-    if (this.itemsContainer) {
-      this.itemsContainer.classList.remove("row");
-      this.itemsContainer.classList.add("column");
-    }
+  static cardsShowColumn() {
+    // const container = document.querySelector(".items__cards");
+    // console.log(container);
+    // if (this.itemsContainer) {
+    //   this.itemsContainer.classList.remove("row");
+    //   this.itemsContainer.classList.add("column");
+    // }
   }
   render() {
     const title = this.createTitle(MainPage.TextObject.mainTitle);
