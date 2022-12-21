@@ -6,10 +6,11 @@ export class MainPage extends Page {
     mainTitle: "Main Page",
     total: "Cart total",
     btnPriceUp: "Price Up",
-    btnPriceDown: "Price Up",
+    btnPriceDown: "Price Down",
     btnRatingUp: "Rating Up",
     btnRatingDown: "Rating Down",
   };
+
   itemsContainer: HTMLElement;
   buttonSortPriceUp: HTMLElement;
   buttonSortPriceDown: HTMLElement;
@@ -18,10 +19,11 @@ export class MainPage extends Page {
   inputSearch: HTMLElement;
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
+  currentData: Array<SET>;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
-
+    this.currentData = [];
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
 
@@ -55,13 +57,16 @@ export class MainPage extends Page {
     this.buttonItemsRow.id = "button-row";
     this.buttonItemsRow.classList.add("button__row", "button");
     this.buttonItemsRow.textContent = "Items row";
-
     this.buttonItemsColumn = document.createElement("button");
     this.buttonItemsColumn.id = "button-column";
     this.buttonItemsColumn.classList.add("button__column", "button");
     this.buttonItemsColumn.textContent = "Items column";
-    this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
-    this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
+
+    this.buttonSortPriceUp.addEventListener("click", this.sort);
+    // this.buttonSortPriceDown.addEventListener("click", this.sort);
+
+    this.buttonItemsColumn.addEventListener("click", MainPage.cardsShow);
+    this.buttonItemsRow.addEventListener("click", MainPage.cardsShow);
   }
   // private createFilters() { }
   private createSorts() {
@@ -83,9 +88,9 @@ export class MainPage extends Page {
   private createCards(data: Array<SET>) {
     let itemsHTML = "";
 
-    data.forEach(({ thumbnail, title, brand, price, stock }) => {
+    data.forEach(({ thumbnail, title, brand, price, stock, rating }) => {
       itemsHTML += `
-      <div class="cards__item card">
+      <div class="cards__item card" data-price=${price} data-rating=${rating}>
       <div class="card__image">
         <img src=${thumbnail} alt="product image" class="card__img">
       </div>
@@ -117,29 +122,65 @@ export class MainPage extends Page {
     // }
     return this.itemsContainer;
   }
-  cardsShowRow() {
-    if (this.itemsContainer) {
-      console.log(this.itemsContainer);
-      this.itemsContainer.classList.remove("column");
-      this.itemsContainer.classList.add("row");
+
+  sort() {
+    const allItems = document.querySelector(".items__cards");
+
+    if (allItems) {
+      for (let i = 0; i < allItems.children.length; i++) {
+        for (let j = i; j < allItems.children.length; j++) {
+          const one = allItems.children[i] as HTMLDivElement;
+          const two = allItems.children[j] as HTMLDivElement;
+          const attrOne = one.getAttribute("data-price");
+          const attrTwo = two.getAttribute("data-price");
+          console.log(attrOne, attrTwo);
+          if (attrOne && attrTwo) {
+            if (+attrOne > +attrTwo) {
+              const replaceNode = allItems.replaceChild(two, one);
+              if (replaceNode) this.insertAfter(replaceNode, one);
+            }
+          }
+        }
+      }
+      // this.renderCards();
+      // и положить обратно
+    }
+    return allItems;
+  }
+  insertAfter(elOne: HTMLElement, refElement: HTMLElement): HTMLElement {
+    const element: HTMLElement = (
+      refElement.parentNode as HTMLElement
+    ).insertBefore(elOne, refElement.nextSibling);
+    return element;
+  }
+  // private renderCards(data) {
+  //   const mainItems = document.querySelector("section") as HTMLElement;
+  //   mainItems.append(data);
+  //   this.container.append(mainItems);
+  //   return this.container;
+  // }
+
+  static cardsShow() {
+    const container = document.querySelector(".items__cards");
+
+    if (container) {
+      if (container.classList.contains("column")) {
+        container.classList.remove("column");
+        container.classList.add("row");
+      } else {
+        container.classList.remove("row");
+        container.classList.add("column");
+      }
     }
   }
-  static cardsShowColumn() {
-    // const container = document.querySelector(".items__cards");
-    // console.log(container);
-    // if (this.itemsContainer) {
-    //   this.itemsContainer.classList.remove("row");
-    //   this.itemsContainer.classList.add("column");
-    // }
-  }
+
   render() {
     const title = this.createTitle(MainPage.TextObject.mainTitle);
     const mainItems = document.createElement("section") as HTMLElement;
-
-    mainItems.classList.add("main__items");
-
     const sorts = this.createSorts() as HTMLElement;
     const allCards = this.createCards(DATA) as HTMLElement;
+
+    mainItems.classList.add("main__items");
 
     this.container.append(title); // будет фильтры
     mainItems.append(sorts); // блок с сортировками
@@ -149,10 +190,6 @@ export class MainPage extends Page {
     return this.container;
   }
 }
-// class Item {
-//   constructor() {
 
-//   }
-// }
-const p = new MainPage("div", "main-container", "main__container");
-console.log(p.buttonItemsRow);
+const P = new MainPage("div", "main-container", "main__container");
+console.log(P);
