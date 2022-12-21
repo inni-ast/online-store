@@ -1,53 +1,111 @@
-.main {
-  margin: 0 auto;
-  &__container {
-    display: flex;
-  padding: 1%;
-  }
-  &__filters {
-    flex: 1;
-    margin-right: 1%;
-
-  }
-  &__items{
-    flex: 2;
-    display:flex;
-    justify-content: space-around;
-    color: white;
-    flex-direction: column;
-  }
-}
-.items {
-
-  &__sorts {
-
-  }
-  &__cards {
+button {
+    background-color: $but;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
-
-  }
+    justify-content: center;
+    align-items: center;
+    padding: 10px 19px;
+    color: white;
+    border: none;
 }
+
+// .button__row button {
+//     background-image: url(../img/row.svg);
+// }
+.main {
+    margin: 0 auto;
+    &__container {
+        display: flex;
+        padding: 1%;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    &__filters {
+        margin-right: 1%;
+    }
+    &__items {
+        display: flex;
+        justify-content: space-around;
+        color: $text;
+        flex-direction: column;
+        width: 80%;
+    }
+}
+
+.items {
+    &__sorts {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+        .input-search {
+            height: 15px;
+            background: #EDEDED;
+            border: none;
+            border-radius: 36px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 10px 13px 20px;
+            gap: 10px;
+        }
+    }
+    &__cards {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 10;
+    }
+}
+
 .row {
-  flex-direction: row;
+    flex-direction: row;
 }
+
 .column {
-      flex-direction: column;
+    flex-direction: column;
 }
-.card{
-  display: flex;
-  &__image {
-    width: 100px;
 
-  }
+.card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 210px;
+    width: 23%;
+    height: 500px;
+    background: $back-card;
+    box-shadow: 0px 14px 39px -11px rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    border: 0.1px solid $but;
+    margin-right: 10px;
+    margin-top: 10px;
+    &__image {
+        width: 100%;
+        height: 40%;
+        overflow: hidden;
+    }
     &__img {
-      max-width: 100%;
-
-  }
+        max-width: 100%;
+        min-height: 100%;
+    }
+    &__about-act {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 57%;
+        margin-left: 5%;
+    }
+    &__btn {
+        width: 150px;
+        height: 45px;
+        border-radius: 80px;
+    }
 }
 
 .button {
-  width: 70px;
-  height: 40px;
+    width: 70px;
+    height: 40px;
+    margin-right: 10px;
 }
+
+.cards__item {}

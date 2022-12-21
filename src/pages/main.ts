@@ -54,12 +54,13 @@ export class MainPage extends Page {
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
     this.buttonItemsRow.classList.add("button__row", "button");
-    this.buttonItemsRow.textContent = "Items row";
+    this.buttonItemsRow.style.backgroundImage = "url(../img/row.svg)";
 
     this.buttonItemsColumn = document.createElement("button");
     this.buttonItemsColumn.id = "button-column";
     this.buttonItemsColumn.classList.add("button__column", "button");
-    this.buttonItemsColumn.textContent = "Items column";
+    this.buttonItemsColumn.style.backgroundImage = "url(../img/colomn.svg)";
+
     this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
   }
@@ -89,6 +90,7 @@ export class MainPage extends Page {
       <div class="card__image">
         <img src=${thumbnail} alt="product image" class="card__img">
       </div>
+      <div class="card__about-act">
       <div class="card__about">
         <h3 class="card__title">${title}</h3>
         <p class="card__brand">Brand: ${brand}</p>
@@ -96,7 +98,8 @@ export class MainPage extends Page {
         <p class="card__stock">Stock: ${stock}</p>
       </div>
       <div class="card__act">
-        <button class="card__btn"></button>
+        <button class="card__btn">Add to card</button>
+      </div>
       </div>
     </div>
       `;
