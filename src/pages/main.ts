@@ -154,3 +154,5 @@ export class MainPage extends Page {
 
 //   }
 // }
+const p = new MainPage("div", "main-container", "main__container");
+console.log(p.buttonItemsRow);
