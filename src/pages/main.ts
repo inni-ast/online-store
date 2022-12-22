@@ -80,11 +80,11 @@ export class MainPage extends Page {
 
     sortsHeader.classList.add("items__sorts");
     sortsHeader.append(
-      this.inputSearch,
       this.buttonSortPriceDown,
       this.buttonSortPriceUp,
       this.buttonSortStockDown,
       this.buttonSortStockUp,
+      this.inputSearch,
       this.buttonItemsRow,
       this.buttonItemsColumn
     );
@@ -212,6 +212,7 @@ export class MainPage extends Page {
       }
     }
   }
+
   render() {
     const title = this.createTitle(MainPage.TextObject.mainTitle);
     const mainItems = document.createElement("section") as HTMLElement;
