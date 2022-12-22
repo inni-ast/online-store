@@ -7,25 +7,25 @@ export class MainPage extends Page {
     total: "Cart total",
     btnPriceUp: "Price Up",
     btnPriceDown: "Price Down",
-    btnRatingUp: "Rating Up",
-    btnRatingDown: "Rating Down",
+    btnStockUp: "Stock Up",
+    btnStockDown: "Stock Down",
     btnItemsRow: "Items row",
     btnItemsColumn: "Items column",
   };
-
+  currentData: Array<SET>;
+  static currentDATA = DATA;
   itemsContainer: HTMLElement;
   buttonSortPriceUp: HTMLElement;
   buttonSortPriceDown: HTMLElement;
-  buttonSortRatingUp: HTMLElement;
-  buttonSortRatingDown: HTMLElement;
+  buttonSortStockUp: HTMLElement;
+  buttonSortStockDown: HTMLElement;
   inputSearch: HTMLElement;
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
-  currentData: Array<SET>;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
-    this.currentData = [];
+    this.currentData = DATA;
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
 
@@ -40,15 +40,15 @@ export class MainPage extends Page {
     this.buttonSortPriceDown.classList.add("button", "button_price-down");
     this.buttonSortPriceDown.textContent = MainPage.TextObject.btnPriceDown;
 
-    this.buttonSortRatingUp = document.createElement("button");
-    this.buttonSortRatingUp.id = "rating-up";
-    this.buttonSortRatingUp.classList.add("button", "button_rating-up");
-    this.buttonSortRatingUp.textContent = MainPage.TextObject.btnRatingUp;
+    this.buttonSortStockUp = document.createElement("button");
+    this.buttonSortStockUp.id = "rating-up";
+    this.buttonSortStockUp.classList.add("button", "button_rating-up");
+    this.buttonSortStockUp.textContent = MainPage.TextObject.btnStockUp;
 
-    this.buttonSortRatingDown = document.createElement("button");
-    this.buttonSortRatingDown.id = "rating-down";
-    this.buttonSortRatingDown.classList.add("button", "button__rating-down");
-    this.buttonSortRatingDown.textContent = MainPage.TextObject.btnRatingDown;
+    this.buttonSortStockDown = document.createElement("button");
+    this.buttonSortStockDown.id = "rating-down";
+    this.buttonSortStockDown.classList.add("button", "button__rating-down");
+    this.buttonSortStockDown.textContent = MainPage.TextObject.btnStockDown;
 
     this.inputSearch = document.createElement("input");
     this.inputSearch.setAttribute("type", "text");
@@ -67,11 +67,14 @@ export class MainPage extends Page {
     this.buttonItemsColumn.textContent = MainPage.TextObject.btnItemsColumn;
     // this.buttonItemsColumn.style.backgroundImage = "url(../img/colomn.svg)";
 
-    this.buttonSortPriceUp.addEventListener("click", this.sort);
-    // this.buttonSortPriceDown.addEventListener("click", this.sort);
+    this.buttonSortPriceUp.addEventListener("click", this.sortItemsPriceUp);
+    this.buttonSortPriceDown.addEventListener("click", this.sortItemsPriceDown);
 
-    this.buttonItemsColumn.addEventListener("click", MainPage.cardsShow);
-    this.buttonItemsRow.addEventListener("click", MainPage.cardsShow);
+    this.buttonSortStockUp.addEventListener("click", this.sortItemsStockUp);
+    this.buttonSortStockDown.addEventListener("click", this.sortItemsStockDown);
+
+    this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
+    this.buttonItemsRow.addEventListener("click", MainPage.cardsShowRow);
   }
   // private createFilters() { }
   private createSorts() {
@@ -82,8 +85,8 @@ export class MainPage extends Page {
       this.inputSearch,
       this.buttonSortPriceDown,
       this.buttonSortPriceUp,
-      this.buttonSortRatingDown,
-      this.buttonSortRatingUp,
+      this.buttonSortStockDown,
+      this.buttonSortStockUp,
       this.buttonItemsRow,
       this.buttonItemsColumn
     );
@@ -114,78 +117,108 @@ export class MainPage extends Page {
       `;
     });
     this.itemsContainer.innerHTML = itemsHTML;
-    // for (let i = 0; i < data.length; i++) {
-    //   const p = document.createElement("div");
-    //   p.classList.add("card");
-    //   const divImage = document.createElement("div");
-    //   p.classList.add("card__image");
-
-    //   const img = new Image();
-    //   img.classList.add("card__img");
-    //   img.src = data[i].images[0];
-    //   divImage.append(img);
-    //   p.append(divImage);
-    //   itemsContainer.appendChild(p);
-    // }
     return this.itemsContainer;
   }
+  getCurrentData(data: Array<SET>) {
+    return data;
+  }
 
-  sort() {
-    const allItems = document.querySelector(".items__cards");
-
-    if (allItems) {
-      for (let i = 0; i < allItems.children.length; i++) {
-        for (let j = i; j < allItems.children.length; j++) {
-          const one = allItems.children[i] as HTMLDivElement;
-          const two = allItems.children[j] as HTMLDivElement;
-          const attrOne = one.getAttribute("data-price");
-          const attrTwo = two.getAttribute("data-price");
-          console.log(attrOne, attrTwo);
-          if (attrOne && attrTwo) {
-            if (+attrOne > +attrTwo) {
-              const replaceNode = allItems.replaceChild(two, one);
-              if (replaceNode) this.insertAfter(replaceNode, one);
-            }
-          }
-        }
+  public sortItemsPriceUp = () => {
+    this.currentData.sort((a: SET, b: SET) => {
+      if (a.price > b.price) {
+        return 1;
       }
-      // this.renderCards();
-      // и положить обратно
-    }
-    return allItems;
-  }
-  insertAfter(elOne: HTMLElement, refElement: HTMLElement): HTMLElement {
-    const element: HTMLElement = (
-      refElement.parentNode as HTMLElement
-    ).insertBefore(elOne, refElement.nextSibling);
-    return element;
-  }
-  // private renderCards(data) {
-  //   const mainItems = document.querySelector("section") as HTMLElement;
-  //   mainItems.append(data);
-  //   this.container.append(mainItems);
-  //   return this.container;
-  // }
+      if (a.price < b.price) {
+        return -1;
+      }
+      return 0;
+    });
+    const mainItems = document.querySelector("section") as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
 
-  static cardsShow() {
+    mainItems.append(allCards);
+    this.container.append(mainItems);
+    return this.container;
+  };
+
+  public sortItemsPriceDown = () => {
+    this.currentData.sort((a: SET, b: SET) => {
+      if (a.price < b.price) {
+        return 1;
+      }
+      if (a.price > b.price) {
+        return -1;
+      }
+      return 0;
+    });
+    const mainItems = document.querySelector("section") as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
+
+    mainItems.append(allCards);
+    this.container.append(mainItems);
+    return this.container;
+  };
+
+  public sortItemsStockUp = () => {
+    this.currentData.sort((a: SET, b: SET) => {
+      if (a.stock > b.stock) {
+        return 1;
+      }
+      if (a.stock < b.stock) {
+        return -1;
+      }
+      return 0;
+    });
+    const mainItems = document.querySelector("section") as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
+
+    mainItems.append(allCards);
+    this.container.append(mainItems);
+    return this.container;
+  };
+  public sortItemsStockDown = () => {
+    this.currentData.sort((a: SET, b: SET) => {
+      if (a.stock < b.stock) {
+        return 1;
+      }
+      if (a.stock > b.stock) {
+        return -1;
+      }
+      return 0;
+    });
+    const mainItems = document.querySelector("section") as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
+
+    mainItems.append(allCards);
+    this.container.append(mainItems);
+    return this.container;
+  };
+
+  static cardsShowRow() {
     const container = document.querySelector(".items__cards");
 
     if (container) {
-      if (container.classList.contains("column")) {
+      if (!container.classList.contains("row")) {
         container.classList.remove("column");
         container.classList.add("row");
-      } else {
-        container.classList.remove("row");
-        container.classList.add("column");
       }
     }
   }
+  static cardsShowColumn() {
+    const container = document.querySelector(".items__cards");
 
+    if (container) {
+      if (!container.classList.contains("column")) {
+        container.classList.add("column");
+        container.classList.remove("row");
+      }
+    }
+  }
   render() {
     const title = this.createTitle(MainPage.TextObject.mainTitle);
     const mainItems = document.createElement("section") as HTMLElement;
     const sorts = this.createSorts() as HTMLElement;
-    const allCards = this.createCards(DATA) as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
 
     mainItems.classList.add("main__items");
 
@@ -193,7 +226,6 @@ export class MainPage extends Page {
     mainItems.append(sorts); // блок с сортировками
     mainItems.append(allCards); // все товары
     this.container.append(mainItems);
-
     return this.container;
   }
 }
