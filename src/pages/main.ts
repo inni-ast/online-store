@@ -9,6 +9,8 @@ export class MainPage extends Page {
     btnPriceDown: "Price Down",
     btnRatingUp: "Rating Up",
     btnRatingDown: "Rating Down",
+    btnItemsRow: "Items row",
+    btnItemsColumn: "Items column",
   };
 
   itemsContainer: HTMLElement;
@@ -56,29 +58,20 @@ export class MainPage extends Page {
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
     this.buttonItemsRow.classList.add("button__row", "button");
-<<<<<<< HEAD
-    this.buttonItemsRow.textContent = "Items row";
+    this.buttonItemsRow.textContent = MainPage.TextObject.btnItemsRow;
+    // this.buttonItemsRow.style.backgroundImage = "url(../img/row.svg)";
+
     this.buttonItemsColumn = document.createElement("button");
     this.buttonItemsColumn.id = "button-column";
     this.buttonItemsColumn.classList.add("button__column", "button");
-    this.buttonItemsColumn.textContent = "Items column";
+    this.buttonItemsColumn.textContent = MainPage.TextObject.btnItemsColumn;
+    // this.buttonItemsColumn.style.backgroundImage = "url(../img/colomn.svg)";
 
     this.buttonSortPriceUp.addEventListener("click", this.sort);
     // this.buttonSortPriceDown.addEventListener("click", this.sort);
 
     this.buttonItemsColumn.addEventListener("click", MainPage.cardsShow);
     this.buttonItemsRow.addEventListener("click", MainPage.cardsShow);
-=======
-    this.buttonItemsRow.style.backgroundImage = "url(../img/row.svg)";
-
-    this.buttonItemsColumn = document.createElement("button");
-    this.buttonItemsColumn.id = "button-column";
-    this.buttonItemsColumn.classList.add("button__column", "button");
-    this.buttonItemsColumn.style.backgroundImage = "url(../img/colomn.svg)";
-
-    this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
-    this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
->>>>>>> 80e00b6e3da9e2e7f49db89cddd867e405184ebf
   }
   // private createFilters() { }
   private createSorts() {
