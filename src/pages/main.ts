@@ -53,13 +53,13 @@ export class MainPage extends Page {
 
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
-    this.buttonItemsRow.classList.add("button__row", "button");
-    this.buttonItemsRow.style.backgroundImage = "url(../img/row.svg)";
+    this.buttonItemsRow.classList.add("button__row", "button-vie");
+    this.buttonItemsRow.innerHTML = '<img src= "assets/row.svg" alt="row">';
 
     this.buttonItemsColumn = document.createElement("button");
     this.buttonItemsColumn.id = "button-column";
-    this.buttonItemsColumn.classList.add("button__column", "button");
-    this.buttonItemsColumn.style.backgroundImage = "url(../img/colomn.svg)";
+    this.buttonItemsColumn.classList.add("button__column", "button-vie");
+    this.buttonItemsColumn.textContent = "Items column";
 
     this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
@@ -70,11 +70,11 @@ export class MainPage extends Page {
 
     sortsHeader.classList.add("items__sorts");
     sortsHeader.append(
-      this.inputSearch,
       this.buttonSortPriceDown,
       this.buttonSortPriceUp,
       this.buttonSortRatingDown,
       this.buttonSortRatingUp,
+      this.inputSearch,
       this.buttonItemsRow,
       this.buttonItemsColumn
     );

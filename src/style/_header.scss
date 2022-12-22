@@ -3,7 +3,7 @@
     display: flex;
     justify-content: space-between;
     &__info {
-        flex: 2;
+        // flex: 2;
         display: flex;
     }
     &__logo {
@@ -16,11 +16,14 @@
             font-size: 0.8rem;
         }
     }
-    &__basket {}
+    &__basket {
+        cursor: pointer;
+    }
 }
 
 .price {
-    flex: 2;
+    // flex: 2;
+    width: 20%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,7 +37,7 @@
 }
 
 .basket {
-    flex: 1;
+    // flex: 1;
     display: flex;
     justify-content: flex-end;
     position: relative;
