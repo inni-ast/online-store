@@ -59,12 +59,17 @@ export class MainPage extends Page {
     this.buttonItemsRow.id = "button-row";
     this.buttonItemsRow.classList.add("button__row", "button-vie");
     this.buttonItemsRow.textContent = MainPage.TextObject.btnItemsRow;
-    // this.buttonItemsRow.innerHTML = '<img src= "assets/row.svg" alt="row">';
 
     this.buttonItemsColumn = document.createElement("button");
     this.buttonItemsColumn.id = "button-column";
-    this.buttonItemsColumn.classList.add("button__column", "button");
-    this.buttonItemsColumn.style.backgroundImage = "url(../img/colomn.svg)";
+    this.buttonItemsColumn.classList.add("button__column", "button-vie");
+    this.buttonItemsColumn.textContent = MainPage.TextObject.btnItemsColumn;
+
+    this.buttonSortPriceUp.addEventListener("click", this.sortItemsPriceUp);
+    this.buttonSortPriceDown.addEventListener("click", this.sortItemsPriceDown);
+
+    this.buttonSortStockUp.addEventListener("click", this.sortItemsStockUp);
+    this.buttonSortStockDown.addEventListener("click", this.sortItemsStockDown);
 
     this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", MainPage.cardsShowRow);
@@ -75,10 +80,11 @@ export class MainPage extends Page {
 
     sortsHeader.classList.add("items__sorts");
     sortsHeader.append(
+      this.inputSearch,
       this.buttonSortPriceDown,
       this.buttonSortPriceUp,
-      this.buttonSortRatingDown,
-      this.buttonSortRatingUp,
+      this.buttonSortStockDown,
+      this.buttonSortStockUp,
       this.buttonItemsRow,
       this.buttonItemsColumn
     );
