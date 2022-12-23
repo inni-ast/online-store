@@ -1,3 +1,8 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
 button {
     background-color: $but;
     display: flex;
@@ -7,6 +12,9 @@ button {
     padding: 10px 19px;
     color: white;
     border: none;
+    &:hover {
+        cursor: pointer;
+    }
 }
 
 // .button__row button {
@@ -37,24 +45,41 @@ button {
         display: flex;
         flex-direction: row;
         margin-bottom: 10px;
+        font-size: 16px;
         .input-search {
-            height: 15px;
-            background: #EDEDED;
+            height: 40px;
+            background: $back-input;
             border: none;
             border-radius: 36px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            padding: 13px 10px 13px 20px;
-            gap: 10px;
+            padding-left: 20px;
+        }
+        .button {
+            width: 13%;
+            height: 40px;
+            margin-right: 10px;
+            background: linear-gradient(90deg, rgba(255, 198, 80, 0.3) 0%, rgba(254, 202, 110, 0.3) 97.25%);
+            border-radius: 1000px;
+        }
+        .button-vie {
+            width: 5%;
+            height: 40px;
+            margin-left: 10px;
+            background: linear-gradient(90deg, rgba(255, 198, 80, 0.3) 0%, rgba(254, 202, 110, 0.3) 97.25%);
+            border-radius: 1000px;
+        }
+        .button__row {
+            margin-left: 30px;
         }
     }
     &__cards {
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        gap: 10px;
+        width: 100%;
     }
 }
 
@@ -72,7 +97,7 @@ button {
     overflow: hidden;
     min-width: 210px;
     width: 23%;
-    height: 500px;
+    height: 400px;
     background: $back-card;
     box-shadow: 0px 14px 39px -11px rgba(0, 0, 0, 0.06);
     border-radius: 10px;
@@ -82,7 +107,9 @@ button {
     &__image {
         width: 100%;
         height: 40%;
+        margin-bottom: 10px;
         overflow: hidden;
+        cursor: pointer;
     }
     &__img {
         max-width: 100%;
@@ -92,20 +119,18 @@ button {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 57%;
+        height: 44%;
         margin-left: 5%;
+    }
+    &__about::nth-child() {
+        margin: 0;
+        padding: 0;
     }
     &__btn {
         width: 150px;
         height: 45px;
         border-radius: 80px;
     }
-}
-
-.button {
-    width: 70px;
-    height: 40px;
-    margin-right: 10px;
 }
 
 .cards__item {}
