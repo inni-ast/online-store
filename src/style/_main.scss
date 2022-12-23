@@ -3,6 +3,10 @@
     padding: 0;
 }
 
+a {
+    text-decoration: none;
+}
+
 button {
     background-color: $but;
     display: flex;
@@ -12,14 +16,8 @@ button {
     padding: 10px 19px;
     color: white;
     border: none;
-    &:hover {
-        cursor: pointer;
-    }
 }
 
-// .button__row button {
-//     background-image: url(../img/row.svg);
-// }
 .main {
     margin: 0 auto;
     &__container {
@@ -61,8 +59,12 @@ button {
             width: 13%;
             height: 40px;
             margin-right: 10px;
-            background: linear-gradient(90deg, rgba(255, 198, 80, 0.3) 0%, rgba(254, 202, 110, 0.3) 97.25%);
+            background: $but;
             border-radius: 1000px;
+            &:hover {
+                cursor: pointer;
+                background-color: $but-hov;
+            }
         }
         .button-vie {
             width: 5%;
@@ -70,6 +72,10 @@ button {
             margin-left: 10px;
             background: linear-gradient(90deg, rgba(255, 198, 80, 0.3) 0%, rgba(254, 202, 110, 0.3) 97.25%);
             border-radius: 1000px;
+            &:hover {
+                cursor: pointer;
+                background-color: $but-hov;
+            }
         }
         .button__row {
             margin-left: 30px;
@@ -119,8 +125,9 @@ button {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 44%;
-        margin-left: 5%;
+        height: 50%;
+        margin-left: 20px;
+        margin-top: 10px;
     }
     &__about::nth-child() {
         margin: 0;
@@ -133,4 +140,17 @@ button {
     }
 }
 
-.cards__item {}
+.column {
+    .card {
+        flex-direction: row;
+        width: 60%;
+        height: 250px;
+        .card__image {
+            width: 60%;
+            height: 100%;
+        }
+        .card__about-act {
+            height: 90%;
+        }
+    }
+}
