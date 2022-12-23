@@ -131,12 +131,7 @@ export class MainPage extends Page {
       }
       return 0;
     });
-    const mainItems = document.querySelector("section") as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
-
-    mainItems.append(allCards);
-    this.container.append(mainItems);
-    return this.container;
+    this.generateProducts(this.currentData);
   };
 
   public sortItemsPriceDown = () => {
@@ -149,14 +144,17 @@ export class MainPage extends Page {
       }
       return 0;
     });
+    this.generateProducts(this.currentData);
+  };
+
+  private generateProducts(data: Array<SET>) {
     const mainItems = document.querySelector("section") as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
+    const allCards = this.createCards(data) as HTMLElement;
 
     mainItems.append(allCards);
     this.container.append(mainItems);
     return this.container;
-  };
-
+  }
   public sortItemsStockUp = () => {
     this.currentData.sort((a: SET, b: SET) => {
       if (a.stock > b.stock) {
@@ -167,12 +165,7 @@ export class MainPage extends Page {
       }
       return 0;
     });
-    const mainItems = document.querySelector("section") as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
-
-    mainItems.append(allCards);
-    this.container.append(mainItems);
-    return this.container;
+    this.generateProducts(this.currentData);
   };
   public sortItemsStockDown = () => {
     this.currentData.sort((a: SET, b: SET) => {
@@ -184,12 +177,7 @@ export class MainPage extends Page {
       }
       return 0;
     });
-    const mainItems = document.querySelector("section") as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
-
-    mainItems.append(allCards);
-    this.container.append(mainItems);
-    return this.container;
+    this.generateProducts(this.currentData);
   };
 
   static cardsShowRow() {
