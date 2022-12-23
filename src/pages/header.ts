@@ -12,7 +12,6 @@ export class Header {
   run() {
     this.basketEl.textContent = String(this._basket);
     this.priceEl.textContent = `${String(this._totalPrice)} $`;
-    console.log("header");
   }
   get basket() {
     return this._basket;

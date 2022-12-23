@@ -9,8 +9,8 @@ export class MainPage extends Page {
     btnPriceDown: "Price Down",
     btnStockUp: "Stock Up",
     btnStockDown: "Stock Down",
-    btnItemsRow: "Items row",
-    btnItemsColumn: "Items column",
+    btnItemsRow: "row",
+    btnItemsColumn: "col",
   };
   currentData: Array<SET>;
   static currentDATA = DATA;
@@ -57,7 +57,7 @@ export class MainPage extends Page {
 
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
-    this.buttonItemsRow.classList.add("button__row", "button-vie");
+    this.buttonItemsRow.classList.add("button__row", "button-vie", "active");
     this.buttonItemsRow.textContent = MainPage.TextObject.btnItemsRow;
 
     this.buttonItemsColumn = document.createElement("button");
@@ -71,8 +71,8 @@ export class MainPage extends Page {
     this.buttonSortStockUp.addEventListener("click", this.sortItemsStockUp);
     this.buttonSortStockDown.addEventListener("click", this.sortItemsStockDown);
 
-    this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
-    this.buttonItemsRow.addEventListener("click", MainPage.cardsShowRow);
+    this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
+    this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
   }
   // private createFilters() { }
   private createSorts() {
@@ -180,26 +180,30 @@ export class MainPage extends Page {
     this.generateProducts(this.currentData);
   };
 
-  static cardsShowRow() {
+  public cardsShowRow() {
     const container = document.querySelector(".items__cards");
 
     if (container) {
       if (!container.classList.contains("row")) {
         container.classList.remove("column");
         container.classList.add("row");
+        this.buttonItemsColumn.classList.remove("active");
+        this.buttonItemsRow.classList.add("active");
       }
     }
   }
-  static cardsShowColumn() {
+  public cardsShowColumn = () => {
     const container = document.querySelector(".items__cards");
 
     if (container) {
       if (!container.classList.contains("column")) {
         container.classList.add("column");
         container.classList.remove("row");
+        this.buttonItemsRow.classList.remove("active");
+        this.buttonItemsColumn.classList.add("active");
       }
     }
-  }
+  };
 
   render() {
     const title = this.createTitle(MainPage.TextObject.mainTitle);

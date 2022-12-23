@@ -21,6 +21,10 @@
         font-size: 1.5rem;
         text-decoration: none;
         width: 155px;
+        &:hover {
+          color: $but-hov;
+          text-decoration: underline;
+        }
         @media (max-width: 600px) {
             font-size: 0.8rem;
         }
@@ -83,7 +87,9 @@
         margin-left: 8px;
     }
 }
-
+.footer {
+  margin-top: auto;
+}
 .footer-container {
     position: relative;
     border-top: rgba(63, 78, 101, 0.2);
@@ -97,11 +103,18 @@
     .logo-footer {
         width: 70px;
         margin-right: 20px;
+        &:hover {
+          filter: $filter;
+      }
     }
     .git-a {
         color: $text;
         font-size: 1.3rem;
         margin-left: 20px;
+        &:hover {
+          color: $but-hov;
+          text-decoration: underline;
+        }
     }
 }
 
