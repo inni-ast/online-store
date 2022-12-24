@@ -1,6 +1,6 @@
 import { Page } from "../core/templates/page";
 import { SET, DATA } from "../modules/data";
-
+import { preloadImages } from "../modules/funstions";
 export class MainPage extends Page {
   static TextObject = {
     mainTitle: "Main Page",
@@ -22,6 +22,7 @@ export class MainPage extends Page {
   inputSearch: HTMLElement;
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
+  inputSearchForm: HTMLFormElement;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
@@ -50,10 +51,16 @@ export class MainPage extends Page {
     this.buttonSortStockDown.classList.add("button", "button__rating-down");
     this.buttonSortStockDown.textContent = MainPage.TextObject.btnStockDown;
 
+    this.inputSearchForm = document.createElement("form");
+    this.inputSearchForm.setAttribute("type", "submit");
+    this.inputSearchForm.id = "form-search";
+
     this.inputSearch = document.createElement("input");
     this.inputSearch.setAttribute("type", "text");
+    this.inputSearch.setAttribute("name", "search");
     this.inputSearch.setAttribute("placeholder", "Search");
     this.inputSearch.classList.add("input-search");
+    this.inputSearchForm.appendChild(this.inputSearch);
 
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
@@ -74,8 +81,16 @@ export class MainPage extends Page {
     this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
 
-    // this.inputSearch.addEventListener("input", this.searchCards);
+    this.inputSearchForm.addEventListener("submit", function (event: Event) {
+      event.preventDefault();
+      const target = document.getElementById("form-search") as HTMLFormElement;
+      const formData = new FormData(target);
+      const text = formData.get("search") as string;
+      getInput(text.trim());
+      return false;
+    });
   }
+
   // private createFilters() { }
   private createSorts() {
     const sortsHeader = document.createElement("div");
@@ -86,19 +101,45 @@ export class MainPage extends Page {
       this.buttonSortPriceUp,
       this.buttonSortStockDown,
       this.buttonSortStockUp,
-      this.inputSearch,
+      this.inputSearchForm,
       this.buttonItemsRow,
       this.buttonItemsColumn
     );
     return sortsHeader;
   }
-  // searchCards = () => {
-  //   console.log("input");
-  // };
+  public searchCards(input: string) {
+    const inputNum: number = +input;
+    const inputString: string = input;
+    let sortedDataNum: Array<SET> = [];
+    let sortedDataString: Array<SET> = [];
+
+    sortedDataNum = DATA.filter(
+      (el) =>
+        el.price === inputNum ||
+        el.discountPercentage === inputNum ||
+        el.rating === inputNum ||
+        el.stock === inputNum
+    );
+    sortedDataString = DATA.filter(
+      (el) =>
+        el.title.toLocaleLowerCase().includes(inputString) ||
+        el.description.toLocaleLowerCase().includes(inputString) ||
+        el.brand.toLocaleLowerCase().includes(inputString) ||
+        el.category.toLocaleLowerCase().includes(inputString)
+    );
+    this.currentData.length = 0;
+    this.currentData.push(...sortedDataNum, ...sortedDataString);
+    console.log(this.currentData);
+
+    const mainItems = document.querySelector(".items__cards") as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
+
+    mainItems.innerHTML = "";
+    mainItems.append(allCards);
+  }
 
   private createCards(data: Array<SET>) {
     let itemsHTML = "";
-
     data.forEach(({ thumbnail, title, brand, price, stock, rating }) => {
       itemsHTML += `
       <div class="cards__item card" data-price=${price} data-rating=${rating}>
@@ -119,9 +160,11 @@ export class MainPage extends Page {
     </div>
       `;
     });
+    this.itemsContainer.innerHTML = "";
     this.itemsContainer.innerHTML = itemsHTML;
     return this.itemsContainer;
   }
+
   getCurrentData(data: Array<SET>) {
     return data;
   }
@@ -155,11 +198,11 @@ export class MainPage extends Page {
   private generateProducts(data: Array<SET>) {
     const mainItems = document.querySelector("section") as HTMLElement;
     const allCards = this.createCards(data) as HTMLElement;
-
     mainItems.append(allCards);
     this.container.append(mainItems);
     return this.container;
   }
+
   public sortItemsStockUp = () => {
     this.currentData.sort((a: SET, b: SET) => {
       if (a.stock > b.stock) {
@@ -228,3 +271,9 @@ export class MainPage extends Page {
 
 const P = new MainPage("div", "main-container", "main__container");
 console.log(P);
+
+function getInput(input: string) {
+  P.searchCards(input.toLowerCase());
+}
+
+preloadImages(DATA);
