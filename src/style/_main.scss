@@ -58,6 +58,7 @@ button {
         font-size: 16px;
         @media (max-width: 1050px) {
           flex-wrap: wrap;
+          row-gap: 5px;
         }
         .input-search {
             height: 40px;
@@ -70,7 +71,6 @@ button {
             justify-content: space-between;
             align-items: center;
             padding-left: 20px;
-            margin-top: 2%;
             cursor: pointer;
             &:active, &:focus {
                 border: 1px solid $but;

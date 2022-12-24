@@ -73,6 +73,8 @@ export class MainPage extends Page {
 
     this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
+
+    // this.inputSearch.addEventListener("input", this.searchCards);
   }
   // private createFilters() { }
   private createSorts() {
@@ -90,6 +92,9 @@ export class MainPage extends Page {
     );
     return sortsHeader;
   }
+  // searchCards = () => {
+  //   console.log("input");
+  // };
 
   private createCards(data: Array<SET>) {
     let itemsHTML = "";
