@@ -30,6 +30,9 @@ button {
         padding: 1%;
         flex-direction: row;
         justify-content: space-between;
+        @media (max-width: 950px) {
+          flex-direction: column;
+        }
     }
     &__filters {
         margin-right: 1%;
@@ -40,6 +43,10 @@ button {
         color: $text;
         flex-direction: column;
         width: 80%;
+        @media (max-width: 950px) {
+            width: 100%;
+            margin: 0 auto;
+        }
     }
 }
 
@@ -63,6 +70,7 @@ button {
             justify-content: space-between;
             align-items: center;
             padding-left: 20px;
+            margin-top: 2%;
             cursor: pointer;
             &:active, &:focus {
                 border: 1px solid $but;
@@ -99,9 +107,16 @@ button {
         flex-direction: row;
         flex-wrap: wrap;
         width: 100%;
+
     }
 }
-
+.items__cards {
+  @media (max-width: 950px) {
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+}
+}
 .row {
     flex-direction: row;
 }
