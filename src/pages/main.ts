@@ -11,6 +11,7 @@ export class MainPage extends Page {
     btnStockDown: "Stock Down",
     btnItemsRow: "row",
     btnItemsColumn: "col",
+    find: "Find:",
   };
   currentData: Array<SET>;
   static currentDATA = DATA;
@@ -23,6 +24,9 @@ export class MainPage extends Page {
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
   inputSearchForm: HTMLFormElement;
+  itemsFind: HTMLElement;
+  itemsFindText: HTMLElement;
+  itemsFindNum: HTMLElement;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
@@ -61,6 +65,16 @@ export class MainPage extends Page {
     this.inputSearch.setAttribute("placeholder", "Search");
     this.inputSearch.classList.add("input-search");
     this.inputSearchForm.appendChild(this.inputSearch);
+
+    this.itemsFind = document.createElement("div");
+    this.itemsFind.classList.add("items__find");
+    this.itemsFindText = document.createElement("div");
+    this.itemsFindText.classList.add("items__find-text");
+    this.itemsFindText.textContent = MainPage.TextObject.find;
+    this.itemsFindNum = document.createElement("div");
+    this.itemsFindNum.classList.add("items__find-num");
+    this.itemsFindNum.textContent = String(this.currentData.length);
+    this.itemsFind.append(this.itemsFindText, this.itemsFindNum);
 
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
@@ -101,6 +115,7 @@ export class MainPage extends Page {
       this.buttonSortPriceUp,
       this.buttonSortStockDown,
       this.buttonSortStockUp,
+      this.itemsFind,
       this.inputSearchForm,
       this.buttonItemsRow,
       this.buttonItemsColumn
@@ -136,13 +151,18 @@ export class MainPage extends Page {
 
     mainItems.innerHTML = "";
     mainItems.append(allCards);
+    this.setCardsNumber(this.currentData.length);
   }
-
+  private setCardsNumber(num: number) {
+    this.itemsFindNum.textContent = String(num);
+    const number = document.querySelector(".items__find-num");
+    if (number) number.textContent = this.itemsFindNum.textContent;
+  }
   private createCards(data: Array<SET>) {
     let itemsHTML = "";
-    data.forEach(({ thumbnail, title, brand, price, stock, rating }) => {
+    data.forEach(({ thumbnail, title, brand, price, stock }) => {
       itemsHTML += `
-      <div class="cards__item card" data-price=${price} data-rating=${rating}>
+      <div class="cards__item card">
       <div class="card__image">
         <img src=${thumbnail} alt="product image" class="card__img">
       </div>
