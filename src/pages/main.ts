@@ -168,8 +168,7 @@ export class MainPage extends Page {
     });
     this.filterCategory.append(filterCategoryBlock);
 
-  
-  // this.currentData.map((a: SET): void => {
+    // this.currentData.map((a: SET): void => {
     //   setCategory.forEach((item) => {
     //     if (a.category===item){
     //     setCategoryCount.item=1;
@@ -283,7 +282,7 @@ export class MainPage extends Page {
     const productsStore = localStorageUtil.getProducts();
     let itemsHTML = "";
 
-    data.forEach(({ id, thumbnail, title, brand, price, stock }) => {
+    data.forEach(({ id, thumbnail, title, brand, price, stock, category }) => {
       let activeClass = "";
       let activeText = "";
 
