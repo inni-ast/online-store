@@ -1,6 +1,15 @@
 import { Page } from "../core/templates/page";
 import { SET, DATA } from "../modules/data";
-import { preloadImages } from "../modules/funstions";
+import { preloadImages } from "../modules/funсtions";
+import { localStorageUtil } from "../modules/localStorage";
+import { header } from "./header";
+
+window.addEventListener("DOMContentLoaded", () => {
+  // eslint-disable-next-line
+  function show(id: string, e: HTMLElement) {
+    console.log(id, e);
+  }
+});
 export class MainPage extends Page {
   static TextObject = {
     mainTitle: "Main Page",
@@ -12,6 +21,8 @@ export class MainPage extends Page {
     btnItemsRow: "row",
     btnItemsColumn: "col",
     find: "Find:",
+    addToCard: "Add to card",
+    dropFromCard: "Drop from card",
   };
   currentData: Array<SET>;
   static currentDATA = DATA;
@@ -30,7 +41,7 @@ export class MainPage extends Page {
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
-    this.currentData = DATA;
+    this.currentData = JSON.parse(JSON.stringify(DATA));
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
 
@@ -123,27 +134,19 @@ export class MainPage extends Page {
     return sortsHeader;
   }
   public searchCards(input: string) {
-    const inputNum: number = +input;
-    const inputString: string = input;
-    let sortedDataNum: Array<SET> = [];
-    let sortedDataString: Array<SET> = [];
-
-    sortedDataNum = DATA.filter(
+    const sortedData = DATA.filter(
       (el) =>
-        el.price === inputNum ||
-        el.discountPercentage === inputNum ||
-        el.rating === inputNum ||
-        el.stock === inputNum
-    );
-    sortedDataString = DATA.filter(
-      (el) =>
-        el.title.toLocaleLowerCase().includes(inputString) ||
-        el.description.toLocaleLowerCase().includes(inputString) ||
-        el.brand.toLocaleLowerCase().includes(inputString) ||
-        el.category.toLocaleLowerCase().includes(inputString)
+        el.price.toString().toLowerCase().includes(input) ||
+        el.discountPercentage.toString().toLowerCase().includes(input) ||
+        el.rating.toString().toLowerCase().includes(input) ||
+        el.stock.toString().toLowerCase().includes(input) ||
+        el.title.toLocaleLowerCase().includes(input) ||
+        el.description.toLocaleLowerCase().includes(input) ||
+        el.brand.toLocaleLowerCase().includes(input) ||
+        el.category.toLocaleLowerCase().includes(input)
     );
     this.currentData.length = 0;
-    this.currentData.push(...sortedDataNum, ...sortedDataString);
+    this.currentData.push(...sortedData);
     console.log(this.currentData);
 
     const mainItems = document.querySelector(".items__cards") as HTMLElement;
@@ -152,15 +155,45 @@ export class MainPage extends Page {
     mainItems.innerHTML = "";
     mainItems.append(allCards);
     this.setCardsNumber(this.currentData.length);
+    return this.currentData;
   }
+
   private setCardsNumber(num: number) {
     this.itemsFindNum.textContent = String(num);
     const number = document.querySelector(".items__find-num");
     if (number) number.textContent = this.itemsFindNum.textContent;
   }
+  // private setCurrentData(data: Array<SET>) {
+  //   this.currentData = JSON.parse(JSON.stringify(data));
+  // }
+  handleLocalStorage(element: HTMLElement, id: number) {
+    const { pushProduct } = localStorageUtil.putProducts(id);
+    console.log("yes");
+    console.log(element);
+    if (pushProduct) {
+      element.classList.add("active-btn");
+      element.innerHTML = MainPage.TextObject.dropFromCard;
+    } else {
+      element.classList.remove("active-btn");
+      element.innerHTML = MainPage.TextObject.addToCard;
+    }
+  }
+
   private createCards(data: Array<SET>) {
+    const productsStore = localStorageUtil.getProducts();
     let itemsHTML = "";
-    data.forEach(({ thumbnail, title, brand, price, stock }) => {
+
+    data.forEach(({ id, thumbnail, title, brand, price, stock }) => {
+      let activeClass = "";
+      let activeText = "";
+
+      if (productsStore.indexOf(id) === -1) {
+        activeText = MainPage.TextObject.addToCard;
+      } else {
+        activeText = MainPage.TextObject.dropFromCard;
+        activeClass = " active-btn";
+      }
+
       itemsHTML += `
       <div class="cards__item card">
       <div class="card__image">
@@ -170,26 +203,24 @@ export class MainPage extends Page {
       <div class="card__about">
         <h3 class="card__title">${title}</h3>
         <p class="card__brand">Brand: ${brand}</p>
-        <p class="card__price">Price: ${price}</p>
+        <p class="card__price">Price: ${price.toLocaleString()} USD</p>
         <p class="card__stock">Stock: ${stock}</p>
       </div>
       <div class="card__act">
-        <button class="card__btn">Add to card</button>
+        <button class="card__btn${activeClass}" data-price=${price} data-id=${id}>${activeText}</button>
       </div>
       </div>
     </div>
       `;
     });
+    //onclick="show(${id}, event.target);"
     this.itemsContainer.innerHTML = "";
     this.itemsContainer.innerHTML = itemsHTML;
     return this.itemsContainer;
   }
 
-  getCurrentData(data: Array<SET>) {
-    return data;
-  }
-
   public sortItemsPriceUp = () => {
+    console.log(this.currentData);
     this.currentData.sort((a: SET, b: SET) => {
       if (a.price > b.price) {
         return 1;
@@ -200,6 +231,7 @@ export class MainPage extends Page {
       return 0;
     });
     this.generateProducts(this.currentData);
+    this.setCardsNumber(this.currentData.length);
   };
 
   public sortItemsPriceDown = () => {
@@ -213,6 +245,7 @@ export class MainPage extends Page {
       return 0;
     });
     this.generateProducts(this.currentData);
+    this.setCardsNumber(this.currentData.length);
   };
 
   private generateProducts(data: Array<SET>) {
@@ -234,6 +267,7 @@ export class MainPage extends Page {
       return 0;
     });
     this.generateProducts(this.currentData);
+    this.setCardsNumber(this.currentData.length);
   };
   public sortItemsStockDown = () => {
     this.currentData.sort((a: SET, b: SET) => {
@@ -246,6 +280,7 @@ export class MainPage extends Page {
       return 0;
     });
     this.generateProducts(this.currentData);
+    this.setCardsNumber(this.currentData.length);
   };
 
   public cardsShowRow() {
@@ -290,10 +325,37 @@ export class MainPage extends Page {
 }
 
 const P = new MainPage("div", "main-container", "main__container");
+
 console.log(P);
+console.log(localStorageUtil);
 
 function getInput(input: string) {
   P.searchCards(input.toLowerCase());
 }
 
 preloadImages(DATA);
+
+window.onload = function () {
+  (document.getElementById("main-container") as HTMLElement).onclick =
+    function (event: Event) {
+      const target = event.target as HTMLElement;
+      const id = target.getAttribute("data-id");
+
+      if (id) {
+        if (target.classList.contains("card__btn")) {
+          const { pushProduct } = localStorageUtil.putProducts(+id);
+
+          if (pushProduct) {
+            target.classList.add("active-btn");
+            target.innerHTML = MainPage.TextObject.dropFromCard;
+
+            header.addProduct();
+          } else {
+            target.classList.remove("active-btn");
+            target.innerHTML = MainPage.TextObject.addToCard;
+            header.removeProduct();
+          }
+        }
+      }
+    };
+};

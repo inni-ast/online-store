@@ -4,6 +4,8 @@ import { Header } from "../header";
 import { Basket } from "../basket";
 import { Product } from "../product";
 import { ErrorPage, ErrorTypes } from "../error";
+// import { show } from "../main";
+// import { DATA } from "../../modules/data";
 
 export const enum PagesId {
   MainPage = "main-container",

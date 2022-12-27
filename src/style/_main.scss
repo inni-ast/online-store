@@ -22,7 +22,9 @@ button {
       background-color: $but-hov;
   }
 }
-
+.active-btn {
+    background-color: $but-hov;
+}
 .main {
     margin: 0 auto;
     &__container {

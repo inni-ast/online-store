@@ -1,28 +1,55 @@
+import { localStorageUtil } from "../modules/localStorage";
 export class Header {
-  _totalPrice: number;
-  _basket: number;
+  totalPrice: number;
+  basket: number;
   basketEl: HTMLElement;
   priceEl: HTMLElement;
-  constructor(totalPrice = 0, basket = 0) {
-    this._totalPrice = totalPrice;
-    this._basket = basket;
+
+  constructor() {
+    this.totalPrice = 0;
+    this.basket = productsStore.length;
     this.basketEl = document.querySelector(".basket__num") as HTMLElement;
     this.priceEl = document.querySelector(".price__total") as HTMLElement;
   }
+
   run() {
-    this.basketEl.textContent = String(this._basket);
-    this.priceEl.textContent = `${String(this._totalPrice)} $`;
+    this.basket = productsStore.length;
+    this.basketEl.textContent = String(productsStore.length);
+    console.log(this.basket);
+    this.priceEl.textContent = `${String(this.totalPrice)} $`;
+    return this.basket;
   }
-  get basket() {
-    return this._basket;
+
+  getNumOfProducts() {
+    return this.basket;
   }
-  set basket(num: number) {
-    this._basket = num;
+
+  addProduct() {
+    console.log(this.basket);
+    this.basket = this.basket + 1;
+    this.basketEl.textContent = String(this.basket);
+    console.log(this.basket);
+    return this.basket;
+    // this.priceEl.textContent
   }
-  get totalPrice() {
-    return this._totalPrice;
+  removeProduct() {
+    console.log(this.basket);
+    this.basket = this.basket - 1;
+    this.basketEl.textContent = String(this.basket);
+    console.log(this.basket);
+    return this.basket;
+    // this.priceEl.textContent
   }
-  set totalPrice(price: number) {
-    this._totalPrice = price;
-  }
+  // get totalPrice() {
+  //   return this.totalPrice;
+  // }
+
+  // set totalPrice(price: number) {
+  //   this.totalPrice = price;
+  // }
 }
+// получаем массив товаров из корзины
+const productsStore = localStorageUtil.getProducts();
+export const header = new Header();
+// количество товаров в корзине
+productsStore.length;
