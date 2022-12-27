@@ -38,6 +38,7 @@ button {
         @media (max-width: 650px) {
             flex-direction: column;
         }
+        gap: 10px;
     }
     &__filters {
         margin-right: 1%;
@@ -195,10 +196,40 @@ button {
         }
         .card__about-act {
             width: 40%;
-            width: 40%;
             height: 90%;
         }
     }
+}
+
+.items__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid $but;
+    border-radius: 20px;
+    background-color: $back-input;
+    overflow: hidden;
+    padding: 10px;
+    padding-right: 0;
+}
+
+.input-checkbox-block {
+    display: flex;
+    flex-direction: column;
+    height: 210px;
+    overflow-y: scroll;
+}
+
+.input-checkbox-text {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
 }
 
 .items__filters {
