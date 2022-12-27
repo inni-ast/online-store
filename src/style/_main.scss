@@ -34,7 +34,8 @@ button {
         padding: 1%;
         flex-direction: row;
         justify-content: space-between;
-        @media (max-width: 950px) {
+        gap: 10px;
+        @media (max-width: 650px) {
             flex-direction: column;
         }
     }
@@ -145,8 +146,13 @@ button {
     margin-right: 10px;
     margin-top: 10px;
     cursor: pointer;
+    transition: all 0.7s;
     &:hover {
-        background-color: $back;
+        background-color: $back-input;
+    }
+    &:hover .card__image {
+        transition: all 0.7s;
+        transform: scale(1.1);
     }
     &__image {
         width: 100%;
@@ -154,10 +160,6 @@ button {
         margin-bottom: 10px;
         overflow: hidden;
         transition: transform 0.7s;
-        &:hover {
-            transition: all 0.7s;
-            transform: scale(1.1);
-        }
     }
     &__img {
         max-width: 100%;
@@ -192,6 +194,7 @@ button {
             height: 100%;
         }
         .card__about-act {
+            width: 40%;
             width: 40%;
             height: 90%;
         }

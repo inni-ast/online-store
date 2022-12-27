@@ -139,13 +139,20 @@ export class MainPage extends Page {
       return false;
     });
   }
+
+  changeCurrentData(data: Array<SET>) {
+    this.currentData.length = 0;
+    this.currentData.push(...data);
+    return this.currentData;
+  }
+
   private createFilters() {
     const filtersHeader = document.createElement("div");
     filtersHeader.classList.add("items__filters");
 
     const setCategory = new Set();
 
-    this.currentData.map((a: SET): void => {
+    DATA.map((a: SET): void => {
       setCategory.add(a.category);
     });
 
@@ -153,12 +160,20 @@ export class MainPage extends Page {
     filterCategoryBlock.classList.add("input-checkbox-block");
 
     setCategory.forEach((item) => {
+      const filterDataCategory = DATA.filter((el) => el.category === item);
+      const count = filterDataCategory.length;
+
+      const filterDataCategoryPage = this.currentData.filter(
+        (el) => el.category === item
+      );
+      const countPage = filterDataCategoryPage.length;
+
       const filterCategoryItem = document.createElement("input");
       filterCategoryItem.setAttribute("type", "checkbox");
       filterCategoryItem.classList.add("input-checkbox");
       const filterCategoryText = document.createElement("lable");
       filterCategoryText.classList.add("input-checkbox-text");
-      filterCategoryText.innerHTML = `${item}`;
+      filterCategoryText.innerHTML = `${item} (${countPage}/${count})`;
 
       filterCategoryText.append(filterCategoryItem);
 
@@ -166,22 +181,9 @@ export class MainPage extends Page {
     });
     this.filterCategory.append(filterCategoryBlock);
 
-    changeCurrentData(data: Array<SET>) {
-    this.currentData.length = 0;
-    this.currentData.push(...data);
-    return this.currentData;
-  }
-  // this.currentData.map((a: SET): void => {
-    //   setCategory.forEach((item) => {
-    //     if (a.category===item){
-    //     setCategoryCount.item=1;
-    //     }
-    //   });
-    // });
-
     const setBrand = new Set();
 
-    this.currentData.map((a: SET): void => {
+    DATA.map((a: SET): void => {
       setBrand.add(a.brand);
     });
 
@@ -189,12 +191,20 @@ export class MainPage extends Page {
     filterBrandBlock.classList.add("input-checkbox-block");
 
     setBrand.forEach((item) => {
+      const filterDataBrand = DATA.filter((el) => el.brand === item);
+      const count = filterDataBrand.length;
+
+      const filterDataBrandPage = this.currentData.filter(
+        (el) => el.brand === item
+      );
+      const countPage = filterDataBrandPage.length;
+
       const filterBrandItem = document.createElement("input");
       filterBrandItem.setAttribute("type", "checkbox");
       filterBrandItem.classList.add("input-checkbox");
       const filterBrandText = document.createElement("lable");
       filterBrandText.classList.add("input-checkbox-text");
-      filterBrandText.innerHTML = `${item}`;
+      filterBrandText.innerHTML = `${item} (${countPage}/${count})`;
 
       filterBrandText.append(filterBrandItem);
 
@@ -219,6 +229,7 @@ export class MainPage extends Page {
     );
     return filtersHeader;
   }
+
   private createSorts() {
     const sortsHeader = document.createElement("div");
 
@@ -402,17 +413,16 @@ export class MainPage extends Page {
   };
 
   render() {
-    // const title = this.createTitle(MainPage.TextObject.mainTitle);
     const mainItems = document.createElement("section") as HTMLElement;
-    const filters = this.createFilters() as HTMLElement;
     const sorts = this.createSorts() as HTMLElement;
+    const filters = this.createFilters() as HTMLElement;
     const allCards = this.createCards(this.currentData) as HTMLElement;
 
     mainItems.classList.add("main__items");
 
-    this.container.append(title);
-    mainItems.append(sorts);
-    mainItems.append(allCards);
+    this.container.append(filters); // блок с фильтрами
+    mainItems.append(sorts); // блок с сортировками
+    mainItems.append(allCards); // все товары
     this.container.append(mainItems);
     return this.container;
   }
