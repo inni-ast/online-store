@@ -11,6 +11,10 @@ export class MainPage extends Page {
     btnStockDown: "Stock Down",
     btnItemsRow: "Items row",
     btnItemsColumn: "Items column",
+    divFilterBrand: "Brand",
+    divFilterCategory: "Category",
+    inputFilterPrice: "Price",
+    inputFilterStock: "Stock",
   };
   currentData: Array<SET>;
   static currentDATA = DATA;
@@ -22,6 +26,10 @@ export class MainPage extends Page {
   inputSearch: HTMLElement;
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
+  filterCategory: HTMLElement;
+  filterBrand: HTMLElement;
+  filterPrice: HTMLElement;
+  filterStock: HTMLElement;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
@@ -65,6 +73,24 @@ export class MainPage extends Page {
     this.buttonItemsColumn.classList.add("button__column", "button-vie");
     this.buttonItemsColumn.textContent = MainPage.TextObject.btnItemsColumn;
 
+    this.filterCategory = document.createElement("div");
+    this.filterCategory.classList.add("filter__category", "filter");
+    this.filterCategory.textContent = MainPage.TextObject.divFilterCategory;
+
+    this.filterBrand = document.createElement("div");
+    this.filterBrand.classList.add("filter__brand", "filter");
+    this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
+
+    this.filterPrice = document.createElement("input");
+    this.filterPrice.setAttribute("type", "range");
+    this.filterPrice.classList.add("filter__price", "filter-input");
+    this.filterPrice.textContent = MainPage.TextObject.inputFilterPrice;
+
+    this.filterStock = document.createElement("input");
+    this.filterStock.setAttribute("type", "range");
+    this.filterStock.classList.add("filter__stock", "filter-input");
+    this.filterStock.textContent = MainPage.TextObject.inputFilterStock;
+
     this.buttonSortPriceUp.addEventListener("click", this.sortItemsPriceUp);
     this.buttonSortPriceDown.addEventListener("click", this.sortItemsPriceDown);
 
@@ -74,7 +100,81 @@ export class MainPage extends Page {
     this.buttonItemsColumn.addEventListener("click", MainPage.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", MainPage.cardsShowRow);
   }
-  // private createFilters() { }
+  private createFilters() {
+    const filtersHeader = document.createElement("div");
+    filtersHeader.classList.add("items__filters");
+
+    const setCategory = new Set();
+
+    this.currentData.map((a: SET): void => {
+      setCategory.add(a.category);
+    });
+
+    const filterCategoryBlock = document.createElement("div");
+    filterCategoryBlock.classList.add("input-checkbox-block");
+
+    setCategory.forEach((item) => {
+      const filterCategoryItem = document.createElement("input");
+      filterCategoryItem.setAttribute("type", "checkbox");
+      filterCategoryItem.classList.add("input-checkbox");
+      const filterCategoryText = document.createElement("lable");
+      filterCategoryText.classList.add("input-checkbox-text");
+      filterCategoryText.innerHTML = `${item}`;
+
+      filterCategoryText.append(filterCategoryItem);
+
+      filterCategoryBlock.append(filterCategoryText);
+    });
+    this.filterCategory.append(filterCategoryBlock);
+
+    // this.currentData.map((a: SET): void => {
+    //   setCategory.forEach((item) => {
+    //     if (a.category===item){
+    //     setCategoryCount.item=1;
+    //     }
+    //   });
+    // });
+
+    const setBrand = new Set();
+
+    this.currentData.map((a: SET): void => {
+      setBrand.add(a.brand);
+    });
+
+    const filterBrandBlock = document.createElement("div");
+    filterBrandBlock.classList.add("input-checkbox-block");
+
+    setBrand.forEach((item) => {
+      const filterBrandItem = document.createElement("input");
+      filterBrandItem.setAttribute("type", "checkbox");
+      filterBrandItem.classList.add("input-checkbox");
+      const filterBrandText = document.createElement("lable");
+      filterBrandText.classList.add("input-checkbox-text");
+      filterBrandText.innerHTML = `${item}`;
+
+      filterBrandText.append(filterBrandItem);
+
+      filterBrandBlock.append(filterBrandText);
+    });
+    this.filterBrand.append(filterBrandBlock);
+
+    const filtersHeaderPrice = document.createElement("div");
+
+    filtersHeaderPrice.classList.add("items__filters-input");
+
+    const filtersHeaderStock = document.createElement("div");
+    filtersHeaderStock.classList.add("items__filters-input");
+
+    filtersHeaderPrice.append(this.filterPrice);
+    filtersHeaderStock.append(this.filterStock);
+    filtersHeader.append(
+      this.filterCategory,
+      this.filterBrand,
+      filtersHeaderPrice,
+      filtersHeaderStock
+    );
+    return filtersHeader;
+  }
   private createSorts() {
     const sortsHeader = document.createElement("div");
 
@@ -94,8 +194,9 @@ export class MainPage extends Page {
   private createCards(data: Array<SET>) {
     let itemsHTML = "";
 
-    data.forEach(({ thumbnail, title, brand, price, stock, rating }) => {
-      itemsHTML += `
+    data.forEach(
+      ({ thumbnail, title, category, brand, price, stock, rating }) => {
+        itemsHTML += `
       <div class="cards__item card" data-price=${price} data-rating=${rating}>
       <div class="card__image">
         <img src=${thumbnail} alt="product image" class="card__img">
@@ -103,6 +204,7 @@ export class MainPage extends Page {
       <div class="card__about-act">
       <div class="card__about">
         <h3 class="card__title">${title}</h3>
+        <p class="card__category">Category: ${category}</p>
         <p class="card__brand">Brand: ${brand}</p>
         <p class="card__price">Price: ${price}</p>
         <p class="card__stock">Stock: ${stock}</p>
@@ -113,7 +215,8 @@ export class MainPage extends Page {
       </div>
     </div>
       `;
-    });
+      }
+    );
     this.itemsContainer.innerHTML = itemsHTML;
     return this.itemsContainer;
   }
@@ -214,14 +317,16 @@ export class MainPage extends Page {
   }
 
   render() {
-    const title = this.createTitle(MainPage.TextObject.mainTitle);
+    // const title = this.createTitle(MainPage.TextObject.mainTitle);
     const mainItems = document.createElement("section") as HTMLElement;
+    const filters = this.createFilters() as HTMLElement;
     const sorts = this.createSorts() as HTMLElement;
     const allCards = this.createCards(this.currentData) as HTMLElement;
 
     mainItems.classList.add("main__items");
 
-    this.container.append(title); // будет фильтры
+    // this.container.append(title); // будет фильтры
+    this.container.append(filters); // блок с фильтрами
     mainItems.append(sorts); // блок с сортировками
     mainItems.append(allCards); // все товары
     this.container.append(mainItems);
