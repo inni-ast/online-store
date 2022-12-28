@@ -52,9 +52,7 @@ export class Header {
     return this.totalPrice;
   }
 }
-// получаем массив товаров из корзины
+
 export const productsStore = localStorageUtil.getProducts();
 export const dataStore = localStorageUtil.getData();
 export const header = new Header();
-// количество товаров в корзине
-productsStore.length;

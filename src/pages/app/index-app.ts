@@ -4,8 +4,8 @@ import { Header } from "../header";
 import { Basket } from "../basket";
 import { Product } from "../product";
 import { ErrorPage, ErrorTypes } from "../error";
-// import { show } from "../main";
-// import { DATA } from "../../modules/data";
+import { DATA } from "../../modules/data";
+import { preloadImages } from "../../modules/funсtions";
 
 export const enum PagesId {
   MainPage = "main-container",
@@ -54,5 +54,6 @@ export class App {
     App.renderNewPage("main-container");
     this.header.run();
     this.routeChange();
+    preloadImages(DATA);
   }
 }

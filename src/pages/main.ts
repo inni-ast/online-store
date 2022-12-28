@@ -1,6 +1,5 @@
 import { Page } from "../core/templates/page";
 import { SET, DATA, StorageProducts } from "../modules/data";
-import { preloadImages } from "../modules/funсtions";
 import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
 import { dataStore } from "./header";
@@ -309,9 +308,9 @@ export class MainPage extends Page {
 
     mainItems.classList.add("main__items");
 
-    this.container.append(title); // будет фильтры
-    mainItems.append(sorts); // блок с сортировками
-    mainItems.append(allCards); // все товары
+    this.container.append(title);
+    mainItems.append(sorts);
+    mainItems.append(allCards);
     this.container.append(mainItems);
     return this.container;
   }
@@ -320,13 +319,10 @@ export class MainPage extends Page {
 const P = new MainPage("div", "main-container", "main__container");
 
 console.log(P);
-console.log(localStorageUtil);
 
 function getInput(input: string) {
   P.searchCards(input.toLowerCase());
 }
-
-preloadImages(DATA);
 
 window.onload = function () {
   (document.getElementById("main-container") as HTMLElement).onclick =
