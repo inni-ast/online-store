@@ -4,12 +4,6 @@ import { preloadImages } from "../modules/funсtions";
 import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
 
-window.addEventListener("DOMContentLoaded", () => {
-  // eslint-disable-next-line
-  function show(id: string, e: HTMLElement) {
-    console.log(id, e);
-  }
-});
 export class MainPage extends Page {
   static TextObject = {
     mainTitle: "Main Page",
@@ -41,6 +35,7 @@ export class MainPage extends Page {
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
+    //localStorage.getItem(this.keyName);
     this.currentData = JSON.parse(JSON.stringify(DATA));
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
@@ -115,7 +110,11 @@ export class MainPage extends Page {
       return false;
     });
   }
-
+  changeCurrentData(data: Array<SET>) {
+    this.currentData.length = 0;
+    this.currentData.push(...data);
+    return this.currentData;
+  }
   // private createFilters() { }
   private createSorts() {
     const sortsHeader = document.createElement("div");
@@ -155,28 +154,14 @@ export class MainPage extends Page {
     mainItems.innerHTML = "";
     mainItems.append(allCards);
     this.setCardsNumber(this.currentData.length);
-    return this.currentData;
+    this.changeCurrentData(sortedData);
+    // return this.currentData;
   }
 
   private setCardsNumber(num: number) {
     this.itemsFindNum.textContent = String(num);
     const number = document.querySelector(".items__find-num");
     if (number) number.textContent = this.itemsFindNum.textContent;
-  }
-  // private setCurrentData(data: Array<SET>) {
-  //   this.currentData = JSON.parse(JSON.stringify(data));
-  // }
-  handleLocalStorage(element: HTMLElement, id: number) {
-    const { pushProduct } = localStorageUtil.putProducts(id);
-    console.log("yes");
-    console.log(element);
-    if (pushProduct) {
-      element.classList.add("active-btn");
-      element.innerHTML = MainPage.TextObject.dropFromCard;
-    } else {
-      element.classList.remove("active-btn");
-      element.innerHTML = MainPage.TextObject.addToCard;
-    }
   }
 
   private createCards(data: Array<SET>) {
@@ -213,7 +198,7 @@ export class MainPage extends Page {
     </div>
       `;
     });
-    //onclick="show(${id}, event.target);"
+
     this.itemsContainer.innerHTML = "";
     this.itemsContainer.innerHTML = itemsHTML;
     return this.itemsContainer;
@@ -340,20 +325,21 @@ window.onload = function () {
     function (event: Event) {
       const target = event.target as HTMLElement;
       const id = target.getAttribute("data-id");
+      const price = target.getAttribute("data-price");
 
-      if (id) {
+      if (id && price) {
         if (target.classList.contains("card__btn")) {
-          const { pushProduct } = localStorageUtil.putProducts(+id);
+          const { pushProduct } = localStorageUtil.putProducts(+id, +price);
 
           if (pushProduct) {
             target.classList.add("active-btn");
             target.innerHTML = MainPage.TextObject.dropFromCard;
 
-            header.addProduct();
+            header.addProduct(+price);
           } else {
             target.classList.remove("active-btn");
             target.innerHTML = MainPage.TextObject.addToCard;
-            header.removeProduct();
+            header.removeProduct(+price);
           }
         }
       }

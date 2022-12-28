@@ -1,4 +1,6 @@
+import { SET } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
+
 export class Header {
   totalPrice: number;
   basket: number;
@@ -6,7 +8,10 @@ export class Header {
   priceEl: HTMLElement;
 
   constructor() {
-    this.totalPrice = 0;
+    this.totalPrice = productsStore.reduce(
+      (total: number, amount: SET) => amount.price + total,
+      0
+    );
     this.basket = productsStore.length;
     this.basketEl = document.querySelector(".basket__num") as HTMLElement;
     this.priceEl = document.querySelector(".price__total") as HTMLElement;
@@ -15,38 +20,37 @@ export class Header {
   run() {
     this.basket = productsStore.length;
     this.basketEl.textContent = String(productsStore.length);
-    console.log(this.basket);
+    console.log(this.totalPrice);
+    this.totalPrice = productsStore.reduce(
+      (total: number, amount: SET) => amount.price + total,
+      0
+    );
     this.priceEl.textContent = `${String(this.totalPrice)} $`;
     return this.basket;
   }
 
-  getNumOfProducts() {
-    return this.basket;
+  addPrice(price: number) {
+    this.totalPrice += price;
+    this.priceEl.textContent = `${String(this.totalPrice)} $`;
+    return this.totalPrice;
   }
-
-  addProduct() {
-    console.log(this.basket);
+  addProduct(price: number) {
     this.basket = this.basket + 1;
     this.basketEl.textContent = String(this.basket);
-    console.log(this.basket);
+    this.addPrice(price);
     return this.basket;
-    // this.priceEl.textContent
   }
-  removeProduct() {
-    console.log(this.basket);
+  removeProduct(price: number) {
     this.basket = this.basket - 1;
     this.basketEl.textContent = String(this.basket);
-    console.log(this.basket);
+    this.removePrice(price);
     return this.basket;
-    // this.priceEl.textContent
   }
-  // get totalPrice() {
-  //   return this.totalPrice;
-  // }
-
-  // set totalPrice(price: number) {
-  //   this.totalPrice = price;
-  // }
+  removePrice(price: number) {
+    this.totalPrice -= price;
+    this.priceEl.textContent = `${String(this.totalPrice)} $`;
+    return this.totalPrice;
+  }
 }
 // получаем массив товаров из корзины
 const productsStore = localStorageUtil.getProducts();
