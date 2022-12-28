@@ -11,26 +11,40 @@
             flex-direction: row;
             text-decoration: none;
             color: $text;
+            transition: all 0.7s;
+            &:hover {
+                transform: scale(1.05);
+                text-decoration: none;
+            }
         }
     }
     &__logo {
         width: 80px;
         margin-right: 4%;
+        @media (max-width: 600px) {
+            width: 50px;
+        }
     }
     &__title {
         font-size: 1.5rem;
         text-decoration: none;
         width: 155px;
+        transition: all 0.7s;
         &:hover {
-          color: $but-hov;
-          text-decoration: underline;
+            text-decoration: none;
+            color: $but-hov;
         }
         @media (max-width: 600px) {
             font-size: 0.8rem;
+            width: 85px;
         }
     }
     &__basket {
         cursor: pointer;
+        transition: all 0.7s;
+        &:hover {
+            transform: scale(1.1);
+        }
     }
 }
 
@@ -78,6 +92,11 @@
         border-radius: 50%;
         background: #FFC85E;
         border: 3px solid #FFFFFF;
+        @media (max-width: 600px) {
+            width: 20px;
+            height: 20px;
+            right: 8px;
+        }
     }
     &__num {
         font-size: 1.5rem;
@@ -85,11 +104,18 @@
         color: white;
         margin: 0;
         margin-left: 8px;
+        @media (max-width: 600px) {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-left: 5px;
+        }
     }
 }
+
 .footer {
-  margin-top: auto;
+    margin-top: auto;
 }
+
 .footer-container {
     position: relative;
     border-top: rgba(63, 78, 101, 0.2);
@@ -104,16 +130,16 @@
         width: 70px;
         margin-right: 20px;
         &:hover {
-          filter: $filter;
-      }
+            filter: $filter;
+        }
     }
     .git-a {
         color: $text;
         font-size: 1.3rem;
         margin-left: 20px;
         &:hover {
-          color: $but-hov;
-          text-decoration: underline;
+            color: $but-hov;
+            text-decoration: underline;
         }
     }
 }

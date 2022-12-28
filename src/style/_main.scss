@@ -35,7 +35,7 @@ button {
         flex-direction: row;
         justify-content: space-between;
         gap: 10px;
-        @media (max-width: 950px) {
+        @media (max-width: 650px) {
             flex-direction: column;
         }
     }
@@ -146,6 +146,7 @@ button {
     margin-right: 10px;
     margin-top: 10px;
     cursor: pointer;
+    transition: all 0.7s;
     &:hover {
         background-color: $back-input;
     }
