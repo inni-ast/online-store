@@ -130,7 +130,7 @@ export class MainPage extends Page {
     this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
 
-    this.inputSearchForm.addEventListener("submit", function (event: Event) {
+    this.inputSearchForm.addEventListener("change", function (event: Event) {
       event.preventDefault();
       const target = document.getElementById("form-search") as HTMLFormElement;
       const formData = new FormData(target);
@@ -146,7 +146,7 @@ export class MainPage extends Page {
     return this.currentData;
   }
 
-  private createFilters() {
+  public createFilters(data: Array<SET>) {
     const filtersHeader = document.createElement("div");
     filtersHeader.classList.add("items__filters");
 
@@ -163,21 +163,39 @@ export class MainPage extends Page {
       const filterDataCategory = DATA.filter((el) => el.category === item);
       const count = filterDataCategory.length;
 
-      const filterDataCategoryPage = this.currentData.filter(
-        (el) => el.category === item
-      );
+      const filterDataCategoryPage = data.filter((el) => el.category === item);
       const countPage = filterDataCategoryPage.length;
 
       const filterCategoryItem = document.createElement("input");
       filterCategoryItem.setAttribute("type", "checkbox");
       filterCategoryItem.classList.add("input-checkbox");
+      filterCategoryItem.value = `${item})`;
       const filterCategoryText = document.createElement("lable");
       filterCategoryText.classList.add("input-checkbox-text");
       filterCategoryText.innerHTML = `${item} (${countPage}/${count})`;
 
       filterCategoryText.append(filterCategoryItem);
-
       filterCategoryBlock.append(filterCategoryText);
+
+      filterCategoryItem.addEventListener("change", function (event: Event) {
+        event.preventDefault();
+        if (this.checked) {
+          getFilter(item as string);
+        } else {
+          console.log("Checkbox is not checked..");
+        }
+      });
+
+      // const checkboxes = document.querySelectorAll('.input-checkbox');
+      //   let items:[string];
+      //   for (let i=0;i<checkboxes.length;i++){
+
+      //     if (checkboxes[i].checked) {
+      //       items.push(checkboxes[i].value)
+      //   } else {
+      //     console.log("Checkbox is not checked..");
+      //   }
+      //   }
     });
     this.filterCategory.append(filterCategoryBlock);
 
@@ -194,9 +212,7 @@ export class MainPage extends Page {
       const filterDataBrand = DATA.filter((el) => el.brand === item);
       const count = filterDataBrand.length;
 
-      const filterDataBrandPage = this.currentData.filter(
-        (el) => el.brand === item
-      );
+      const filterDataBrandPage = data.filter((el) => el.brand === item);
       const countPage = filterDataBrandPage.length;
 
       const filterBrandItem = document.createElement("input");
@@ -209,6 +225,14 @@ export class MainPage extends Page {
       filterBrandText.append(filterBrandItem);
 
       filterBrandBlock.append(filterBrandText);
+      filterBrandItem.addEventListener("change", function (event: Event) {
+        event.preventDefault();
+        if (this.checked) {
+          getFilter(item as string);
+        } else {
+          console.log("Checkbox is not checked..");
+        }
+      });
     });
     this.filterBrand.append(filterBrandBlock);
 
@@ -228,6 +252,27 @@ export class MainPage extends Page {
       filtersHeaderStock
     );
     return filtersHeader;
+  }
+
+  public makeFilters(item: string) {
+    const filterDataCategory = this.currentData.filter(
+      (el) => el.brand === item || el.category === item
+    );
+
+    // this.currentData.length = 0;
+    // this.currentData.push(...filterDataCategory);
+    console.log(this.currentData);
+
+    const mainItems = document.querySelector(".items__cards") as HTMLElement;
+    const allCards = this.createCards(filterDataCategory) as HTMLElement;
+
+    mainItems.innerHTML = "";
+    mainItems.append(allCards);
+    this.setCardsNumber(filterDataCategory.length);
+    // this.changeCurrentData(filterDataCategory);
+    this.createFilters(filterDataCategory);
+    localStorageUtil.putData(this.currentData);
+    return this.currentData;
   }
 
   private createSorts() {
@@ -269,7 +314,7 @@ export class MainPage extends Page {
     mainItems.append(allCards);
     this.setCardsNumber(this.currentData.length);
     this.changeCurrentData(sortedData);
-
+    this.createFilters(this.currentData);
     localStorageUtil.putData(this.currentData);
     return this.currentData;
   }
@@ -415,7 +460,7 @@ export class MainPage extends Page {
   render() {
     const mainItems = document.createElement("section") as HTMLElement;
     const sorts = this.createSorts() as HTMLElement;
-    const filters = this.createFilters() as HTMLElement;
+    const filters = this.createFilters(this.currentData) as HTMLElement;
     const allCards = this.createCards(this.currentData) as HTMLElement;
 
     mainItems.classList.add("main__items");
@@ -434,6 +479,10 @@ console.log(P);
 
 function getInput(input: string) {
   P.searchCards(input.toLowerCase());
+}
+
+function getFilter(item: string) {
+  P.makeFilters(item);
 }
 
 window.onload = function () {

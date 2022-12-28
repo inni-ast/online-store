@@ -44,7 +44,7 @@ button {
     }
     &__items {
         display: flex;
-        justify-content: space-around;
+        justify-content: start;
         color: $text;
         flex-direction: column;
         width: 80%;
