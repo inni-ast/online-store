@@ -3,6 +3,8 @@ interface Info {
   skip: number;
   limit: number;
 }
+export type StorageProducts = { id: number; price: number };
+
 export interface SET {
   id: number;
   title: string;

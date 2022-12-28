@@ -53,7 +53,8 @@ export class Header {
   }
 }
 // получаем массив товаров из корзины
-const productsStore = localStorageUtil.getProducts();
+export const productsStore = localStorageUtil.getProducts();
+export const dataStore = localStorageUtil.getData();
 export const header = new Header();
 // количество товаров в корзине
 productsStore.length;

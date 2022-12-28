@@ -1,8 +1,9 @@
 import { Page } from "../core/templates/page";
-import { SET, DATA } from "../modules/data";
+import { SET, DATA, StorageProducts } from "../modules/data";
 import { preloadImages } from "../modules/funсtions";
 import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
+import { dataStore } from "./header";
 
 export class MainPage extends Page {
   static TextObject = {
@@ -35,8 +36,11 @@ export class MainPage extends Page {
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
-    //localStorage.getItem(this.keyName);
-    this.currentData = JSON.parse(JSON.stringify(DATA));
+    if (dataStore) {
+      this.currentData = dataStore;
+    } else {
+      this.currentData = JSON.parse(JSON.stringify(DATA));
+    }
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
 
@@ -155,7 +159,9 @@ export class MainPage extends Page {
     mainItems.append(allCards);
     this.setCardsNumber(this.currentData.length);
     this.changeCurrentData(sortedData);
-    // return this.currentData;
+
+    localStorageUtil.putData(this.currentData);
+    return this.currentData;
   }
 
   private setCardsNumber(num: number) {
@@ -165,7 +171,9 @@ export class MainPage extends Page {
   }
 
   private createCards(data: Array<SET>) {
-    const productsStore = localStorageUtil.getProducts();
+    const productsStore = localStorageUtil
+      .getProducts()
+      .map((x: StorageProducts) => x.id);
     let itemsHTML = "";
 
     data.forEach(({ id, thumbnail, title, brand, price, stock }) => {

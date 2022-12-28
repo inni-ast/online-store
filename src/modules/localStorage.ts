@@ -4,25 +4,35 @@ class LocalStorageUtil {
   data: string;
 
   constructor() {
-    this.keyName = "products"; // это будет id товара
+    this.keyName = "products"; // это id товара
     this.data = "data";
+  }
+
+  getData() {
+    const dataLocalStorage = localStorage.getItem(this.data);
+
+    if (dataLocalStorage !== null) {
+      return JSON.parse(dataLocalStorage);
+    }
+  }
+  putData(data: Array<SET>) {
+    localStorage.removeItem(this.data);
+    const pushed = true;
+    localStorage.setItem(this.data, JSON.stringify(data));
+    const products = this.getData();
+
+    return {
+      pushed,
+      products,
+    };
   }
   getProducts() {
     const productsLocalStorage = localStorage.getItem(this.keyName);
-
     if (productsLocalStorage !== null) {
       return JSON.parse(productsLocalStorage);
     }
     return [];
   }
-  // getData() {
-  //   const dataLocalStorage = localStorage.getItem(this.data);
-  //   // const priceLocalStorage = localStorage.getItem(this.keyPrice);
-  //   if (dataLocalStorage !== null) {
-  //     return JSON.parse(dataLocalStorage);
-  //   }
-  //   return [];
-  // }
   putProducts(id: number, price: number) {
     const products = this.getProducts();
     let pushProduct = false;
