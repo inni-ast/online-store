@@ -1,18 +1,12 @@
 import { Page } from "../core/templates/page";
-// import { DATA } from "../modules/data";
+import { DATA } from "../modules/data";
 
-const H3 = [
-  "Description",
-  "Discount Percentage:",
-  "Rating:",
-  "Stock:",
-  "Brand:",
-  "Category:",
-];
 export class Product extends Page {
   static TextObject = {
     mainTitle: "Product",
     total: "Product total",
+    addToCard: "Add to card",
+    buyNow: "BUY NOW",
   };
 
   productContainer: HTMLElement;
@@ -73,23 +67,64 @@ export class Product extends Page {
     this.productPhotos.append(this.productSlides, this.productBigPhoto);
   }
   getProduct(id: number) {
-    for (let i = 0; i < 6; i++) {
+    const H3 = [
+      "Description",
+      "Discount Percentage:",
+      "Rating:",
+      "Stock:",
+      "Brand:",
+      "Category:",
+    ];
+    const P = [
+      DATA[id].description,
+      DATA[id].discountPercentage,
+      DATA[id].rating,
+      DATA[id].stock,
+      DATA[id].brand,
+      DATA[id].category,
+    ];
+    for (let i = 0; i < DATA[id].images.length; i++) {
+      const productSlidesPhoto = document.createElement("img");
+      productSlidesPhoto.setAttribute("src", `${DATA[id].images[i]}`);
+      this.productSlides.append(productSlidesPhoto);
+    }
+
+    const productBigPhoto = document.createElement("img");
+    productBigPhoto.setAttribute("src", `${DATA[id].thumbnail}`);
+    this.productBigPhoto.append(productBigPhoto);
+
+    for (let i = 0; i < H3.length; i++) {
       const productDetailItem = document.createElement("div");
       productDetailItem.classList.add("product__detail-item");
 
       const productDetailH3 = document.createElement("h3");
-      productDetailH3.textContent = H3[id - 1];
+      productDetailH3.textContent = `${H3[i]}`;
 
       const productDetailP = document.createElement("p");
-      // productDetailH3.textContent=DATA[id].H3[id-1];
+      productDetailP.textContent = `${P[i]}`;
 
       productDetailItem.append(productDetailH3, productDetailP);
       this.productInfo.append(productDetailItem);
     }
+
+    const productPrice = document.createElement("p");
+    productPrice.classList.add("product__price");
+    productPrice.textContent = "€" + DATA[id].price;
+
+    const productBasket = document.createElement("button");
+    productBasket.classList.add(`card__btn`);
+    productBasket.textContent = Product.TextObject.addToCard;
+
+    const productBuy = document.createElement("button");
+    productBuy.classList.add(`card__btn`);
+    productBuy.textContent = Product.TextObject.buyNow;
+
+    this.addToCart.append(productPrice, productBasket, productBuy);
   }
   render() {
     // const title = this.createTitle(Product.TextObject.mainTitle);
     this.container.append(this.productContainer);
+    this.getProduct(1);
     return this.container;
   }
 }
