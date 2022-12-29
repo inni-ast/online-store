@@ -420,7 +420,7 @@ export class MainPage extends Page {
       }
 
       itemsHTML += `
-      <div class="cards__item card">
+      <div class="cards__item card" href="#products">
       <div class="card__image">
         <img src=${thumbnail} alt="product image" class="card__img">
       </div>
