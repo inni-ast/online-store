@@ -14,6 +14,8 @@ export class MainPage extends Page {
     btnStockDown: "Stock Down",
     btnItemsRow: "row",
     btnItemsColumn: "col",
+    btnResetFilters: "Reset filters",
+    btnCopyLink: "Copy Link",
     find: "Find:",
     addToCard: "Add to card",
     dropFromCard: "Drop from card",
@@ -40,6 +42,9 @@ export class MainPage extends Page {
   filterBrand: HTMLElement;
   filterPrice: HTMLElement;
   filterStock: HTMLElement;
+  btnResetFilters: HTMLElement;
+  btnCopyLink: HTMLElement;
+  isFilter: boolean;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
@@ -48,6 +53,7 @@ export class MainPage extends Page {
     } else {
       this.currentData = JSON.parse(JSON.stringify(DATA));
     }
+    this.isFilter = false;
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
 
@@ -121,6 +127,21 @@ export class MainPage extends Page {
     this.filterStock.classList.add("filter__stock", "filter-input");
     this.filterStock.textContent = MainPage.TextObject.inputFilterStock;
 
+    this.btnResetFilters = document.createElement("button");
+    this.btnResetFilters.id = "reset-filters";
+    this.btnResetFilters.classList.add("button", "button__reset-filters");
+    this.btnResetFilters.textContent = MainPage.TextObject.btnResetFilters;
+
+    this.btnResetFilters = document.createElement("button");
+    this.btnResetFilters.id = "reset-filters";
+    this.btnResetFilters.classList.add("button", "button__reset");
+    this.btnResetFilters.textContent = MainPage.TextObject.btnResetFilters;
+
+    this.btnCopyLink = document.createElement("button");
+    this.btnCopyLink.id = "copy-link";
+    this.btnCopyLink.classList.add("button", "button__copy");
+    this.btnCopyLink.textContent = MainPage.TextObject.btnCopyLink;
+
     this.buttonSortPriceUp.addEventListener("click", this.sortItemsPriceUp);
     this.buttonSortPriceDown.addEventListener("click", this.sortItemsPriceDown);
 
@@ -129,6 +150,8 @@ export class MainPage extends Page {
 
     this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
+
+    this.btnResetFilters.addEventListener("click", this.resetFilters);
 
     this.inputSearchForm.addEventListener("change", function (event: Event) {
       event.preventDefault();
@@ -139,7 +162,21 @@ export class MainPage extends Page {
       return false;
     });
   }
-
+  public resetFilters() {
+    localStorage.removeItem("data");
+    localStorage.removeItem("products");
+    this.isFilter = false;
+    this.currentData = JSON.parse(JSON.stringify(DATA));
+    console.log(this.currentData);
+    P.createCards(this.currentData);
+    P.setCardsNumber(this.currentData.length);
+    const target = document.getElementsByTagName("input");
+    for (let i = 0; i < target.length; i++) {
+      if (target[i].type === "checkbox") {
+        target[i].checked = false;
+      }
+    }
+  }
   changeCurrentData(data: Array<SET>) {
     this.currentData.length = 0;
     this.currentData.push(...data);
@@ -150,13 +187,19 @@ export class MainPage extends Page {
     const filtersHeader = document.createElement("div");
     filtersHeader.classList.add("items__filters");
 
+    const filtersButtons = document.createElement("div");
+    filtersButtons.classList.add("filters-buttons");
+    filtersButtons.append(this.btnResetFilters, this.btnCopyLink);
+
     const setCategory = new Set();
 
     DATA.map((a: SET): void => {
       setCategory.add(a.category);
     });
 
-    const filterCategoryBlock = document.createElement("div");
+    const filterCategoryBlock = document.createElement("form");
+    filterCategoryBlock.id = "form-category";
+    filterCategoryBlock.setAttribute("name", "form-category");
     filterCategoryBlock.classList.add("input-checkbox-block");
 
     setCategory.forEach((item) => {
@@ -168,9 +211,10 @@ export class MainPage extends Page {
 
       const filterCategoryItem = document.createElement("input");
       filterCategoryItem.setAttribute("type", "checkbox");
+      filterCategoryItem.setAttribute("name", "category");
       filterCategoryItem.classList.add("input-checkbox");
-      filterCategoryItem.value = `${item})`;
-      const filterCategoryText = document.createElement("lable");
+      filterCategoryItem.value = `${item}`;
+      const filterCategoryText = document.createElement("label");
       filterCategoryText.classList.add("input-checkbox-text");
       filterCategoryText.innerHTML = `${item} (${countPage}/${count})`;
 
@@ -182,7 +226,7 @@ export class MainPage extends Page {
         if (this.checked) {
           getFilter(item as string);
         } else {
-          console.log("Checkbox is not checked..");
+          remove(item as string);
         }
       });
 
@@ -205,7 +249,9 @@ export class MainPage extends Page {
       setBrand.add(a.brand);
     });
 
-    const filterBrandBlock = document.createElement("div");
+    const filterBrandBlock = document.createElement("form");
+    filterBrandBlock.id = "form-brand";
+    filterBrandBlock.setAttribute("name", "form-brand");
     filterBrandBlock.classList.add("input-checkbox-block");
 
     setBrand.forEach((item) => {
@@ -217,8 +263,9 @@ export class MainPage extends Page {
 
       const filterBrandItem = document.createElement("input");
       filterBrandItem.setAttribute("type", "checkbox");
+      filterBrandItem.setAttribute("name", "brand");
       filterBrandItem.classList.add("input-checkbox");
-      const filterBrandText = document.createElement("lable");
+      const filterBrandText = document.createElement("label");
       filterBrandText.classList.add("input-checkbox-text");
       filterBrandText.innerHTML = `${item} (${countPage}/${count})`;
 
@@ -230,7 +277,7 @@ export class MainPage extends Page {
         if (this.checked) {
           getFilter(item as string);
         } else {
-          console.log("Checkbox is not checked..");
+          remove(item as string);
         }
       });
     });
@@ -246,6 +293,7 @@ export class MainPage extends Page {
     filtersHeaderPrice.append(this.filterPrice);
     filtersHeaderStock.append(this.filterStock);
     filtersHeader.append(
+      filtersButtons,
       this.filterCategory,
       this.filterBrand,
       filtersHeaderPrice,
@@ -255,22 +303,51 @@ export class MainPage extends Page {
   }
 
   public makeFilters(item: string) {
-    const filterDataCategory = this.currentData.filter(
+    if (!this.isFilter) {
+      this.isFilter = true;
+      this.currentData.length = 0;
+    }
+
+    const filterDataCategory = DATA.filter(
       (el) => el.brand === item || el.category === item
     );
 
-    // this.currentData.length = 0;
-    // this.currentData.push(...filterDataCategory);
+    this.currentData.push(...filterDataCategory);
     console.log(this.currentData);
 
     const mainItems = document.querySelector(".items__cards") as HTMLElement;
-    const allCards = this.createCards(filterDataCategory) as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
 
     mainItems.innerHTML = "";
     mainItems.append(allCards);
-    this.setCardsNumber(filterDataCategory.length);
-    // this.changeCurrentData(filterDataCategory);
-    this.createFilters(filterDataCategory);
+    this.setCardsNumber(this.currentData.length);
+    this.createFilters(this.currentData);
+    localStorageUtil.putData(this.currentData);
+    return this.currentData;
+  }
+
+  public removeFilter(item: string) {
+    console.log(item);
+    // const target = document.getElementsByTagName("input");
+    // for (let i = 0; i < target.length; i++) {
+    //   if (target[i].type === "checkbox") {
+    //     target[i].checked = true;
+    //     this.isFilter = true;
+    //   }
+    //   this.isFilter = false;
+    // }
+    const filterDataCategory = this.currentData.filter(
+      (el) => el.brand !== item || el.category !== item
+    );
+    this.currentData.length = 0;
+    this.currentData.push(...filterDataCategory);
+    console.log(this.currentData);
+    const mainItems = document.querySelector(".items__cards") as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
+    mainItems.innerHTML = "";
+    mainItems.append(allCards);
+    this.setCardsNumber(this.currentData.length);
+    this.createFilters(this.currentData);
     localStorageUtil.putData(this.currentData);
     return this.currentData;
   }
@@ -305,7 +382,6 @@ export class MainPage extends Page {
     );
     this.currentData.length = 0;
     this.currentData.push(...sortedData);
-    console.log(this.currentData);
 
     const mainItems = document.querySelector(".items__cards") as HTMLElement;
     const allCards = this.createCards(this.currentData) as HTMLElement;
@@ -326,6 +402,7 @@ export class MainPage extends Page {
   }
 
   private createCards(data: Array<SET>) {
+    console.log("data" + this.currentData);
     const productsStore = localStorageUtil
       .getProducts()
       .map((x: StorageProducts) => x.id);
@@ -343,7 +420,7 @@ export class MainPage extends Page {
       }
 
       itemsHTML += `
-      <div class="cards__item card">
+      <div class="cards__item card" href="#products">
       <div class="card__image">
         <img src=${thumbnail} alt="product image" class="card__img">
       </div>
@@ -365,11 +442,12 @@ export class MainPage extends Page {
 
     this.itemsContainer.innerHTML = "";
     this.itemsContainer.innerHTML = itemsHTML;
+    this.setCardsNumber(this.currentData.length);
+    console.log(this.currentData);
     return this.itemsContainer;
   }
 
   public sortItemsPriceUp = () => {
-    console.log(this.currentData);
     this.currentData.sort((a: SET, b: SET) => {
       if (a.price > b.price) {
         return 1;
@@ -381,8 +459,15 @@ export class MainPage extends Page {
     });
     this.generateProducts(this.currentData);
     this.setCardsNumber(this.currentData.length);
+    this.toggleClassActive(this.buttonSortPriceUp);
   };
-
+  private toggleClassActive(btn: HTMLElement) {
+    this.buttonSortStockUp.classList.remove("active-btn");
+    this.buttonSortStockDown.classList.remove("active-btn");
+    this.buttonSortPriceUp.classList.remove("active-btn");
+    this.buttonSortPriceDown.classList.remove("active-btn");
+    btn.classList.add("active-btn");
+  }
   public sortItemsPriceDown = () => {
     this.currentData.sort((a: SET, b: SET) => {
       if (a.price < b.price) {
@@ -395,6 +480,7 @@ export class MainPage extends Page {
     });
     this.generateProducts(this.currentData);
     this.setCardsNumber(this.currentData.length);
+    this.toggleClassActive(this.buttonSortPriceDown);
   };
 
   private generateProducts(data: Array<SET>) {
@@ -417,6 +503,7 @@ export class MainPage extends Page {
     });
     this.generateProducts(this.currentData);
     this.setCardsNumber(this.currentData.length);
+    this.toggleClassActive(this.buttonSortStockUp);
   };
   public sortItemsStockDown = () => {
     this.currentData.sort((a: SET, b: SET) => {
@@ -430,31 +517,37 @@ export class MainPage extends Page {
     });
     this.generateProducts(this.currentData);
     this.setCardsNumber(this.currentData.length);
+    this.toggleClassActive(this.buttonSortStockDown);
   };
 
   public cardsShowRow() {
     const container = document.querySelector(".items__cards");
+    const btnAdd = document.querySelector("#button-row");
+    const btnRemove = document.querySelector("#button-column");
 
     if (container) {
       if (!container.classList.contains("row")) {
         container.classList.remove("column");
         container.classList.add("row");
-        this.buttonItemsColumn.classList.remove("active");
-        this.buttonItemsRow.classList.add("active");
       }
     }
+
+    btnAdd?.classList.add("active");
+    btnRemove?.classList.remove("active");
   }
   public cardsShowColumn = () => {
     const container = document.querySelector(".items__cards");
+    const btnAdd = document.querySelector("#button-column");
+    const btnRemove = document.querySelector("#button-row");
 
     if (container) {
       if (!container.classList.contains("column")) {
         container.classList.add("column");
         container.classList.remove("row");
-        this.buttonItemsRow.classList.remove("active");
-        this.buttonItemsColumn.classList.add("active");
       }
     }
+    btnAdd?.classList.add("active");
+    btnRemove?.classList.remove("active");
   };
 
   render() {
@@ -483,6 +576,11 @@ function getInput(input: string) {
 
 function getFilter(item: string) {
   P.makeFilters(item);
+}
+
+function remove(item: string) {
+  console.log(item);
+  P.removeFilter(item);
 }
 
 window.onload = function () {
