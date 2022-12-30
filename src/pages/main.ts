@@ -169,7 +169,7 @@ export class MainPage extends Page {
     this.currentData = JSON.parse(JSON.stringify(DATA));
     this.generateProducts(this.currentData);
     this.setCardsNumber(this.currentData.length);
-    this.createFilters(DATA);
+    // this.createFilters(DATA);
     const target = document.getElementsByTagName("input");
     for (let i = 0; i < target.length; i++) {
       if (target[i].type === "checkbox") {
@@ -303,6 +303,7 @@ export class MainPage extends Page {
   }
 
   public makeFilters(item: string) {
+    console.log("add" + item);
     if (!this.isFilter) {
       this.isFilter = true;
       this.currentData.length = 0;
@@ -327,19 +328,21 @@ export class MainPage extends Page {
   }
 
   public removeFilter(item: string) {
-    console.log(item);
+    console.log("remove " + item);
     // const target = document.getElementsByTagName("input");
     // for (let i = 0; i < target.length; i++) {
     //   if (target[i].type === "checkbox") {
     //     target[i].checked = true;
     //     this.isFilter = true;
+    //     return;
     //   }
     //   this.isFilter = false;
     // }
-    const filterDataCategory = this.currentData.filter(
-      (el) => el.brand !== item || el.category !== item
-    );
+    const filterDataCategory = JSON.parse(
+      JSON.stringify(this.currentData)
+    ).filter((el: SET) => el.brand !== item || el.category !== item);
     this.currentData.length = 0;
+    console.log("data" + this.currentData);
     this.currentData.push(...filterDataCategory);
     console.log(this.currentData);
     const mainItems = document.querySelector(".items__cards") as HTMLElement;
