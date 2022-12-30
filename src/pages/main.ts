@@ -162,21 +162,21 @@ export class MainPage extends Page {
       return false;
     });
   }
-  public resetFilters() {
+  public resetFilters = () => {
     localStorage.removeItem("data");
     localStorage.removeItem("products");
     this.isFilter = false;
     this.currentData = JSON.parse(JSON.stringify(DATA));
-    console.log(this.currentData);
-    P.createCards(this.currentData);
-    P.setCardsNumber(this.currentData.length);
+    this.generateProducts(this.currentData);
+    this.setCardsNumber(this.currentData.length);
+    this.createFilters(DATA);
     const target = document.getElementsByTagName("input");
     for (let i = 0; i < target.length; i++) {
       if (target[i].type === "checkbox") {
         target[i].checked = false;
       }
     }
-  }
+  };
   changeCurrentData(data: Array<SET>) {
     this.currentData.length = 0;
     this.currentData.push(...data);
