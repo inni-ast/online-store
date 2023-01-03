@@ -14,6 +14,7 @@ class LocalStorageUtil {
     if (dataLocalStorage !== null) {
       return JSON.parse(dataLocalStorage);
     }
+    return [];
   }
   putData(data: Array<SET>) {
     localStorage.removeItem(this.data);

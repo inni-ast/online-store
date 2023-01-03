@@ -2,7 +2,7 @@ import { Page } from "../core/templates/page";
 import { SET, DATA, StorageProducts } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
-import { dataStore } from "./header";
+// import { dataStore } from "./header";
 
 export class MainPage extends Page {
   static TextObject = {
@@ -50,12 +50,12 @@ export class MainPage extends Page {
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
-    if (dataStore) {
-      this.currentData = dataStore;
-      console.log("data store" + dataStore);
-    } else {
-      this.currentData = JSON.parse(JSON.stringify(DATA));
-    }
+    // if (dataStore && dataStore.length > 0) {
+    //   this.currentData = dataStore;
+    //   console.log("data store" + dataStore);
+    // } else {
+    this.currentData = JSON.parse(JSON.stringify(DATA));
+    // }
     this.isFilter = false;
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
@@ -187,6 +187,7 @@ export class MainPage extends Page {
         target[i].checked = false;
       }
     }
+    localStorageUtil.putData(this.currentData);
   };
   changeCurrentData(data: Array<SET>) {
     this.currentData.length = 0;
@@ -336,29 +337,52 @@ export class MainPage extends Page {
   }
 
   public removeFilter(item: string) {
-    console.log("remove " + item);
-    // const target = document.getElementsByTagName("input");
-    // for (let i = 0; i < target.length; i++) {
-    //   if (target[i].type === "checkbox") {
-    //     target[i].checked = true;
-    //     this.isFilter = true;
-    //     return;
-    //   }
-    //   this.isFilter = false;
-    // }
-    const filterDataCategory = JSON.parse(
-      JSON.stringify(this.currentData)
-    ).filter((el: SET) => el.brand !== item || el.category !== item);
+    const categories = [
+      "smartphones",
+      "laptops",
+      "fragrances",
+      "skincare",
+      "groceries",
+      "home-decoration",
+      "furniture",
+      "tops",
+      "womens-dresses",
+      "womens-shoes",
+      "mens-shirts",
+      "mens-shoes",
+      "mens-watches",
+      "womens-watches",
+      "womens-bags",
+      "womens-jewellery",
+      "sunglasses",
+      "automotive",
+      "motorcycle",
+      "lighting",
+    ];
+    let filter: Array<SET> = [];
+
+    if (categories.includes(item)) {
+      filter = this.currentData.filter((el: SET) => el.category !== item);
+    } else {
+      filter = this.currentData.filter((el: SET) => el.brand !== item);
+    }
+
     this.currentData.length = 0;
-    console.log("data" + this.currentData);
-    this.currentData.push(...filterDataCategory);
-    console.log(this.currentData);
-    const mainItems = document.querySelector(".items__cards") as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
-    mainItems.innerHTML = "";
-    mainItems.append(allCards);
-    this.setCardsNumber(this.currentData.length);
-    this.createFilters(this.currentData);
+    this.currentData.push(...filter);
+
+    // if (filter.length === 0) {
+    //   const target = document.getElementsByTagName("input");
+    //   for (let i = 0; i < target.length; i++) {
+    //     if (target[i].type === "checkbox" && target[i].checked === false) {
+    //       this.resetFilters();
+    //     }
+    //   }
+    // }
+
+    localStorageUtil.putData(this.currentData);
+
+    this.createCards(this.currentData);
+
     localStorageUtil.putData(this.currentData);
     return this.currentData;
   }
@@ -381,7 +405,7 @@ export class MainPage extends Page {
   }
   public searchCards(input: string) {
     this.inputSearch.placeholder = input;
-    const sortedData = DATA.filter(
+    const sortedData = this.currentData.filter(
       (el) =>
         el.price.toString().toLowerCase().includes(input) ||
         el.discountPercentage.toString().toLowerCase().includes(input) ||
