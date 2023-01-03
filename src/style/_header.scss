@@ -57,6 +57,9 @@
     height: 2px;
     background: rgb(63, 78, 101);
     opacity: 0.2;
+    @media (max-width: 600px) {
+        top: 63px;
+    }
 }
 
 .price {
