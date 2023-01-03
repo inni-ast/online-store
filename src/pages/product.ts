@@ -93,3 +93,4 @@ export class Product extends Page {
     return this.container;
   }
 }
+export const PRODUCT = new Product("div", "products", "products");

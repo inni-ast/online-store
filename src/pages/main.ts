@@ -12,6 +12,7 @@ export class MainPage extends Page {
     btnPriceDown: "Price Down",
     btnStockUp: "Stock Up",
     btnStockDown: "Stock Down",
+    btnSearchOk: "Ok",
     btnItemsRow: "row",
     btnItemsColumn: "col",
     btnResetFilters: "Reset filters",
@@ -31,10 +32,11 @@ export class MainPage extends Page {
   buttonSortPriceDown: HTMLElement;
   buttonSortStockUp: HTMLElement;
   buttonSortStockDown: HTMLElement;
-  inputSearch: HTMLElement;
+  inputSearch: HTMLInputElement;
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
   inputSearchForm: HTMLFormElement;
+  btnSearchOk: HTMLElement;
   itemsFind: HTMLElement;
   itemsFindText: HTMLElement;
   itemsFindNum: HTMLElement;
@@ -50,6 +52,7 @@ export class MainPage extends Page {
     super(el, id, nameClass);
     if (dataStore) {
       this.currentData = dataStore;
+      console.log("data store" + dataStore);
     } else {
       this.currentData = JSON.parse(JSON.stringify(DATA));
     }
@@ -82,12 +85,17 @@ export class MainPage extends Page {
     this.inputSearchForm.setAttribute("type", "submit");
     this.inputSearchForm.id = "form-search";
 
+    this.btnSearchOk = document.createElement("button");
+    this.btnSearchOk.setAttribute("type", "submit");
+    this.btnSearchOk.classList.add("search-ok");
+    this.btnSearchOk.textContent = MainPage.TextObject.btnSearchOk;
+
     this.inputSearch = document.createElement("input");
     this.inputSearch.setAttribute("type", "text");
     this.inputSearch.setAttribute("name", "search");
     this.inputSearch.setAttribute("placeholder", "Search");
     this.inputSearch.classList.add("input-search");
-    this.inputSearchForm.appendChild(this.inputSearch);
+    this.inputSearchForm.append(this.inputSearch, this.btnSearchOk);
 
     this.itemsFind = document.createElement("div");
     this.itemsFind.classList.add("items__find");
@@ -165,12 +173,15 @@ export class MainPage extends Page {
   public resetFilters = () => {
     localStorage.removeItem("data");
     localStorage.removeItem("products");
+    localStorage.clear();
     this.isFilter = false;
-    this.currentData = JSON.parse(JSON.stringify(DATA));
+    this.currentData = DATA;
     this.generateProducts(this.currentData);
     this.setCardsNumber(this.currentData.length);
-    // this.createFilters(DATA);
+    const filters = this.createFilters(DATA);
+    this.container.prepend(filters);
     const target = document.getElementsByTagName("input");
+
     for (let i = 0; i < target.length; i++) {
       if (target[i].type === "checkbox") {
         target[i].checked = false;
@@ -184,6 +195,8 @@ export class MainPage extends Page {
   }
 
   public createFilters(data: Array<SET>) {
+    this.filterCategory.innerHTML = "";
+    this.filterCategory.textContent = MainPage.TextObject.divFilterCategory;
     const filtersHeader = document.createElement("div");
     filtersHeader.classList.add("items__filters");
 
@@ -248,7 +261,8 @@ export class MainPage extends Page {
     DATA.map((a: SET): void => {
       setBrand.add(a.brand);
     });
-
+    this.filterBrand.innerHTML = "";
+    this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
     const filterBrandBlock = document.createElement("form");
     filterBrandBlock.id = "form-brand";
     filterBrandBlock.setAttribute("name", "form-brand");
@@ -303,7 +317,7 @@ export class MainPage extends Page {
   }
 
   public makeFilters(item: string) {
-    console.log("add" + item);
+    console.log("current data" + this.currentData);
     if (!this.isFilter) {
       this.isFilter = true;
       this.currentData.length = 0;
@@ -312,18 +326,12 @@ export class MainPage extends Page {
     const filterDataCategory = DATA.filter(
       (el) => el.brand === item || el.category === item
     );
-
+    console.log(filterDataCategory);
     this.currentData.push(...filterDataCategory);
-    console.log(this.currentData);
-
-    const mainItems = document.querySelector(".items__cards") as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
-
-    mainItems.innerHTML = "";
-    mainItems.append(allCards);
-    this.setCardsNumber(this.currentData.length);
-    this.createFilters(this.currentData);
     localStorageUtil.putData(this.currentData);
+    console.log("filters " + filterDataCategory);
+    this.createCards(this.currentData);
+    // this.createFilters(this.currentData);
     return this.currentData;
   }
 
@@ -372,6 +380,7 @@ export class MainPage extends Page {
     return sortsHeader;
   }
   public searchCards(input: string) {
+    this.inputSearch.placeholder = input;
     const sortedData = DATA.filter(
       (el) =>
         el.price.toString().toLowerCase().includes(input) ||
@@ -386,15 +395,10 @@ export class MainPage extends Page {
     this.currentData.length = 0;
     this.currentData.push(...sortedData);
 
-    const mainItems = document.querySelector(".items__cards") as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
-
-    mainItems.innerHTML = "";
-    mainItems.append(allCards);
-    this.setCardsNumber(this.currentData.length);
-    this.changeCurrentData(sortedData);
-    this.createFilters(this.currentData);
     localStorageUtil.putData(this.currentData);
+
+    this.createCards(this.currentData);
+    this.changeCurrentData(sortedData);
     return this.currentData;
   }
 
@@ -405,7 +409,6 @@ export class MainPage extends Page {
   }
 
   private createCards(data: Array<SET>) {
-    console.log("data" + this.currentData);
     const productsStore = localStorageUtil
       .getProducts()
       .map((x: StorageProducts) => x.id);
@@ -445,8 +448,10 @@ export class MainPage extends Page {
 
     this.itemsContainer.innerHTML = "";
     this.itemsContainer.innerHTML = itemsHTML;
+    if (data.length === 0) {
+      this.itemsContainer.innerHTML = `<div class="no-card"> No products found</div>`;
+    }
     this.setCardsNumber(this.currentData.length);
-    console.log(this.currentData);
     return this.itemsContainer;
   }
 
@@ -560,7 +565,7 @@ export class MainPage extends Page {
     const allCards = this.createCards(this.currentData) as HTMLElement;
 
     mainItems.classList.add("main__items");
-
+    this.container.innerHTML = "";
     this.container.append(filters); // блок с фильтрами
     mainItems.append(sorts); // блок с сортировками
     mainItems.append(allCards); // все товары
@@ -569,9 +574,7 @@ export class MainPage extends Page {
   }
 }
 
-const P = new MainPage("div", "main-container", "main__container");
-
-console.log(P);
+export const P = new MainPage("div", "main-container", "main__container");
 
 function getInput(input: string) {
   P.searchCards(input.toLowerCase());

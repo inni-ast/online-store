@@ -26,7 +26,19 @@ button {
 .active-btn {
     background-color: $but-hov;
 }
-
+#form-search {
+  display: flex;
+  gap: 1%;
+  position: relative;
+}
+.search-ok {
+  position: absolute;
+  top: 8px;
+  right: 15px;
+  max-width: 15px;
+  max-height: 15px;
+  border-radius: 5px;
+}
 .main {
     margin: 0 auto;
     &__container {
@@ -268,4 +280,11 @@ button {
 }
 .active {
     background-color: $but-hov;
+}
+
+.no-card {
+  margin: 0 auto;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding-top: 5%;
 }
