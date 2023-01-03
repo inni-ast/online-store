@@ -1,11 +1,12 @@
 import { Page } from "../../core/templates/page";
-import { MainPage } from "../main";
+// import { MainPage } from "../main";
 import { Header } from "../header";
-import { Basket } from "../basket";
-import { Product } from "../product";
 import { ErrorPage, ErrorTypes } from "../error";
 import { DATA } from "../../modules/data";
 import { preloadImages } from "../../modules/funсtions";
+import { P } from "../main";
+import { BASKET } from "../basket";
+import { PRODUCT } from "../product";
 
 export const enum PagesId {
   MainPage = "main-container",
@@ -14,7 +15,7 @@ export const enum PagesId {
 }
 export class App {
   private static container = document.querySelector(".main") as HTMLElement;
-  private initialPage: MainPage;
+  // private initialPage: MainPage;
   header: Header;
 
   static renderNewPage(idPage: string) {
@@ -22,11 +23,11 @@ export class App {
     let page: Page | null = null;
 
     if (idPage === PagesId.MainPage) {
-      page = new MainPage("div", idPage, "main__container");
+      page = P;
     } else if (idPage === PagesId.Basket) {
-      page = new Basket("div", idPage, "basket");
+      page = BASKET;
     } else if (idPage === PagesId.Product) {
-      page = new Product("div", idPage, "products");
+      page = PRODUCT;
     } else {
       page = new ErrorPage(
         "div",
@@ -42,7 +43,7 @@ export class App {
   }
   constructor() {
     this.header = new Header();
-    this.initialPage = new MainPage("div", "main-container", "main__container");
+    // this.initialPage = new MainPage("div", "main-container", "main__container");
   }
   private routeChange() {
     window.addEventListener("hashchange", () => {
