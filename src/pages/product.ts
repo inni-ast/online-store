@@ -19,9 +19,6 @@ export class Product extends Page {
   addToCart: HTMLElement;
   productSlides: HTMLElement;
   productBigPhoto: HTMLElement;
-  // productDetailItem: HTMLElement;
-  // productDetailH3: HTMLElement;
-  // productDetailP: HTMLElement;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
@@ -83,6 +80,35 @@ export class Product extends Page {
       DATA[id].brand,
       DATA[id].category,
     ];
+
+    const linkStore1 = document.createElement("a");
+    linkStore1.setAttribute("href", "#");
+    linkStore1.textContent = "STORE";
+    this.productLine.append(linkStore1);
+    const textStore1 = document.createElement("p");
+    textStore1.textContent = " >> ";
+    this.productLine.append(textStore1);
+    const linkStore2 = document.createElement("a");
+    linkStore2.setAttribute("href", "#");
+    linkStore2.textContent = `${DATA[id].category.toUpperCase()}`;
+    this.productLine.append(linkStore2);
+    const textStore2 = document.createElement("p");
+    textStore2.textContent = " >> ";
+    this.productLine.append(textStore2);
+    const linkStore3 = document.createElement("a");
+    linkStore3.setAttribute("href", "#");
+    linkStore3.textContent = `${DATA[id].brand.toUpperCase()}`;
+    this.productLine.append(linkStore3);
+    const textStore3 = document.createElement("p");
+    textStore3.textContent = " >> ";
+    this.productLine.append(textStore3);
+    const linkStore4 = document.createElement("a");
+    linkStore4.setAttribute("href", "#");
+    linkStore4.textContent = `${DATA[id].title.toUpperCase()}`;
+    this.productLine.append(linkStore4);
+
+    this.productTitle.textContent = `${DATA[id].title.toUpperCase()}`;
+
     for (let i = 0; i < DATA[id].images.length; i++) {
       const productSlidesPhoto = document.createElement("img");
       productSlidesPhoto.setAttribute("src", `${DATA[id].images[i]}`);
@@ -124,7 +150,7 @@ export class Product extends Page {
   render() {
     // const title = this.createTitle(Product.TextObject.mainTitle);
     this.container.append(this.productContainer);
-    this.getProduct(1);
+    this.getProduct(5);
     return this.container;
   }
 }
