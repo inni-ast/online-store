@@ -50,12 +50,7 @@ export class MainPage extends Page {
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
-    // if (dataStore && dataStore.length > 0) {
-    //   this.currentData = dataStore;
-    //   console.log("data store" + dataStore);
-    // } else {
     this.currentData = JSON.parse(JSON.stringify(DATA));
-    // }
     this.isFilter = false;
     this.itemsContainer = document.createElement("div");
     this.itemsContainer.classList.add("items__cards", "row");
@@ -280,6 +275,7 @@ export class MainPage extends Page {
       filterBrandItem.setAttribute("type", "checkbox");
       filterBrandItem.setAttribute("name", "brand");
       filterBrandItem.classList.add("input-checkbox");
+      filterBrandItem.value = `${item}`;
       const filterBrandText = document.createElement("label");
       filterBrandText.classList.add("input-checkbox-text");
       filterBrandText.innerHTML = `${item} (${countPage}/${count})`;
@@ -370,15 +366,6 @@ export class MainPage extends Page {
     this.currentData.length = 0;
     this.currentData.push(...filter);
 
-    // if (filter.length === 0) {
-    //   const target = document.getElementsByTagName("input");
-    //   for (let i = 0; i < target.length; i++) {
-    //     if (target[i].type === "checkbox" && target[i].checked === false) {
-    //       this.resetFilters();
-    //     }
-    //   }
-    // }
-
     localStorageUtil.putData(this.currentData);
 
     this.createCards(this.currentData);
@@ -404,7 +391,6 @@ export class MainPage extends Page {
     return sortsHeader;
   }
   public searchCards(input: string) {
-    this.inputSearch.placeholder = input;
     const sortedData = this.currentData.filter(
       (el) =>
         el.price.toString().toLowerCase().includes(input) ||
@@ -423,6 +409,33 @@ export class MainPage extends Page {
 
     this.createCards(this.currentData);
     this.changeCurrentData(sortedData);
+
+    const checkboxes = document.querySelectorAll("input[name='category']");
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      const nameItem = (checkboxes[i] as HTMLInputElement).value;
+
+      this.currentData.forEach((el) => {
+        if (nameItem === el.category) {
+          console.log("ues");
+          (checkboxes[i] as HTMLInputElement).checked = true;
+        }
+      });
+    }
+
+    const checkboxesBrand = document.querySelectorAll("input[name='brand']");
+
+    for (let i = 0; i < checkboxes.length; i++) {
+      const nameItem = (checkboxesBrand[i] as HTMLInputElement).value;
+
+      this.currentData.forEach((el) => {
+        if (nameItem === el.brand) {
+          console.log("ues");
+          (checkboxesBrand[i] as HTMLInputElement).checked = true;
+        }
+      });
+    }
+
     return this.currentData;
   }
 
