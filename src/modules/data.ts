@@ -3,7 +3,7 @@ interface Info {
   skip: number;
   limit: number;
 }
-export type StorageProducts = { id: number; price: number };
+export type StorageProducts = { id: number; price: number; count: number };
 
 export interface SET {
   id: number;

@@ -34,13 +34,47 @@ class LocalStorageUtil {
     }
     return [];
   }
-  putProducts(id: number, price: number) {
+  putProductsFromBasket(id: number, price: number, count = 1) {
+    const products = this.getProducts();
+    let pushProduct = false;
+    const index = products.findIndex((el: SET) => el.id === id);
+
+    products.splice(index, 1);
+    products.push({ id, price, count });
+    pushProduct = true;
+
+    localStorage.setItem(this.keyName, JSON.stringify(products));
+    return {
+      pushProduct,
+      products,
+    };
+  }
+
+  removeProductsFromBasket(id: number, price: number, count: number) {
+    console.log("remove", count);
+    const products = this.getProducts();
+    let pushProduct = false;
+    const index = products.findIndex((el: SET) => el.id === id);
+
+    products.splice(index, 1);
+    if (count !== 0) {
+      products.push({ id, price, count });
+      pushProduct = true;
+    }
+    localStorage.setItem(this.keyName, JSON.stringify(products));
+    return {
+      pushProduct,
+      products,
+    };
+  }
+
+  putProducts(id: number, price: number, count = 1) {
     const products = this.getProducts();
     let pushProduct = false;
     const index = products.findIndex((el: SET) => el.id === id);
 
     if (index === -1) {
-      products.push({ id, price });
+      products.push({ id, price, count });
       pushProduct = true;
     } else {
       pushProduct = false;

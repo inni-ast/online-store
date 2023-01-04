@@ -2,6 +2,7 @@ import { Page } from "../core/templates/page";
 import { SET, DATA, StorageProducts } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
+import { BASKET } from "./basket";
 // import { dataStore } from "./header";
 
 export class MainPage extends Page {
@@ -626,28 +627,45 @@ function remove(item: string) {
   P.removeFilter(item);
 }
 
-window.onload = function () {
-  (document.getElementById("main-container") as HTMLElement).onclick =
-    function (event: Event) {
-      const target = event.target as HTMLElement;
-      const id = target.getAttribute("data-id");
-      const price = target.getAttribute("data-price");
+document.onclick = function (event: Event) {
+  const target = event.target as HTMLElement;
+  //корзина увеличение кол-ва товара
+  if (target.classList.contains("basket-item__plus")) {
+    const id = target.getAttribute("data-prodId");
 
-      if (id && price) {
-        if (target.classList.contains("card__btn")) {
-          const { pushProduct } = localStorageUtil.putProducts(+id, +price);
+    if (id) {
+      BASKET.addProduct(+id);
+    }
+  }
+  //корзина уменьшение кол-ва товара
+  if (target.classList.contains("basket-item__minus")) {
+    const id = target.getAttribute("data-prodId");
 
-          if (pushProduct) {
-            target.classList.add("active-btn");
-            target.innerHTML = MainPage.TextObject.dropFromCard;
+    if (id) {
+      console.log("remove1");
+      BASKET.removeProduct(+id);
+    }
+  }
+  // добавление товара в корзину из каталога
+  if (target.classList.contains("card__btn")) {
+    const id = target.getAttribute("data-id");
+    const price = target.getAttribute("data-price");
 
-            header.addProduct(+price);
-          } else {
-            target.classList.remove("active-btn");
-            target.innerHTML = MainPage.TextObject.addToCard;
-            header.removeProduct(+price);
-          }
+    if (id && price) {
+      if (target.classList.contains("card__btn")) {
+        const { pushProduct } = localStorageUtil.putProducts(+id, +price);
+
+        if (pushProduct) {
+          target.classList.add("active-btn");
+          target.innerHTML = MainPage.TextObject.dropFromCard;
+
+          header.addProduct(+price);
+        } else {
+          target.classList.remove("active-btn");
+          target.innerHTML = MainPage.TextObject.addToCard;
+          header.removeProduct(+price);
         }
       }
-    };
+    }
+  }
 };

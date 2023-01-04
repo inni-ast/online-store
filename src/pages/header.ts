@@ -1,5 +1,5 @@
-import { SET } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
+import { StorageProducts } from "../modules/data";
 
 export class Header {
   totalPrice: number;
@@ -8,10 +8,14 @@ export class Header {
   priceEl: HTMLElement;
 
   constructor() {
-    this.totalPrice = productsStore.reduce(
-      (total: number, amount: SET) => amount.price + total,
-      0
-    );
+    this.totalPrice = localStorageUtil
+      .getProducts()
+      .reduce(
+        (total: number, amount: StorageProducts) =>
+          amount.price * amount.count + total,
+        0
+      );
+
     this.basket = productsStore.length;
     this.basketEl = document.querySelector(".basket__num") as HTMLElement;
     this.priceEl = document.querySelector(".price__total") as HTMLElement;
@@ -20,11 +24,14 @@ export class Header {
   run() {
     this.basket = productsStore.length;
     this.basketEl.textContent = String(productsStore.length);
-    console.log(this.totalPrice);
-    this.totalPrice = productsStore.reduce(
-      (total: number, amount: SET) => amount.price + total,
-      0
-    );
+    console.log("store" + productsStore);
+    this.totalPrice = localStorageUtil
+      .getProducts()
+      .reduce(
+        (total: number, amount: StorageProducts) =>
+          amount.price * amount.count + total,
+        0
+      );
     this.priceEl.textContent = `${String(this.totalPrice)} $`;
     return this.basket;
   }
@@ -51,8 +58,15 @@ export class Header {
     this.priceEl.textContent = `${String(this.totalPrice)} $`;
     return this.totalPrice;
   }
+  setPriceFromBasket(num: number) {
+    this.totalPrice = num;
+    this.priceEl.textContent = `${String(this.totalPrice)} $`;
+    console.log("price" + num);
+    return this.totalPrice;
+  }
 }
 
 export const productsStore = localStorageUtil.getProducts();
+
 export const dataStore = localStorageUtil.getData();
 export const header = new Header();
