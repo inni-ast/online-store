@@ -16,15 +16,24 @@ export class Header {
         0
       );
 
-    this.basket = productsStore.length;
+    this.basket = localStorageUtil
+      .getProducts()
+      .reduce(
+        (total: number, amount: StorageProducts) => amount.count + total,
+        0
+      );
     this.basketEl = document.querySelector(".basket__num") as HTMLElement;
     this.priceEl = document.querySelector(".price__total") as HTMLElement;
   }
 
   run() {
-    this.basket = productsStore.length;
+    this.basket = localStorageUtil
+      .getProducts()
+      .reduce(
+        (total: number, amount: StorageProducts) => amount.count + total,
+        0
+      );
     this.basketEl.textContent = String(productsStore.length);
-    console.log("store" + productsStore);
     this.totalPrice = localStorageUtil
       .getProducts()
       .reduce(
@@ -53,6 +62,13 @@ export class Header {
     this.removePrice(price);
     return this.basket;
   }
+  removeManyProduct(num: number, price: number) {
+    this.basket = this.basket - num;
+    this.basketEl.textContent = String(this.basket);
+    this.removePrice(price);
+    return this.basket;
+  }
+
   removePrice(price: number) {
     this.totalPrice -= price;
     this.priceEl.textContent = `${String(this.totalPrice)} $`;
@@ -63,6 +79,11 @@ export class Header {
     this.priceEl.textContent = `${String(this.totalPrice)} $`;
     console.log("price" + num);
     return this.totalPrice;
+  }
+  setNumFromBasket(num: number) {
+    this.basket = num;
+    this.basketEl.textContent = String(this.basket);
+    return this.basket;
   }
 }
 

@@ -1,10 +1,12 @@
+import { header } from "../pages/header";
 import { SET } from "./data";
+
 class LocalStorageUtil {
   keyName: string;
   data: string;
 
   constructor() {
-    this.keyName = "products"; // это id товара
+    this.keyName = "products";
     this.data = "data";
   }
 
@@ -34,7 +36,7 @@ class LocalStorageUtil {
     }
     return [];
   }
-  putProductsFromBasket(id: number, price: number, count = 1) {
+  putProductsToBasket(id: number, price: number, count = 1) {
     const products = this.getProducts();
     let pushProduct = false;
     const index = products.findIndex((el: SET) => el.id === id);
@@ -51,7 +53,6 @@ class LocalStorageUtil {
   }
 
   removeProductsFromBasket(id: number, price: number, count: number) {
-    console.log("remove", count);
     const products = this.getProducts();
     let pushProduct = false;
     const index = products.findIndex((el: SET) => el.id === id);
@@ -70,6 +71,7 @@ class LocalStorageUtil {
 
   putProducts(id: number, price: number, count = 1) {
     const products = this.getProducts();
+
     let pushProduct = false;
     const index = products.findIndex((el: SET) => el.id === id);
 
@@ -77,11 +79,22 @@ class LocalStorageUtil {
       products.push({ id, price, count });
       pushProduct = true;
     } else {
-      pushProduct = false;
-      products.splice(index, 1);
+      const elCount = products[index].count;
+      const elPrice = products[index].price * elCount;
+
+      if (elCount === 1) {
+        pushProduct = false;
+        products.splice(index, 1);
+        header.removeProduct(+price);
+      } else if (elCount > 1) {
+        pushProduct = false;
+        products.splice(index, 1);
+        header.removeManyProduct(elCount, elPrice);
+      }
     }
-    console.log(products);
+
     localStorage.setItem(this.keyName, JSON.stringify(products));
+    console.log(products);
     return {
       pushProduct,
       products,

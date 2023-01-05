@@ -3,6 +3,7 @@ import { SET, DATA, StorageProducts } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
 import { BASKET } from "./basket";
+
 // import { dataStore } from "./header";
 
 export class MainPage extends Page {
@@ -658,12 +659,10 @@ document.onclick = function (event: Event) {
         if (pushProduct) {
           target.classList.add("active-btn");
           target.innerHTML = MainPage.TextObject.dropFromCard;
-
           header.addProduct(+price);
         } else {
           target.classList.remove("active-btn");
           target.innerHTML = MainPage.TextObject.addToCard;
-          header.removeProduct(+price);
         }
       }
     }

@@ -35,11 +35,11 @@ export class Basket extends Page {
       .getProducts()
       .map((x: StorageProducts) => x.id);
 
-    const p = localStorageUtil.getProducts();
-    console.log(p);
     let htmlCatalog = "";
     let sumCatalog = 0;
-    let num = 1;
+    let num = 1; // счетчик товаров по порядку
+    let numInBasket = 0;
+
     DATA.forEach(
       ({
         id,
@@ -61,11 +61,11 @@ export class Basket extends Page {
 
           if (count > stock) {
             count = stock;
-            localStorageUtil.putProductsFromBasket(id, price, count);
+            localStorageUtil.putProductsToBasket(id, price, count);
           }
 
           const p = +count * +price;
-
+          numInBasket += +count;
           htmlCatalog += `
                 <div class="basket-item">
                       <div class="basket-item__num">${num}</div>
@@ -107,6 +107,7 @@ export class Basket extends Page {
     this.basketContainer.innerHTML = html;
     this.setAllProductsPrice(sumCatalog);
     header.setPriceFromBasket(sumCatalog);
+    header.setNumFromBasket(numInBasket);
     return this.basketContainer;
 
     // ROOT_SHOPPING.innerHTML = html;
@@ -120,7 +121,7 @@ export class Basket extends Page {
       .find((el: StorageProducts) => el.id === id);
     product["count"]++;
 
-    localStorageUtil.putProductsFromBasket(
+    localStorageUtil.putProductsToBasket(
       product.id,
       product.price,
       product.count
@@ -133,8 +134,8 @@ export class Basket extends Page {
     const product = localStorageUtil
       .getProducts()
       .find((el: StorageProducts) => el.id === id);
+
     product["count"]--;
-    console.log(product);
     localStorageUtil.removeProductsFromBasket(
       product.id,
       product.price,
