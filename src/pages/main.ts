@@ -4,8 +4,6 @@ import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
 import { BASKET } from "./basket";
 
-// import { dataStore } from "./header";
-
 export class MainPage extends Page {
   static TextObject = {
     mainTitle: "Main Page",

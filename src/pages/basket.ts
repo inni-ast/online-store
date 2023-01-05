@@ -5,7 +5,10 @@ import { StorageProducts } from "../modules/data";
 import { header } from "./header";
 export class Basket extends Page {
   basketContainer: HTMLElement;
+  summaryContainer: HTMLElement;
   allProductsPrice: number;
+  isPromoWin: number;
+  isPromoSh: number;
   static TextObject = {
     mainTitle: "Products In Cart",
     total: "Summary",
@@ -17,19 +20,60 @@ export class Basket extends Page {
     super(el, id, nameClass);
     this.basketContainer = document.createElement("div");
     this.basketContainer.classList.add("basket__container");
+    this.summaryContainer = document.createElement("div");
+    this.summaryContainer.classList.add("basket__summary");
     this.allProductsPrice = 0;
+    this.isPromoWin = 0;
+    this.isPromoSh = 0;
   }
   // очищает всю корзину
   // handlerClear() {
   //  this.basketContainer.innerHTML = "";
   // }
+  getPromoWin() {
+    return this.isPromoWin;
+  }
+  setPromoWin(num: number) {
+    this.isPromoWin = num;
+  }
+  getPromoSh() {
+    return this.isPromoSh;
+  }
+  setPromoSh(num: number) {
+    this.isPromoSh = num;
+  }
   getAllProductsPrice() {
     return this.allProductsPrice;
   }
   setAllProductsPrice(num: number) {
     this.allProductsPrice = num;
   }
-
+  renderSummary(products: number, price: number) {
+    const html = `
+      <div class="summary">
+          <h3 class="summary__title">SUMMARY</h3>
+          <p class="summary__products">Products in cart: ${products} </p>
+          <p class="summary__price">Price: ${price} $</p>
+          <p class="summary__price-promo hidden"></p>
+          <input type="text" placeholder="Enter promo code"
+          class="summary__input">
+          <div class="summary__sh hidden">
+            <p class="summary__sh-promo">Promo 'sh' - 5% </p>
+            <button  class="button button-sh">ADD</button>
+          </div>
+          <div class="summary__win hidden">
+          <p class="summary__win-promo">Promo 'win' - 15% </p>
+          <button  class="button button-win">ADD</button>
+        </div>
+          <p class="summary__promo">Promo for test: 'sh', 'win'</p>
+          <button  class="button summary__button">BUY</button>
+      </div>
+    `;
+    this.summaryContainer.innerHTML = "";
+    this.summaryContainer.innerHTML = html;
+    this.basketContainer.appendChild(this.summaryContainer);
+    return this.basketContainer;
+  }
   renderProducts() {
     const productsStore = localStorageUtil
       .getProducts()
@@ -99,21 +143,16 @@ export class Basket extends Page {
     const html = `
         <div class="basket-items" >
             ${htmlCatalog}
-      </div>
+        </div>
         `;
-    // <p class="shopping-element__name" >Сумма: </p>
-    // <p class="shopping-element__price"> ${sumCatalog.toLocaleString()} USD </p>
+
     this.basketContainer.innerHTML = "";
     this.basketContainer.innerHTML = html;
     this.setAllProductsPrice(sumCatalog);
     header.setPriceFromBasket(sumCatalog);
     header.setNumFromBasket(numInBasket);
+    this.renderSummary(numInBasket, sumCatalog);
     return this.basketContainer;
-
-    // ROOT_SHOPPING.innerHTML = html;
-
-    // // this.itemsContainer.innerHTML = html;
-    // return ROOT_SHOPPING;
   }
   addProduct(id: number) {
     const product = localStorageUtil
@@ -130,7 +169,6 @@ export class Basket extends Page {
     BASKET.render();
   }
   removeProduct(id: number) {
-    console.log(id);
     const product = localStorageUtil
       .getProducts()
       .find((el: StorageProducts) => el.id === id);
@@ -144,48 +182,118 @@ export class Basket extends Page {
 
     BASKET.render();
   }
+  addPromoWin() {
+    const divWin = document.querySelector(".summary__win") as HTMLElement;
+    const divPrice = document.querySelector(".summary__price") as HTMLElement;
+    const divPricePromo = document.querySelector(
+      ".summary__price-promo"
+    ) as HTMLElement;
 
+    divWin.classList.remove("hidden");
+    const btnWin = document.querySelector(".button-win") as HTMLElement;
+
+    btnWin.onclick = function (event: Event) {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains("add")) {
+        (document.querySelector(".summary__input") as HTMLInputElement).value =
+          "";
+        target.classList.remove("add");
+        target.textContent = "ADD";
+
+        divWin.classList.add("hidden");
+        BASKET.setPromoWin(0);
+        const price = BASKET.getAllProductsPrice();
+        const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
+        console.log(discount);
+        if (discount !== 0) {
+          const currentPrice = price - (price / 100) * discount;
+          divPrice.style.textDecoration = "line-through";
+          divPricePromo.classList.remove("hidden");
+          divPricePromo.textContent = `
+        Price: ${currentPrice} $ `;
+        } else {
+          divPrice.style.textDecoration = "none";
+          divPricePromo.classList.add("hidden");
+          divPricePromo.textContent = "";
+        }
+      } else {
+        target.classList.add("add");
+        target.textContent = "DEL";
+        const price = BASKET.getAllProductsPrice();
+        const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
+        const currentPrice = price - (price / 100) * discount;
+        divPrice.style.textDecoration = "line-through";
+        divPricePromo.classList.remove("hidden");
+        divPricePromo.textContent = `
+        Price: ${currentPrice} $ `;
+      }
+    };
+  }
+  addPromoSh() {
+    const divSh = document.querySelector(".summary__sh") as HTMLElement;
+    divSh.classList.remove("hidden");
+    const divPrice = document.querySelector(".summary__price") as HTMLElement;
+    const divPricePromo = document.querySelector(
+      ".summary__price-promo"
+    ) as HTMLElement;
+
+    const btnSh = document.querySelector(".button-sh") as HTMLElement;
+
+    btnSh.onclick = function (event: Event) {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains("add")) {
+        (document.querySelector(".summary__input") as HTMLInputElement).value =
+          "";
+        target.classList.remove("add");
+        target.textContent = "ADD";
+
+        divSh.classList.add("hidden");
+        BASKET.setPromoSh(0);
+        const price = BASKET.getAllProductsPrice();
+        const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
+        if (discount !== 0) {
+          const currentPrice = price - (price / 100) * discount;
+          divPrice.style.textDecoration = "line-through";
+          divPricePromo.classList.remove("hidden");
+          divPricePromo.textContent = `
+        Price: ${currentPrice} $ `;
+        } else {
+          divPrice.style.textDecoration = "none";
+          divPricePromo.classList.add("hidden");
+          divPricePromo.textContent = "";
+        }
+      } else {
+        target.classList.add("add");
+        target.textContent = "DEL";
+        const price = BASKET.getAllProductsPrice();
+        const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
+        const currentPrice = price - (price / 100) * discount;
+        divPrice.style.textDecoration = "line-through";
+        divPricePromo.classList.remove("hidden");
+        divPricePromo.textContent = `
+        Price: ${currentPrice} $ `;
+      }
+    };
+  }
   render() {
     const products = this.renderProducts() as HTMLElement;
     this.container.append(products);
-
     return this.container;
   }
 }
-// renderSummary(){
-
-// }
-//   const productsStore = localStorageUtil.getProducts();
-//   let htmlCatalog = '';
-//   let sumCatalog = 0;
-
-//   CATALOG.forEach(({ id, name, price }) => {
-//       if (productsStore.indexOf(id) !== -1) {
-//           htmlCatalog += `
-//               <tr>
-//                   <td class="shopping-element__name">⚡️ ${name}</td>
-//                   <td class="shopping-element__price">${price.toLocaleString()} USD</td>
-//               </tr>
-//           `;
-//           sumCatalog += price;
-//       }
-//   });
-
-//   const html = `
-//       <div class="shopping-container">
-//           <div class="shopping__close" onclick="shoppingPage.handlerClear();"></div>
-//           <table>
-//               ${htmlCatalog}
-//               <tr>
-//                   <td class="shopping-element__name">💥 Сумма:</td>
-//                   <td class="shopping-element__price">${sumCatalog.toLocaleString()} USD</td>
-//               </tr>
-//           </table>
-//       </div>
-//   `;
-
-//   ROOT_SHOPPING.innerHTML = html;
-// }
 
 export const BASKET = new Basket("div", "basket", "basket");
 console.log(BASKET.allProductsPrice);
+
+document.oninput = function (event: Event) {
+  const target = event.target as HTMLInputElement;
+  const value = target.value as string;
+  if (value === "win") {
+    BASKET.addPromoWin();
+    BASKET.setPromoWin(15);
+  }
+  if (value === "sh") {
+    BASKET.addPromoSh();
+    BASKET.setPromoSh(5);
+  }
+};
