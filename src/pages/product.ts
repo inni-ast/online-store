@@ -1,5 +1,7 @@
 import { Page } from "../core/templates/page";
-import { DATA } from "../modules/data";
+import { DATA, StorageProducts } from "../modules/data";
+import { localStorageUtil } from "../modules/localStorage";
+// import { header } from "./header";
 
 export class Product extends Page {
   static TextObject = {
@@ -7,6 +9,7 @@ export class Product extends Page {
     total: "Product total",
     addToCard: "Add to card",
     buyNow: "BUY NOW",
+    dropFromCard: "Drop from card",
   };
 
   productContainer: HTMLElement;
@@ -63,7 +66,8 @@ export class Product extends Page {
 
     this.productPhotos.append(this.productSlides, this.productBigPhoto);
   }
-  getProduct(id: number) {
+  getProduct(idi: number) {
+    const id = idi - 1;
     const H3 = [
       "Description",
       "Discount Percentage:",
@@ -82,7 +86,7 @@ export class Product extends Page {
     ];
 
     const linkStore1 = document.createElement("a");
-    linkStore1.setAttribute("href", "#");
+    linkStore1.setAttribute("href", "#main-container");
     linkStore1.textContent = "STORE";
     this.productLine.append(linkStore1);
     const textStore1 = document.createElement("p");
@@ -138,11 +142,30 @@ export class Product extends Page {
     productPrice.textContent = "€" + DATA[id].price;
 
     const productBasket = document.createElement("button");
+
     productBasket.classList.add(`card__btn`);
-    productBasket.textContent = Product.TextObject.addToCard;
+
+    const productsStore = localStorageUtil
+      .getProducts()
+      .map((x: StorageProducts) => x.id);
+
+    let activeClass = "";
+    let activeText = "";
+
+    if (productsStore.indexOf(id + 1) === -1) {
+      activeText = Product.TextObject.addToCard;
+    } else {
+      activeText = Product.TextObject.dropFromCard;
+      activeClass = "active-btn";
+      productBasket.classList.add(`${activeClass}`);
+    }
+
+    productBasket.setAttribute("data-id", `${DATA[id].id}`);
+    productBasket.setAttribute("data-price", `${DATA[id].price}`);
+    productBasket.textContent = activeText;
 
     const productBuy = document.createElement("button");
-    productBuy.classList.add(`card__btn`);
+    productBuy.classList.add(`card__btnB`);
     productBuy.textContent = Product.TextObject.buyNow;
 
     this.addToCart.append(productPrice, productBasket, productBuy);
@@ -150,8 +173,38 @@ export class Product extends Page {
   render() {
     // const title = this.createTitle(Product.TextObject.mainTitle);
     this.container.append(this.productContainer);
-    this.getProduct(5);
+    const id = 4;
+    this.getProduct(id);
     return this.container;
   }
 }
+
 export const PRODUCT = new Product("div", "products", "products");
+
+// window.onload = function () {
+//   (document.getElementById("products") as HTMLElement).onclick = function (
+//     event: Event
+//   ) {
+//     console.log("1");
+//     const target = event.target as HTMLElement;
+//     const id = target.getAttribute("data-id");
+//     const price = target.getAttribute("data-price");
+
+//     if (id && price) {
+//       if (target.classList.contains("card__btn")) {
+//         const { pushProduct } = localStorageUtil.putProducts(+id, +price);
+
+//         if (pushProduct) {
+//           target.classList.add("active-btn");
+//           target.innerHTML = Product.TextObject.dropFromCard;
+
+//           header.addProduct(+price);
+//         } else {
+//           target.classList.remove("active-btn");
+//           target.innerHTML = Product.TextObject.addToCard;
+//           header.removeProduct(+price);
+//         }
+//       }
+//     }
+//   };
+// };
