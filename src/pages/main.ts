@@ -43,8 +43,6 @@ export class MainPage extends Page {
   itemsFindNum: HTMLElement;
   filterCategory: HTMLElement;
   filterBrand: HTMLElement;
-  filterPrice: HTMLElement;
-  filterStock: HTMLElement;
   btnResetFilters: HTMLElement;
   btnCopyLink: HTMLElement;
   isFilter: boolean;
@@ -121,15 +119,15 @@ export class MainPage extends Page {
     this.filterBrand.classList.add("filter__brand", "filter");
     this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
 
-    this.filterPrice = document.createElement("input");
-    this.filterPrice.setAttribute("type", "range");
-    this.filterPrice.classList.add("filter__price", "filter-input");
-    this.filterPrice.textContent = MainPage.TextObject.inputFilterPrice;
+    // this.filterPrice = document.createElement("input");
+    // this.filterPrice.setAttribute("type", "range");
+    // this.filterPrice.classList.add("filter__price", "filter-input");
+    // this.filterPrice.textContent = MainPage.TextObject.inputFilterPrice;
 
-    this.filterStock = document.createElement("input");
-    this.filterStock.setAttribute("type", "range");
-    this.filterStock.classList.add("filter__stock", "filter-input");
-    this.filterStock.textContent = MainPage.TextObject.inputFilterStock;
+    // this.filterStock = document.createElement("input");
+    // this.filterStock.setAttribute("type", "range");
+    // this.filterStock.classList.add("filter__stock", "filter-input");
+    // this.filterStock.textContent = MainPage.TextObject.inputFilterStock;
 
     this.btnResetFilters = document.createElement("button");
     this.btnResetFilters.id = "reset-filters";
@@ -169,6 +167,7 @@ export class MainPage extends Page {
   public resetFilters = () => {
     localStorage.removeItem("data");
     localStorage.removeItem("products");
+    localStorage.removeItem("checked");
     localStorage.clear();
     this.isFilter = false;
     this.currentData = DATA;
@@ -185,6 +184,7 @@ export class MainPage extends Page {
     }
     localStorageUtil.putData(this.currentData);
   };
+
   changeCurrentData(data: Array<SET>) {
     this.currentData.length = 0;
     this.currentData.push(...data);
@@ -211,6 +211,7 @@ export class MainPage extends Page {
     filterCategoryBlock.id = "form-category";
     filterCategoryBlock.setAttribute("name", "form-category");
     filterCategoryBlock.classList.add("input-checkbox-block");
+    const checkedStore = localStorageUtil.getChecked();
 
     setCategory.forEach((item) => {
       const filterDataCategory = DATA.filter((el) => el.category === item);
@@ -222,6 +223,9 @@ export class MainPage extends Page {
       const filterCategoryItem = document.createElement("input");
       filterCategoryItem.setAttribute("type", "checkbox");
       filterCategoryItem.setAttribute("name", "category");
+      if (checkedStore.indexOf(item) !== -1) {
+        filterCategoryItem.setAttribute("checked", "checked");
+      }
       filterCategoryItem.classList.add("input-checkbox");
       filterCategoryItem.value = `${item}`;
       const filterCategoryText = document.createElement("label");
@@ -239,17 +243,6 @@ export class MainPage extends Page {
           remove(item as string);
         }
       });
-
-      // const checkboxes = document.querySelectorAll('.input-checkbox');
-      //   let items:[string];
-      //   for (let i=0;i<checkboxes.length;i++){
-
-      //     if (checkboxes[i].checked) {
-      //       items.push(checkboxes[i].value)
-      //   } else {
-      //     console.log("Checkbox is not checked..");
-      //   }
-      //   }
     });
     this.filterCategory.append(filterCategoryBlock);
 
@@ -275,6 +268,11 @@ export class MainPage extends Page {
       const filterBrandItem = document.createElement("input");
       filterBrandItem.setAttribute("type", "checkbox");
       filterBrandItem.setAttribute("name", "brand");
+
+      if (checkedStore.indexOf(item) !== -1) {
+        filterBrandItem.setAttribute("checked", "checked");
+      }
+
       filterBrandItem.classList.add("input-checkbox");
       filterBrandItem.value = `${item}`;
       const filterBrandText = document.createElement("label");
@@ -295,30 +293,78 @@ export class MainPage extends Page {
     });
     this.filterBrand.append(filterBrandBlock);
 
-    const filtersHeaderPrice = document.createElement("div");
+    const filtersHeaderContainer = document.createElement("div");
+    filtersHeaderContainer.classList.add("items__filters-container");
 
-    filtersHeaderPrice.classList.add("items__filters-input");
+    const filtersHeaderP = document.createElement("p");
+    filtersHeaderP.classList.add("items__filters-texp");
+    filtersHeaderP.textContent = MainPage.TextObject.inputFilterPrice;
 
-    const filtersHeaderStock = document.createElement("div");
-    filtersHeaderStock.classList.add("items__filters-input");
+    const filtersHeaderPrice = document.createElement("section");
+    filtersHeaderPrice.classList.add("items__filters-input", "range-slider");
 
-    filtersHeaderPrice.append(this.filterPrice);
-    filtersHeaderStock.append(this.filterStock);
+    const filterPriceSpan = document.createElement("span");
+    filterPriceSpan.classList.add("rangeValues");
+    const filterPriceStart = document.createElement("input");
+    filterPriceStart.setAttribute("type", "range");
+    // filterPriceStart.setAttribute("step", "500");
+    filterPriceStart.classList.add("filter__price", "filter-input");
+    const filterPriceEnd = document.createElement("input");
+    filterPriceEnd.setAttribute("type", "range");
+    // filterPriceEnd.setAttribute("step", "500");
+    filterPriceEnd.classList.add("filter__price", "filter-input");
+
+    filtersHeaderPrice.append(
+      filterPriceSpan,
+      filterPriceStart,
+      filterPriceEnd
+    );
+    filtersHeaderContainer.append(filtersHeaderP, filtersHeaderPrice);
+
+    const filtersHeaderStockContainer = document.createElement("div");
+    filtersHeaderStockContainer.classList.add("items__filters-container");
+
+    const filtersHeaderPStock = document.createElement("p");
+    filtersHeaderPStock.classList.add("items__filters-texp");
+    filtersHeaderPStock.textContent = MainPage.TextObject.inputFilterStock;
+
+    const filtersHeaderStock = document.createElement("section");
+    filtersHeaderStock.classList.add("items__filters-input", "range-slider");
+
+    const filterStockSpan = document.createElement("span");
+    filterStockSpan.classList.add("rangeValues");
+    const filterStockStart = document.createElement("input");
+    filterStockStart.setAttribute("type", "range");
+    // filterSpanStart.setAttribute("step", "500");
+    filterStockStart.classList.add("filter__price", "filter-input");
+    const filterStockEnd = document.createElement("input");
+    filterStockEnd.setAttribute("type", "range");
+    // filterPriceEnd.setAttribute("step", "500");
+    filterStockEnd.classList.add("filter__price", "filter-input");
+
+    filtersHeaderStock.append(
+      filterStockSpan,
+      filterStockStart,
+      filterStockEnd
+    );
+    filtersHeaderStockContainer.append(filtersHeaderPStock, filtersHeaderStock);
+
     filtersHeader.append(
       filtersButtons,
       this.filterCategory,
       this.filterBrand,
-      filtersHeaderPrice,
-      filtersHeaderStock
+      filtersHeaderContainer,
+      filtersHeaderStockContainer
     );
     return filtersHeader;
   }
 
-  public makeFilters(item: string) {
+    public makeFilters(item: string) {
     console.log("current data" + this.currentData);
     if (!this.isFilter) {
       this.isFilter = true;
       this.currentData.length = 0;
+    
     }
 
     const filterDataCategory = DATA.filter(
@@ -327,9 +373,13 @@ export class MainPage extends Page {
     console.log(filterDataCategory);
     this.currentData.push(...filterDataCategory);
     localStorageUtil.putData(this.currentData);
+    localStorageUtil.putChecked(item);
     console.log("filters " + filterDataCategory);
+    if (localStorageUtil.getChecked().length===0){
+      this.currentData = DATA;
     this.createCards(this.currentData);
-    // this.createFilters(this.currentData);
+    }
+    this.createCards(this.currentData);
     return this.currentData;
   }
 
@@ -372,6 +422,7 @@ export class MainPage extends Page {
     this.createCards(this.currentData);
 
     localStorageUtil.putData(this.currentData);
+    localStorageUtil.putChecked(item);
     return this.currentData;
   }
 
@@ -464,7 +515,7 @@ export class MainPage extends Page {
       }
 
       itemsHTML += `
-      <div class="cards__item card" href="#products">
+      <div class="cards__item card" href="#products/${id}">
       <div class="card__image">
         <img src=${thumbnail} alt="product image" class="card__img">
       </div>
@@ -600,6 +651,7 @@ export class MainPage extends Page {
   render() {
     const mainItems = document.createElement("section") as HTMLElement;
     const sorts = this.createSorts() as HTMLElement;
+    this.currentData = localStorageUtil.getData();
     const filters = this.createFilters(this.currentData) as HTMLElement;
     const allCards = this.createCards(this.currentData) as HTMLElement;
 

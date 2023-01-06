@@ -85,11 +85,7 @@ export class Product extends Page {
     ];
 
     const linkStore1 = document.createElement("a");
-<<<<<<< HEAD
     linkStore1.setAttribute("href", "#main-container");
-=======
-    linkStore1.setAttribute("href", "#");
->>>>>>> 23ced4f (fix: layout product)
     linkStore1.textContent = "STORE";
     this.productLine.append(linkStore1);
     const textStore1 = document.createElement("p");
@@ -180,8 +176,7 @@ export class Product extends Page {
     const id = 4;
     this.getProduct(id);
 =======
-    this.getProduct(5);
->>>>>>> 23ced4f (fix: layout product)
+   >>>>>>> 23ced4f (fix: layout product)
     return this.container;
   }
 }

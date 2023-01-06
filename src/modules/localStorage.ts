@@ -4,10 +4,12 @@ import { SET } from "./data";
 class LocalStorageUtil {
   keyName: string;
   data: string;
+  checked: string;
 
   constructor() {
     this.keyName = "products";
     this.data = "data";
+    this.checked = "checked";
   }
 
   getData() {
@@ -21,7 +23,9 @@ class LocalStorageUtil {
   putData(data: Array<SET>) {
     localStorage.removeItem(this.data);
     const pushed = true;
-    localStorage.setItem(this.data, JSON.stringify(data));
+
+    const dataSet = Array.from(new Set(data));
+    localStorage.setItem(this.data, JSON.stringify(dataSet));
     const products = this.getData();
 
     return {
@@ -98,6 +102,33 @@ class LocalStorageUtil {
     return {
       pushProduct,
       products,
+    };
+  }
+
+  getChecked() {
+    const checkedLocalStorage = localStorage.getItem(this.checked);
+    if (checkedLocalStorage !== null) {
+      return JSON.parse(checkedLocalStorage);
+    }
+    return [];
+  }
+  putChecked(item: string) {
+    const check = this.getChecked();
+    let pushCheck = false;
+    const index = check.findIndex((el: string) => el === item);
+
+    if (index === -1) {
+      check.push(item);
+      pushCheck = true;
+    } else {
+      pushCheck = false;
+      check.splice(index, 1);
+    }
+    console.log(check);
+    localStorage.setItem(this.checked, JSON.stringify(check));
+    return {
+      pushCheck,
+      check,
     };
   }
 }

@@ -26,19 +26,22 @@ button {
 .active-btn {
     background-color: $but-hov;
 }
+
 #form-search {
-  display: flex;
-  gap: 1%;
-  position: relative;
+    display: flex;
+    gap: 1%;
+    position: relative;
 }
+
 .search-ok {
-  position: absolute;
-  top: 8px;
-  right: 15px;
-  max-width: 15px;
-  max-height: 15px;
-  border-radius: 5px;
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    max-width: 15px;
+    max-height: 15px;
+    border-radius: 5px;
 }
+
 .main {
     margin: 0 auto;
     width: 100%;
@@ -197,6 +200,14 @@ button {
             width: 130px;
         }
     }
+    &__btnB {
+        width: 150px;
+        height: 45px;
+        border-radius: 80px;
+        @media (max-width: 530px) {
+            width: 130px;
+        }
+    }
 }
 
 .column {
@@ -221,6 +232,10 @@ button {
     display: flex;
     flex-direction: column;
     gap: 10px;
+}
+
+.items__filters-container {
+    margin-bottom: 10px;
 }
 
 .filter {
@@ -272,29 +287,114 @@ button {
     background-color: $but-hov;
 }
 
-<<<<<<< HEAD
-=======
-// .items__sorts .button-vie.active {
+<<<<<<< HEAD======= // .items__sorts .button-vie.active {
 //     background-color: $but-hov;
 // }
->>>>>>> 23ced4f (fix: layout product)
-.button__column.button-vie.active {
+>>>>>>>23ced4f (fix: layout product) .button__column.button-vie.active {
     background-color: $but-hov;
 }
 
-<<<<<<< HEAD
-.no-card {
-  margin: 0 auto;
-  font-size: 1.5rem;
-  font-weight: 700;
-  padding-top: 5%;
+<<<<<<< HEAD .no-card {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-top: 5%;
 }
-=======
-.button__row.button-vie.active {
+
+=======.button__row.button-vie.active {
     background-color: $but-hov;
 }
 
 .active {
     background-color: $but-hov;
 }
->>>>>>> 23ced4f (fix: layout product)
+
+>>>>>>>23ced4f (fix: layout product) .no-card {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-top: 5%;
+}
+
+@mixin range-slider($width, $height, $input-top, $input-bg-color, $input-thumb-color, $float:none, $input-height:20px, $input-border-radius:14px) {
+    position: relative;
+    width: $width;
+    height: $height;
+    float: $float;
+    text-align: center;
+    input[type="range"] {
+        pointer-events: none;
+        position: absolute;
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+        border: none;
+        border-radius: $input-border-radius;
+        background: $input-bg-color;
+        box-shadow: inset 0 1px 0 0 darken($input-bg-color, 15%), inset 0 -1px 0 0 darken($input-bg-color, 10%);
+        -webkit-box-shadow: inset 0 1px 0 0 darken($input-bg-color, 15%), inset 0 -1px 0 0 darken($input-bg-color, 10%);
+        overflow: hidden;
+        left: 0;
+        top: $input-top;
+        width: $width;
+        outline: none;
+        height: $input-height;
+        margin: 0;
+        padding: 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        pointer-events: all;
+        position: relative;
+        z-index: 1;
+        outline: 0;
+        -webkit-appearance: none;
+        width: $input-height;
+        height: $input-height;
+        border: none;
+        border-radius: $input-border-radius;
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, lighten($input-thumb-color, 60%)), color-stop(100%, $input-thumb-color));
+        background-image: -webkit-linear-gradient(top, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+        background-image: linear-gradient(to bottom, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+    }
+    input[type="range"]::-moz-range-thumb {
+        pointer-events: all;
+        position: relative;
+        z-index: 10;
+        -moz-appearance: none;
+        width: $input-height;
+        height: $input-height;
+        border: none;
+        border-radius: $input-border-radius;
+        background-image: linear-gradient(to bottom, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+        /* W3C */
+    }
+    input[type="range"]::-ms-thumb {
+        pointer-events: all;
+        position: relative;
+        z-index: 10;
+        -ms-appearance: none;
+        width: $input-height;
+        height: $input-height;
+        border-radius: $input-border-radius;
+        border: 0;
+        background-image: linear-gradient(to bottom, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+        /* W3C */
+    }
+    input[type=range]::-moz-range-track {
+        position: relative;
+        z-index: -1;
+        background-color: rgba(0, 0, 0, 1);
+        border: 0;
+    }
+    input[type=range]:last-of-type::-moz-range-track {
+        -moz-appearance: none;
+        background: none transparent;
+        border: 0;
+    }
+    input[type=range]::-moz-focus-outer {
+        border: 0;
+    }
+}
+
+section.range-slider {
+    @include range-slider(100%, 50px, 25px, #F1EFEF, #413F41, left);
+}
