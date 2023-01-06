@@ -66,7 +66,7 @@ export class Basket extends Page {
           <button  class="button button-win">ADD</button>
         </div>
           <p class="summary__promo">Promo for test: 'sh', 'win'</p>
-          <button  class="button summary__button">BUY</button>
+          <button class="button summary__button">BUY</button>
       </div>
     `;
     this.summaryContainer.innerHTML = "";
@@ -156,6 +156,9 @@ export class Basket extends Page {
 
       this.renderSummary(numInBasket, sumCatalog);
     } else {
+      this.setAllProductsPrice(sumCatalog);
+      header.setPriceFromBasket(sumCatalog);
+      header.setNumFromBasket(numInBasket);
       this.basketContainer.innerHTML = `<div class="no-card"> No products in card </div>`;
     }
 

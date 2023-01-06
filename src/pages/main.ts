@@ -628,6 +628,10 @@ function remove(item: string) {
 
 document.onclick = function (event: Event) {
   const target = event.target as HTMLElement;
+  //корзина click на buy и открытие модального окна покупки
+  if (target.classList.contains("summary__button")) {
+    console.log("summary");
+  }
   //корзина увеличение кол-ва товара
   if (target.classList.contains("basket-item__plus")) {
     const id = target.getAttribute("data-prodId");
