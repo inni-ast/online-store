@@ -83,34 +83,36 @@ export class Basket extends Page {
     let sumCatalog = 0;
     let num = 1; // счетчик товаров по порядку
     let numInBasket = 0;
+    this.summaryContainer.innerHTML = "";
 
-    DATA.forEach(
-      ({
-        id,
-        title,
-        category,
-        price,
-        thumbnail,
-        stock,
-        brand,
-        rating,
-        description,
-        discountPercentage,
-      }) => {
-        if (productsStore.indexOf(id) !== -1) {
-          let { count } = localStorageUtil
-            .getProducts()
-            .find((x: StorageProducts) => x.id === id);
-          console.log(count);
+    if (productsStore.length !== 0) {
+      DATA.forEach(
+        ({
+          id,
+          title,
+          category,
+          price,
+          thumbnail,
+          stock,
+          brand,
+          rating,
+          description,
+          discountPercentage,
+        }) => {
+          if (productsStore.indexOf(id) !== -1) {
+            let { count } = localStorageUtil
+              .getProducts()
+              .find((x: StorageProducts) => x.id === id);
+            console.log(count);
 
-          if (count > stock) {
-            count = stock;
-            localStorageUtil.putProductsToBasket(id, price, count);
-          }
+            if (count > stock) {
+              count = stock;
+              localStorageUtil.putProductsToBasket(id, price, count);
+            }
 
-          const p = +count * +price;
-          numInBasket += +count;
-          htmlCatalog += `
+            const p = +count * +price;
+            numInBasket += +count;
+            htmlCatalog += `
                 <div class="basket-item">
                       <div class="basket-item__num">${num}</div>
                       <div class="basket-item__image">
@@ -135,23 +137,28 @@ export class Basket extends Page {
                         <div class="basket-item__price">Price: ${p.toLocaleString()} USD</div>
                     </div>
                 </div> `;
-          sumCatalog += p;
-          num++;
+            sumCatalog += p;
+            num++;
+          }
         }
-      }
-    );
-    const html = `
+      );
+      const html = `
         <div class="basket-items" >
             ${htmlCatalog}
         </div>
         `;
 
-    this.basketContainer.innerHTML = "";
-    this.basketContainer.innerHTML = html;
-    this.setAllProductsPrice(sumCatalog);
-    header.setPriceFromBasket(sumCatalog);
-    header.setNumFromBasket(numInBasket);
-    this.renderSummary(numInBasket, sumCatalog);
+      this.basketContainer.innerHTML = "";
+      this.basketContainer.innerHTML = html;
+      this.setAllProductsPrice(sumCatalog);
+      header.setPriceFromBasket(sumCatalog);
+      header.setNumFromBasket(numInBasket);
+
+      this.renderSummary(numInBasket, sumCatalog);
+    } else {
+      this.basketContainer.innerHTML = `<div class="no-card"> No products in card </div>`;
+    }
+
     return this.basketContainer;
   }
   addProduct(id: number) {
@@ -194,6 +201,7 @@ export class Basket extends Page {
 
     btnWin.onclick = function (event: Event) {
       const target = event.target as HTMLElement;
+
       if (target.classList.contains("add")) {
         (document.querySelector(".summary__input") as HTMLInputElement).value =
           "";
@@ -204,9 +212,9 @@ export class Basket extends Page {
         BASKET.setPromoWin(0);
         const price = BASKET.getAllProductsPrice();
         const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
-        console.log(discount);
+
         if (discount !== 0) {
-          const currentPrice = price - (price / 100) * discount;
+          const currentPrice = Math.round(price - (price / 100) * discount);
           divPrice.style.textDecoration = "line-through";
           divPricePromo.classList.remove("hidden");
           divPricePromo.textContent = `
@@ -221,7 +229,7 @@ export class Basket extends Page {
         target.textContent = "DEL";
         const price = BASKET.getAllProductsPrice();
         const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
-        const currentPrice = price - (price / 100) * discount;
+        const currentPrice = Math.round(price - (price / 100) * discount);
         divPrice.style.textDecoration = "line-through";
         divPricePromo.classList.remove("hidden");
         divPricePromo.textContent = `
@@ -252,7 +260,7 @@ export class Basket extends Page {
         const price = BASKET.getAllProductsPrice();
         const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
         if (discount !== 0) {
-          const currentPrice = price - (price / 100) * discount;
+          const currentPrice = Math.round(price - (price / 100) * discount);
           divPrice.style.textDecoration = "line-through";
           divPricePromo.classList.remove("hidden");
           divPricePromo.textContent = `
@@ -267,7 +275,7 @@ export class Basket extends Page {
         target.textContent = "DEL";
         const price = BASKET.getAllProductsPrice();
         const discount = BASKET.getPromoSh() + BASKET.getPromoWin();
-        const currentPrice = price - (price / 100) * discount;
+        const currentPrice = Math.round(price - (price / 100) * discount);
         divPrice.style.textDecoration = "line-through";
         divPricePromo.classList.remove("hidden");
         divPricePromo.textContent = `
@@ -283,7 +291,6 @@ export class Basket extends Page {
 }
 
 export const BASKET = new Basket("div", "basket", "basket");
-console.log(BASKET.allProductsPrice);
 
 document.oninput = function (event: Event) {
   const target = event.target as HTMLInputElement;
