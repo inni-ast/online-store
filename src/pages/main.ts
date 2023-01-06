@@ -628,10 +628,15 @@ function remove(item: string) {
 
 document.onclick = function (event: Event) {
   const target = event.target as HTMLElement;
-  //корзина click на buy и открытие модального окна покупки
+  //корзина: click на buy и открытие модального окна покупки
   if (target.classList.contains("summary__button")) {
-    console.log("summary");
+    BASKET.renderBuyWindow();
   }
+  //корзина: закрытие модального окна покупки
+  if (target.classList.contains("form-buy_close")) {
+    BASKET.closeBuyWindow();
+  }
+
   //корзина увеличение кол-ва товара
   if (target.classList.contains("basket-item__plus")) {
     const id = target.getAttribute("data-prodId");
@@ -645,7 +650,6 @@ document.onclick = function (event: Event) {
     const id = target.getAttribute("data-prodId");
 
     if (id) {
-      console.log("remove1");
       BASKET.removeProduct(+id);
     }
   }

@@ -3,9 +3,12 @@ import { DATA } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
 import { StorageProducts } from "../modules/data";
 import { header } from "./header";
+
+const overlay = document.getElementById("overlay-modal") as HTMLDivElement;
 export class Basket extends Page {
   basketContainer: HTMLElement;
   summaryContainer: HTMLElement;
+  buyContainer: HTMLElement;
   allProductsPrice: number;
   isPromoWin: number;
   isPromoSh: number;
@@ -22,6 +25,8 @@ export class Basket extends Page {
     this.basketContainer.classList.add("basket__container");
     this.summaryContainer = document.createElement("div");
     this.summaryContainer.classList.add("basket__summary");
+    this.buyContainer = document.createElement("div");
+    this.buyContainer.classList.add("basket__buy");
     this.allProductsPrice = 0;
     this.isPromoWin = 0;
     this.isPromoSh = 0;
@@ -72,6 +77,59 @@ export class Basket extends Page {
     this.summaryContainer.innerHTML = "";
     this.summaryContainer.innerHTML = html;
     this.basketContainer.appendChild(this.summaryContainer);
+    return this.basketContainer;
+  }
+  closeBuyWindow() {
+    document.body.classList.remove("lock");
+    overlay.classList.remove("active");
+    this.buyContainer.classList.remove("active");
+    this.buyContainer.innerHTML = "";
+  }
+  renderBuyWindow() {
+    document.body.classList.add("lock");
+    overlay.classList.add("active");
+    this.buyContainer.classList.add("active");
+    this.buyContainer.innerHTML = "";
+
+    const form = document.createElement("form") as HTMLFormElement;
+
+    form.classList.add("form-buy");
+    const html = `
+      <div class="form-buy_close"> X </div>
+      <h4 class="form-buy__title"> Personal details</h4>
+      <input type="text" id="buy-name" name="name" required
+          placeholder="Name, Surname" class="form-buy__input">
+      <input type="number" id="buy-tel" name="tel" required
+          placeholder="Phone number" class="form-buy__input">
+      <input type="text" id="buy-address" name="address" required
+          placeholder="Your address" class="form-buy__input">
+      <input type="email" id="buy-email" name="email" required
+          placeholder="Your email" class="form-buy__input">
+      <div class="form-buy__card form-card">
+          <h4 class="form-card__title"> Credit card details</h4>
+            <div class="form-card__block">
+              <div class="form-card__number">
+                  <div class="form-card__image">
+                    <img src="#" class="form-card__img">
+                  </div>
+              <input type="number" id="card-num" name="card-num" required
+                  placeholder="Card number" class="form-card__input-number">
+              </div>
+            <label class="form-card__label">
+              VALID:
+               <input type="number" id="card-valid" name="card-valid" required placeholder="Data" class="form-card__input-data">
+            </label>
+            <label class="form-card__label">
+              CVV:
+               <input type="number" id="card-cvv" name="card-cvv" required placeholder="CVV" class="form-card__input-cvv">
+            </label>
+           </div>
+      </div>
+  <button type="submit" class="form-buy__btn">Submit</button>
+`;
+    form.innerHTML = html;
+    this.buyContainer.append(form);
+    this.basketContainer.append(this.buyContainer);
     return this.basketContainer;
   }
   renderProducts() {

@@ -1,0 +1,120 @@
+.overlay {
+  opacity: 0;
+  visibility: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .5);
+  z-index: 20;
+  transition: .3s all;
+}
+.basket__buy {
+  opacity: 0;
+  visibility: hidden;
+  width: 100%;
+  max-width: 70%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  background-color: #555;
+  justify-content: center;
+  display: flex;
+  transition: 0.3s all;
+  border: 2px solid $but-hov;
+    border-radius: 5px;
+}
+
+.basket__buy.active,
+.overlay.active{
+   opacity: 1;
+   visibility: visible;
+}
+.lock {
+  overflow: hidden;
+}
+.form-buy {
+  width: 70%;
+  height: 50%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2%;
+  row-gap: 10px;
+}
+.form-buy_close {
+  align-self: flex-end;
+  font-size: 2rem;
+  background-color: $but;
+  transition: all 0.7s;
+  cursor: pointer;
+  &:hover {
+  background-color: $but-hov;
+  }
+
+}
+.form-buy__input {
+   width: 90%;
+   border: 1px solid orange;
+   outline: none;
+  cursor: pointer;
+}
+.form-buy__input:invalid {
+  border: 2px dotted red;
+}
+
+.form-buy__input:invalid:required {
+    border: 2px solid orange;
+}
+
+.form-buy__input:valid {
+  border: 2px solid green;
+}
+.form-buy__btn {
+  cursor: pointer;
+  max-width: 50px;
+  padding: 5px;
+}
+
+.form-card {
+  width: 100%;
+  background-color: $but;
+  border: 2px solid $but-hov;
+  border-radius: 10px;
+  padding: 1%;
+  display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.form-card__block {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+}
+.form-card__number {
+  display: flex;
+  justify-content: center;
+  gap: 5%;
+  margin-bottom: 7px;
+}
+.form-card__label {
+  margin-bottom: 5px;
+}
+.form-card__input-number,
+.form-card__input-cvv,
+.form-card__input-data {
+  width: 80%;
+
+}
+
+.form-card__img {
+  max-width: 100%;
+}
