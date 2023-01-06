@@ -113,6 +113,24 @@ export class MainPage extends Page {
     this.buttonItemsColumn.classList.add("button__column", "button-vie");
     this.buttonItemsColumn.textContent = MainPage.TextObject.btnItemsColumn;
 
+    this.filterCategory = document.createElement("div");
+    this.filterCategory.classList.add("filter__category", "filter");
+    this.filterCategory.textContent = MainPage.TextObject.divFilterCategory;
+
+    this.filterBrand = document.createElement("div");
+    this.filterBrand.classList.add("filter__brand", "filter");
+    this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
+
+    // this.filterPrice = document.createElement("input");
+    // this.filterPrice.setAttribute("type", "range");
+    // this.filterPrice.classList.add("filter__price", "filter-input");
+    // this.filterPrice.textContent = MainPage.TextObject.inputFilterPrice;
+
+    // this.filterStock = document.createElement("input");
+    // this.filterStock.setAttribute("type", "range");
+    // this.filterStock.classList.add("filter__stock", "filter-input");
+    // this.filterStock.textContent = MainPage.TextObject.inputFilterStock;
+
     this.btnResetFilters = document.createElement("button");
     this.btnResetFilters.id = "reset-filters";
     this.btnResetFilters.classList.add("button", "button__reset-filters");
@@ -187,6 +205,11 @@ export class MainPage extends Page {
     this.container.append(mainItems);
     localStorageUtil.putData(this.currentData);
   };
+  // changeCurrentData(data: Array<SET>) {
+  //   this.currentData.length = 0;
+  //   this.currentData.push(...data);
+  //   return this.currentData;
+  // }
 
   public createFilters(data: Array<SET>) {
     this.filterCategory.innerHTML = "";
@@ -378,6 +401,7 @@ export class MainPage extends Page {
     if (!this.isFilter) {
       this.isFilter = true;
       this.currentData.length = 0;
+    
     }
 
     const filterDataCategory = DATA.filter(
@@ -436,6 +460,7 @@ export class MainPage extends Page {
     this.createCards(this.currentData);
 
     localStorageUtil.putData(this.currentData);
+    localStorageUtil.putChecked(item);
     return this.currentData;
   }
 

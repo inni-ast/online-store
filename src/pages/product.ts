@@ -65,7 +65,8 @@ export class Product extends Page {
 
     this.productPhotos.append(this.productSlides, this.productBigPhoto);
   }
-  getProduct(id: number) {
+  getProduct(idi: number) {
+    const id = idi - 1;
     const H3 = [
       "Description",
       "Discount Percentage:",
@@ -84,7 +85,7 @@ export class Product extends Page {
     ];
 
     const linkStore1 = document.createElement("a");
-    linkStore1.setAttribute("href", "#");
+    linkStore1.setAttribute("href", "#main-container");
     linkStore1.textContent = "STORE";
     this.productLine.append(linkStore1);
     const textStore1 = document.createElement("p");
