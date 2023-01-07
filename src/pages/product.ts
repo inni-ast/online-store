@@ -196,6 +196,7 @@ export const PRODUCT = new Product("div", "products", "products");
 //         if (pushProduct) {
 //           target.classList.add("active-btn");
 //           target.innerHTML = Product.TextObject.dropFromCard;
+
 //           header.addProduct(+price);
 //         } else {
 //           target.classList.remove("active-btn");
