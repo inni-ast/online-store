@@ -172,11 +172,8 @@ export class Product extends Page {
   render() {
     // const title = this.createTitle(Product.TextObject.mainTitle);
     this.container.append(this.productContainer);
-<<<<<<< HEAD
     const id = 4;
     this.getProduct(id);
-=======
-   >>>>>>> 23ced4f (fix: layout product)
     return this.container;
   }
 }
@@ -199,6 +196,7 @@ export const PRODUCT = new Product("div", "products", "products");
 //         if (pushProduct) {
 //           target.classList.add("active-btn");
 //           target.innerHTML = Product.TextObject.dropFromCard;
+
 //           header.addProduct(+price);
 //         } else {
 //           target.classList.remove("active-btn");
