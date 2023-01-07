@@ -3,6 +3,7 @@ import { DATA } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
 import { StorageProducts } from "../modules/data";
 import { header } from "./header";
+import { App } from "./app/index-app";
 // import { Visa } from "../img/visa.png";
 
 const overlay = document.getElementById("overlay-modal") as HTMLDivElement;
@@ -33,9 +34,12 @@ export class Basket extends Page {
     this.isPromoSh = 0;
   }
   // очищает всю корзину
-  // handlerClear() {
-  //  this.basketContainer.innerHTML = "";
-  // }
+  handlerClear() {
+    this.basketContainer.innerHTML = "";
+    localStorage.removeItem("products");
+    header.setNumFromBasket(0);
+    header.setPriceFromBasket(0);
+  }
   getPromoWin() {
     return this.isPromoWin;
   }
@@ -102,17 +106,21 @@ export class Basket extends Page {
       <input type="text" id="buy-name" name="name" required
           placeholder="Name, Surname" class="form-buy__input"
           pattern="([a-zA-Zа-яА-Я]{3,})[ ]([a-zA-Zа-яА-Я]{3,})(([a-zA-Zа-яА-Я ]{0,}){0,})">
+      <span class="name-error"></span>
 
       <input type="tel" id="buy-tel" name="tel" required
           placeholder="Phone number" class="form-buy__input"
           pattern="[+]([0-9]{9,})">
+      <span class="tel-error"></span>
 
       <input type="text" id="buy-address" name="address" required
           placeholder="Your address" class="form-buy__input"
           pattern="([a-zA-Zа-яА-Я]{5,})[ ]([a-zA-Zа-яА-Я]{5,})[ ]([a-zA-Zа-яА-Я]{5,})(([a-zA-Zа-яА-Я ]{0,}){0,})">
+      <span class="address-error"></span>
 
       <input type="email" id="buy-email" name="email" required
           placeholder="Your email" class="form-buy__input">
+      <span class="email-error"></span>
 
       <div class="form-buy__card form-card">
           <h4 class="form-card__title"> Credit card details</h4>
@@ -125,18 +133,22 @@ export class Basket extends Page {
               <input type="text" id="card-num" name="card-num" required
                   placeholder="Card number" class="form-card__input-number"
                   pattern="([0-9]{16})">
+              <span class="card-num-error"></span>
               </div>
 
             <label class="form-card__label">
               VALID:
                <input type="text" id="card-valid" name="card-valid" required placeholder="Data" class="form-card__input-data"
                pattern="(0[1-9]|1[1-2])/[0-9]{2}">
-               </label>
+            <span class="card-valid-error"></span>
+            </label>
+
             <label class="form-card__label">
               CVV:
                <input type="text" id="card-cvv" name="card-cvv" required
                placeholder="CVV" class="form-card__input-cvv"
                pattern="([0-9]{3})">
+           <span class="card-cvv-error"></span>
             </label>
            </div>
       </div>
@@ -378,4 +390,16 @@ document.oninput = function (event: Event) {
     BASKET.addPromoSh();
     BASKET.setPromoSh(5);
   }
+};
+
+document.onsubmit = function (event: Event) {
+  console.log(event);
+  event.preventDefault();
+  alert("Thank you! Your order has been placed");
+  setTimeout(() => {
+    BASKET.handlerClear();
+    App.renderNewPage("main-container");
+    document.body.classList.remove("lock");
+    overlay.classList.remove("active");
+  }, 2000);
 };
