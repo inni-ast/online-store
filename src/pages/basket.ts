@@ -176,7 +176,6 @@ export class Basket extends Page {
             let { count } = localStorageUtil
               .getProducts()
               .find((x: StorageProducts) => x.id === id);
-            console.log(count);
 
             if (count > stock) {
               count = stock;

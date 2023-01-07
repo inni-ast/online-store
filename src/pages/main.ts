@@ -4,6 +4,7 @@ import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
 import { BASKET } from "./basket";
 import { PRODUCT } from "./product";
+import { App } from "./app/index-app";
 
 export class MainPage extends Page {
   static TextObject = {
@@ -667,10 +668,35 @@ document.onclick = function (event: Event) {
   if (target.classList.contains("btn__product")) {
     const id = Number(target.getAttribute("data-id"));
     if (id) {
-      console.log("card");
-      console.log(id);
       PRODUCT.getProduct(id);
     }
+  }
+  //карточка товара: click на buy и открытие модального окна покупки
+  if (target.classList.contains("card__btnB")) {
+    const id = target.getAttribute("data-id");
+    const price = target.getAttribute("data-price");
+
+    if (id && price) {
+      const products = localStorageUtil.getProducts();
+
+      if (products.length === 0) {
+        console.log("length 0");
+        const { pushProduct } = localStorageUtil.putProducts(+id, +price);
+        if (pushProduct) {
+          header.addProduct(+price);
+        }
+      } else {
+        const index = products.findIndex((el: SET) => el.id === +id);
+
+        if (index === -1) {
+          products.push({ id: +id, price: +price, count: 1 });
+          localStorage.setItem("products", JSON.stringify(products));
+          header.addProduct(+price);
+        }
+      }
+    }
+    App.renderNewPage("basket");
+    BASKET.renderBuyWindow();
   }
   //корзина: click на buy и открытие модального окна покупки
   if (target.classList.contains("summary__button")) {

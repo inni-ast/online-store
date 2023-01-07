@@ -3,7 +3,7 @@ import { Page } from "../../core/templates/page";
 import { Header } from "../header";
 import { ErrorPage, ErrorTypes } from "../error";
 import { DATA } from "../../modules/data";
-import { preloadImages } from "../../modules/funсtions";
+import { preloadImages, preloadImagesProduct } from "../../modules/funсtions";
 import { P } from "../main";
 import { BASKET } from "../basket";
 import { PRODUCT } from "../product";
@@ -56,5 +56,6 @@ export class App {
     this.header.run();
     this.routeChange();
     preloadImages(DATA);
+    preloadImagesProduct(DATA);
   }
 }

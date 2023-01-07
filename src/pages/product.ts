@@ -171,6 +171,8 @@ export class Product extends Page {
 
     const productBuy = document.createElement("button");
     productBuy.classList.add(`card__btnB`);
+    productBuy.setAttribute("data-id", `${DATA[id].id}`);
+    productBuy.setAttribute("data-price", `${DATA[id].price}`);
     productBuy.textContent = Product.TextObject.buyNow;
 
     this.addToCart.append(productPrice, productBasket, productBuy);

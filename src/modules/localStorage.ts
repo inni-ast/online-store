@@ -100,7 +100,6 @@ class LocalStorageUtil {
     }
 
     localStorage.setItem(this.keyName, JSON.stringify(products));
-    console.log(products);
     return {
       pushProduct,
       products,
