@@ -48,10 +48,17 @@
   row-gap: 10px;
 }
 .form-buy_close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   align-self: flex-end;
   font-size: 2rem;
   background-color: $but;
   transition: all 0.7s;
+  width: 30px;
+    height: 30px;
+    border: 2px solid $but-hov;
+    border-radius: 3px;
   cursor: pointer;
   &:hover {
   background-color: $but-hov;
@@ -77,8 +84,11 @@
 }
 .form-buy__btn {
   cursor: pointer;
-  max-width: 50px;
-  padding: 5px;
+  max-width: 70px;
+  padding: 6px 20px;
+  border-radius: 2px;
+  color: #222;
+  font-weight: 700;
 }
 
 .form-card {
@@ -116,5 +126,32 @@
 }
 
 .form-card__img {
+  width: 40px;
+  height: 35px;
+  border-radius: 10%;
+}
+.form-card__img {
   max-width: 100%;
+}
+
+.form-card__input-number:invalid,
+.form-card__input-cvv:invalid,
+.form-card__input-data:invalid {
+  border: 2px dotted red;
+}
+
+.form-card__input-number:invalid:required,
+.form-card__input-cvv:invalid:required,
+.form-card__input-data:invalid:required {
+    border: 2px solid red;
+}
+
+.form-card__input-number:valid,
+.form-card__input-cvv:valid,
+.form-card__input-data:valid {
+  border: 2px solid green;
+}
+.form-buy__title {
+  font-size: 1.8rem;
+  color: #222;
 }
