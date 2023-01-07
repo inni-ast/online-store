@@ -2,12 +2,14 @@ import { SET } from "./data";
 class LocalStorageUtil {
   keyName: string;
   data: string;
-  checked: string;
+  checkedCategory: string;
+  checkedStore: string;
 
   constructor() {
     this.keyName = "products"; // это id товара
     this.data = "data";
-    this.checked = "checked";
+    this.checkedCategory = "checkedCategory";
+    this.checkedStore = "checkedStore";
   }
 
   getData() {
@@ -58,29 +60,50 @@ class LocalStorageUtil {
     };
   }
 
-  getChecked() {
-    const checkedLocalStorage = localStorage.getItem(this.checked);
+  getCheckedCategory() {
+    const checkedLocalStorage = localStorage.getItem(this.checkedCategory);
     if (checkedLocalStorage !== null) {
       return JSON.parse(checkedLocalStorage);
     }
     return [];
   }
-  putChecked(item: string) {
-    const check = this.getChecked();
-    let pushCheck = false;
+
+  putCheckedCategory(item: string) {
+    const check = this.getCheckedCategory();
     const index = check.findIndex((el: string) => el === item);
 
     if (index === -1) {
       check.push(item);
-      pushCheck = true;
     } else {
-      pushCheck = false;
       check.splice(index, 1);
     }
-    console.log(check);
-    localStorage.setItem(this.checked, JSON.stringify(check));
+    console.log("LS " + check);
+    localStorage.setItem(this.checkedCategory, JSON.stringify(check));
     return {
-      pushCheck,
+      check,
+    };
+  }
+
+  getCheckedStore() {
+    const checkedLocalStorage = localStorage.getItem(this.checkedStore);
+    if (checkedLocalStorage !== null) {
+      return JSON.parse(checkedLocalStorage);
+    }
+    return [];
+  }
+
+  putCheckedStore(item: string) {
+    const check = this.getCheckedStore();
+    const index = check.findIndex((el: string) => el === item);
+
+    if (index === -1) {
+      check.push(item);
+    } else {
+      check.splice(index, 1);
+    }
+    console.log("LS " + check);
+    localStorage.setItem(this.checkedStore, JSON.stringify(check));
+    return {
       check,
     };
   }

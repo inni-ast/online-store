@@ -45,6 +45,8 @@ export class MainPage extends Page {
   btnResetFilters: HTMLElement;
   btnCopyLink: HTMLElement;
   isFilter: boolean;
+  filtersHeaderContainer: HTMLElement;
+  filtersHeaderStockContainer: HTMLElement;
 
   constructor(el: string, id: string, nameClass: string) {
     super(el, id, nameClass);
@@ -110,24 +112,6 @@ export class MainPage extends Page {
     this.buttonItemsColumn.classList.add("button__column", "button-vie");
     this.buttonItemsColumn.textContent = MainPage.TextObject.btnItemsColumn;
 
-    this.filterCategory = document.createElement("div");
-    this.filterCategory.classList.add("filter__category", "filter");
-    this.filterCategory.textContent = MainPage.TextObject.divFilterCategory;
-
-    this.filterBrand = document.createElement("div");
-    this.filterBrand.classList.add("filter__brand", "filter");
-    this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
-
-    // this.filterPrice = document.createElement("input");
-    // this.filterPrice.setAttribute("type", "range");
-    // this.filterPrice.classList.add("filter__price", "filter-input");
-    // this.filterPrice.textContent = MainPage.TextObject.inputFilterPrice;
-
-    // this.filterStock = document.createElement("input");
-    // this.filterStock.setAttribute("type", "range");
-    // this.filterStock.classList.add("filter__stock", "filter-input");
-    // this.filterStock.textContent = MainPage.TextObject.inputFilterStock;
-
     this.btnResetFilters = document.createElement("button");
     this.btnResetFilters.id = "reset-filters";
     this.btnResetFilters.classList.add("button", "button__reset-filters");
@@ -142,6 +126,22 @@ export class MainPage extends Page {
     this.btnCopyLink.id = "copy-link";
     this.btnCopyLink.classList.add("button", "button__copy");
     this.btnCopyLink.textContent = MainPage.TextObject.btnCopyLink;
+
+    this.filterCategory = document.createElement("div");
+    this.filterCategory.classList.add("filter__category", "filter");
+    this.filterCategory.textContent = MainPage.TextObject.divFilterCategory;
+
+    this.filterBrand = document.createElement("div");
+    this.filterBrand.classList.add("filter__brand", "filter");
+    this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
+
+    this.filtersHeaderContainer = document.createElement("div");
+    this.filtersHeaderContainer.classList.add("items__filters-container-brand");
+
+    this.filtersHeaderStockContainer = document.createElement("div");
+    this.filtersHeaderStockContainer.classList.add(
+      "items__filters-container-stock"
+    );
 
     this.buttonSortPriceUp.addEventListener("click", this.sortItemsPriceUp);
     this.buttonSortPriceDown.addEventListener("click", this.sortItemsPriceDown);
@@ -163,32 +163,29 @@ export class MainPage extends Page {
       return false;
     });
   }
+
   public resetFilters = () => {
     localStorage.removeItem("data");
-    localStorage.removeItem("products");
-    localStorage.removeItem("checked");
-    localStorage.clear();
+    // localStorage.removeItem("products");
+    localStorage.removeItem("checkedCategory");
+    localStorage.removeItem("checkedStore");
+    // localStorage.clear();
     this.isFilter = false;
     this.currentData = DATA;
-    this.generateProducts(this.currentData);
-    this.setCardsNumber(this.currentData.length);
-    const filters = this.createFilters(DATA);
-    this.container.prepend(filters);
-    const target = document.getElementsByTagName("input");
 
-    for (let i = 0; i < target.length; i++) {
-      if (target[i].type === "checkbox") {
-        target[i].checked = false;
-      }
-    }
+    const mainItems = document.createElement("section") as HTMLElement;
+    const sorts = this.createSorts() as HTMLElement;
+    const filters = this.createFilters(this.currentData) as HTMLElement;
+    const allCards = this.createCards(this.currentData) as HTMLElement;
+
+    mainItems.classList.add("main__items");
+    this.container.innerHTML = "";
+    this.container.append(filters); // блок с фильтрами
+    mainItems.append(sorts); // блок с сортировками
+    mainItems.append(allCards); // все товары
+    this.container.append(mainItems);
     localStorageUtil.putData(this.currentData);
   };
-
-  changeCurrentData(data: Array<SET>) {
-    this.currentData.length = 0;
-    this.currentData.push(...data);
-    return this.currentData;
-  }
 
   public createFilters(data: Array<SET>) {
     this.filterCategory.innerHTML = "";
@@ -210,7 +207,7 @@ export class MainPage extends Page {
     filterCategoryBlock.id = "form-category";
     filterCategoryBlock.setAttribute("name", "form-category");
     filterCategoryBlock.classList.add("input-checkbox-block");
-    const checkedStore = localStorageUtil.getChecked();
+    const checkedCategory = localStorageUtil.getCheckedCategory();
 
     setCategory.forEach((item) => {
       const filterDataCategory = DATA.filter((el) => el.category === item);
@@ -222,7 +219,7 @@ export class MainPage extends Page {
       const filterCategoryItem = document.createElement("input");
       filterCategoryItem.setAttribute("type", "checkbox");
       filterCategoryItem.setAttribute("name", "category");
-      if (checkedStore.indexOf(item) !== -1) {
+      if (checkedCategory.indexOf(item) !== -1) {
         filterCategoryItem.setAttribute("checked", "checked");
       }
       filterCategoryItem.classList.add("input-checkbox");
@@ -256,6 +253,7 @@ export class MainPage extends Page {
     filterBrandBlock.id = "form-brand";
     filterBrandBlock.setAttribute("name", "form-brand");
     filterBrandBlock.classList.add("input-checkbox-block");
+    const checkedStore = localStorageUtil.getCheckedStore();
 
     setBrand.forEach((item) => {
       const filterDataBrand = DATA.filter((el) => el.brand === item);
@@ -292,9 +290,7 @@ export class MainPage extends Page {
     });
     this.filterBrand.append(filterBrandBlock);
 
-    const filtersHeaderContainer = document.createElement("div");
-    filtersHeaderContainer.classList.add("items__filters-container");
-
+    this.filtersHeaderContainer.innerHTML = "";
     const filtersHeaderP = document.createElement("p");
     filtersHeaderP.classList.add("items__filters-texp");
     filtersHeaderP.textContent = MainPage.TextObject.inputFilterPrice;
@@ -306,11 +302,9 @@ export class MainPage extends Page {
     filterPriceSpan.classList.add("rangeValues");
     const filterPriceStart = document.createElement("input");
     filterPriceStart.setAttribute("type", "range");
-    // filterPriceStart.setAttribute("step", "500");
     filterPriceStart.classList.add("filter__price", "filter-input");
     const filterPriceEnd = document.createElement("input");
     filterPriceEnd.setAttribute("type", "range");
-    // filterPriceEnd.setAttribute("step", "500");
     filterPriceEnd.classList.add("filter__price", "filter-input");
 
     filtersHeaderPrice.append(
@@ -318,11 +312,9 @@ export class MainPage extends Page {
       filterPriceStart,
       filterPriceEnd
     );
-    filtersHeaderContainer.append(filtersHeaderP, filtersHeaderPrice);
+    this.filtersHeaderContainer.append(filtersHeaderP, filtersHeaderPrice);
 
-    const filtersHeaderStockContainer = document.createElement("div");
-    filtersHeaderStockContainer.classList.add("items__filters-container");
-
+    this.filtersHeaderStockContainer.innerHTML = "";
     const filtersHeaderPStock = document.createElement("p");
     filtersHeaderPStock.classList.add("items__filters-texp");
     filtersHeaderPStock.textContent = MainPage.TextObject.inputFilterStock;
@@ -334,11 +326,9 @@ export class MainPage extends Page {
     filterStockSpan.classList.add("rangeValues");
     const filterStockStart = document.createElement("input");
     filterStockStart.setAttribute("type", "range");
-    // filterSpanStart.setAttribute("step", "500");
     filterStockStart.classList.add("filter__price", "filter-input");
     const filterStockEnd = document.createElement("input");
     filterStockEnd.setAttribute("type", "range");
-    // filterPriceEnd.setAttribute("step", "500");
     filterStockEnd.classList.add("filter__price", "filter-input");
 
     filtersHeaderStock.append(
@@ -346,38 +336,60 @@ export class MainPage extends Page {
       filterStockStart,
       filterStockEnd
     );
-    filtersHeaderStockContainer.append(filtersHeaderPStock, filtersHeaderStock);
+    this.filtersHeaderStockContainer.append(
+      filtersHeaderPStock,
+      filtersHeaderStock
+    );
 
     filtersHeader.append(
       filtersButtons,
       this.filterCategory,
       this.filterBrand,
-      filtersHeaderContainer,
-      filtersHeaderStockContainer
+      this.filtersHeaderContainer,
+      this.filtersHeaderStockContainer
     );
     return filtersHeader;
   }
 
-    public makeFilters(item: string) {
-    console.log("current data" + this.currentData);
+  public makeFilters(item: string) {
+    const categories = [
+      "smartphones",
+      "laptops",
+      "fragrances",
+      "skincare",
+      "groceries",
+      "home-decoration",
+      "furniture",
+      "tops",
+      "womens-dresses",
+      "womens-shoes",
+      "mens-shirts",
+      "mens-shoes",
+      "mens-watches",
+      "womens-watches",
+      "womens-bags",
+      "womens-jewellery",
+      "sunglasses",
+      "automotive",
+      "motorcycle",
+      "lighting",
+    ];
     if (!this.isFilter) {
       this.isFilter = true;
       this.currentData.length = 0;
-    
     }
 
     const filterDataCategory = DATA.filter(
       (el) => el.brand === item || el.category === item
     );
-    console.log(filterDataCategory);
     this.currentData.push(...filterDataCategory);
     localStorageUtil.putData(this.currentData);
-    localStorageUtil.putChecked(item);
-    console.log("filters " + filterDataCategory);
-    if (localStorageUtil.getChecked().length===0){
-      this.currentData = DATA;
-    this.createCards(this.currentData);
+    if (categories.includes(item)) {
+      localStorageUtil.putCheckedCategory(item);
+    } else {
+      localStorageUtil.putCheckedStore(item);
     }
+
     this.createCards(this.currentData);
     return this.currentData;
   }
@@ -409,8 +421,10 @@ export class MainPage extends Page {
 
     if (categories.includes(item)) {
       filter = this.currentData.filter((el: SET) => el.category !== item);
+      localStorageUtil.putCheckedCategory(item);
     } else {
       filter = this.currentData.filter((el: SET) => el.brand !== item);
+      localStorageUtil.putCheckedStore(item);
     }
 
     this.currentData.length = 0;
@@ -421,7 +435,6 @@ export class MainPage extends Page {
     this.createCards(this.currentData);
 
     localStorageUtil.putData(this.currentData);
-    localStorageUtil.putChecked(item);
     return this.currentData;
   }
 
@@ -441,8 +454,9 @@ export class MainPage extends Page {
     );
     return sortsHeader;
   }
+
   public searchCards(input: string) {
-    const sortedData = this.currentData.filter(
+    const sortedData = DATA.filter(
       (el) =>
         el.price.toString().toLowerCase().includes(input) ||
         el.discountPercentage.toString().toLowerCase().includes(input) ||
@@ -459,33 +473,6 @@ export class MainPage extends Page {
     localStorageUtil.putData(this.currentData);
 
     this.createCards(this.currentData);
-    this.changeCurrentData(sortedData);
-
-    const checkboxes = document.querySelectorAll("input[name='category']");
-
-    for (let i = 0; i < checkboxes.length; i++) {
-      const nameItem = (checkboxes[i] as HTMLInputElement).value;
-
-      this.currentData.forEach((el) => {
-        if (nameItem === el.category) {
-          console.log("ues");
-          (checkboxes[i] as HTMLInputElement).checked = true;
-        }
-      });
-    }
-
-    const checkboxesBrand = document.querySelectorAll("input[name='brand']");
-
-    for (let i = 0; i < checkboxes.length; i++) {
-      const nameItem = (checkboxesBrand[i] as HTMLInputElement).value;
-
-      this.currentData.forEach((el) => {
-        if (nameItem === el.brand) {
-          console.log("ues");
-          (checkboxesBrand[i] as HTMLInputElement).checked = true;
-        }
-      });
-    }
 
     return this.currentData;
   }
@@ -553,10 +540,10 @@ export class MainPage extends Page {
       }
       return 0;
     });
-    this.generateProducts(this.currentData);
-    this.setCardsNumber(this.currentData.length);
+    this.createCards(this.currentData);
     this.toggleClassActive(this.buttonSortPriceUp);
   };
+
   private toggleClassActive(btn: HTMLElement) {
     this.buttonSortStockUp.classList.remove("active-btn");
     this.buttonSortStockDown.classList.remove("active-btn");
@@ -564,6 +551,7 @@ export class MainPage extends Page {
     this.buttonSortPriceDown.classList.remove("active-btn");
     btn.classList.add("active-btn");
   }
+
   public sortItemsPriceDown = () => {
     this.currentData.sort((a: SET, b: SET) => {
       if (a.price < b.price) {
@@ -574,18 +562,9 @@ export class MainPage extends Page {
       }
       return 0;
     });
-    this.generateProducts(this.currentData);
-    this.setCardsNumber(this.currentData.length);
+    this.createCards(this.currentData);
     this.toggleClassActive(this.buttonSortPriceDown);
   };
-
-  private generateProducts(data: Array<SET>) {
-    const mainItems = document.querySelector("section") as HTMLElement;
-    const allCards = this.createCards(data) as HTMLElement;
-    mainItems.append(allCards);
-    this.container.append(mainItems);
-    return this.container;
-  }
 
   public sortItemsStockUp = () => {
     this.currentData.sort((a: SET, b: SET) => {
@@ -597,8 +576,7 @@ export class MainPage extends Page {
       }
       return 0;
     });
-    this.generateProducts(this.currentData);
-    this.setCardsNumber(this.currentData.length);
+    this.createCards(this.currentData);
     this.toggleClassActive(this.buttonSortStockUp);
   };
   public sortItemsStockDown = () => {
@@ -611,8 +589,7 @@ export class MainPage extends Page {
       }
       return 0;
     });
-    this.generateProducts(this.currentData);
-    this.setCardsNumber(this.currentData.length);
+    this.createCards(this.currentData);
     this.toggleClassActive(this.buttonSortStockDown);
   };
 
@@ -674,7 +651,6 @@ function getFilter(item: string) {
 }
 
 function remove(item: string) {
-  console.log(item);
   P.removeFilter(item);
 }
 
