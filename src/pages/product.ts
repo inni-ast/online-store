@@ -84,6 +84,8 @@ export class Product extends Page {
       DATA[id].category,
     ];
 
+    this.productLine.innerHTML = "";
+
     const linkStore1 = document.createElement("a");
     linkStore1.setAttribute("href", "#main-container");
     linkStore1.textContent = "STORE";
@@ -110,18 +112,21 @@ export class Product extends Page {
     linkStore4.textContent = `${DATA[id].title.toUpperCase()}`;
     this.productLine.append(linkStore4);
 
+    this.productTitle.innerHTML = "";
     this.productTitle.textContent = `${DATA[id].title.toUpperCase()}`;
 
+    this.productSlides.innerHTML = "";
     for (let i = 0; i < DATA[id].images.length; i++) {
       const productSlidesPhoto = document.createElement("img");
       productSlidesPhoto.setAttribute("src", `${DATA[id].images[i]}`);
       this.productSlides.append(productSlidesPhoto);
     }
-
+    this.productBigPhoto.innerHTML = "";
     const productBigPhoto = document.createElement("img");
     productBigPhoto.setAttribute("src", `${DATA[id].thumbnail}`);
     this.productBigPhoto.append(productBigPhoto);
 
+    this.productInfo.innerHTML = "";
     for (let i = 0; i < H3.length; i++) {
       const productDetailItem = document.createElement("div");
       productDetailItem.classList.add("product__detail-item");
@@ -136,6 +141,7 @@ export class Product extends Page {
       this.productInfo.append(productDetailItem);
     }
 
+    this.addToCart.innerHTML = "";
     const productPrice = document.createElement("p");
     productPrice.classList.add("product__price");
     productPrice.textContent = "€" + DATA[id].price;
@@ -172,8 +178,7 @@ export class Product extends Page {
   render() {
     // const title = this.createTitle(Product.TextObject.mainTitle);
     this.container.append(this.productContainer);
-    const id = 4;
-    this.getProduct(id);
+    // this.getProduct(id);
     return this.container;
   }
 }

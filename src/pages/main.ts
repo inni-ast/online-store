@@ -3,7 +3,7 @@ import { SET, DATA, StorageProducts } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
 import { header } from "./header";
 import { BASKET } from "./basket";
-// import { PRODUCT } from "./product";
+import { PRODUCT } from "./product";
 
 export class MainPage extends Page {
   static TextObject = {
@@ -520,7 +520,7 @@ export class MainPage extends Page {
         <p class="card__stock">Stock: ${stock}</p>
       </div>
       <div class="card__act">
-        <button class="card__btn btn__product" data-id=${id}>Details</button>
+      <a href="#products"><button class="card__btn btn__product" data-id=${id}>Details</button></a>
         <button class="card__btn${activeClass}" data-price=${price} data-id=${id}>${activeText}</button>
       </div>
       </div>
@@ -665,10 +665,11 @@ document.onclick = function (event: Event) {
   const target = event.target as HTMLElement;
   //октрытие карточки товара
   if (target.classList.contains("btn__product")) {
-    const id = target.getAttribute("data-id");
+    const id = Number(target.getAttribute("data-id"));
     if (id) {
       console.log("card");
       console.log(id);
+      PRODUCT.getProduct(id);
     }
   }
   //корзина: click на buy и открытие модального окна покупки
