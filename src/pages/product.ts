@@ -116,7 +116,7 @@ export class Product extends Page {
     this.productTitle.textContent = `${DATA[id].title.toUpperCase()}`;
 
     this.productSlides.innerHTML = "";
-    for (let i = 0; i < DATA[id].images.length; i++) {
+    for (let i = 1; i < DATA[id].images.length; i++) {
       const productSlidesPhoto = document.createElement("img");
       productSlidesPhoto.setAttribute("src", `${DATA[id].images[i]}`);
       productSlidesPhoto.classList.add("product__slides-small");
@@ -124,7 +124,7 @@ export class Product extends Page {
     }
     this.productBigPhoto.innerHTML = "";
     const productBigPhoto = document.createElement("img");
-    productBigPhoto.setAttribute("src", `${DATA[id].thumbnail}`);
+    productBigPhoto.setAttribute("src", `${DATA[id].images[0]}`);
     productBigPhoto.classList.add("product__slides-big");
     this.productBigPhoto.append(productBigPhoto);
 
