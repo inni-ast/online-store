@@ -382,24 +382,69 @@ export const BASKET = new Basket("div", "basket", "basket");
 document.oninput = function (event: Event) {
   const target = event.target as HTMLInputElement;
   const value = target.value as string;
-  if (value === "win") {
-    BASKET.addPromoWin();
-    BASKET.setPromoWin(15);
+
+  //корзина: промокоды
+  if (target.classList.contains("summary__input")) {
+    if (value === "win") {
+      BASKET.addPromoWin();
+      BASKET.setPromoWin(15);
+    }
+    if (value === "sh") {
+      BASKET.addPromoSh();
+      BASKET.setPromoSh(5);
+    }
   }
-  if (value === "sh") {
-    BASKET.addPromoSh();
-    BASKET.setPromoSh(5);
-  }
+  //окно покупки: срок действия карты
+  // if (target.classList.contains("form-card__input-data")) {
+  //   if (/[0-9]{2}/.test(value)) {
+  //     value += "/";
+  //     console.log(value);
+  //   }
+  // }
 };
 
 document.onsubmit = function (event: Event) {
-  console.log(event);
   event.preventDefault();
   alert("Thank you! Your order has been placed");
   setTimeout(() => {
+    overlay.innerHTML = "";
     BASKET.handlerClear();
     App.renderNewPage("main-container");
     document.body.classList.remove("lock");
     overlay.classList.remove("active");
   }, 2000);
+};
+
+document.onkeyup = function (event: Event) {
+  const target = event.target as HTMLInputElement;
+  let value = target.value as string;
+
+  //окно покупки: срок действия карты
+  if (target.classList.contains("form-card__input-data")) {
+    if (value.length === 2 && /0[1-9]|1[1-2]/.test(value)) {
+      const v = value.replace(value, (value += "/"));
+      target.value = v;
+    }
+    if (value.length > 5) {
+      target.value = value.slice(0, 5);
+    }
+  }
+  //окно покупки: смена логотипа карты
+  if (target.classList.contains("form-card__input-number")) {
+    if (value.length === 1) {
+      const img = document.querySelector(".form-card__img") as HTMLImageElement;
+      if (+value === 4) {
+        img.src =
+          "https://cdn.visa.com/v2/assets/images/logos/visa/blue/logo.png";
+      } else if (+value === 3) {
+        img.src = "https://belkart.by/upload/iblock/a5c/press_kit_img_1_1_.png";
+      } else if (+value === 5) {
+        img.src =
+          "https://www.mastercard.hu/content/dam/public/mastercardcom/eu/hu/images/mc-logo-52.svg";
+      } else {
+        img.src =
+          "https://i.guim.co.uk/img/media/b73cc57cb1d46ae742efd06b6c58805e8600d482/16_0_2443_1466/master/2443.jpg?width=700&quality=85&auto=format&fit=max&s=fb1dca6cdd4589cd9ef2fc941935de71";
+      }
+    }
+  }
 };
