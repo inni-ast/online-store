@@ -13,7 +13,7 @@ export class MainPage extends Page {
     btnPriceDown: "Price Down",
     btnStockUp: "Stock Up",
     btnStockDown: "Stock Down",
-    btnSearchOk: "Ok",
+    btnSearch: "X",
     btnItemsRow: "row",
     btnItemsColumn: "col",
     btnResetFilters: "Reset filters",
@@ -37,6 +37,7 @@ export class MainPage extends Page {
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
   inputSearchForm: HTMLFormElement;
+  btnSearch: HTMLElement;
   itemsFind: HTMLElement;
   itemsFindText: HTMLElement;
   itemsFindNum: HTMLElement;
@@ -81,6 +82,10 @@ export class MainPage extends Page {
     this.inputSearchForm.setAttribute("type", "submit");
     this.inputSearchForm.id = "form-search";
 
+    this.btnSearch = document.createElement("button");
+    this.btnSearch.classList.add("search-ok");
+    this.btnSearch.textContent = MainPage.TextObject.btnSearch;
+
     this.inputSearch = document.createElement("input");
     this.inputSearch.setAttribute("type", "text");
     this.inputSearch.setAttribute("name", "search");
@@ -88,7 +93,8 @@ export class MainPage extends Page {
     this.inputSearch.classList.add("input-search");
     const val = localStorageUtil.getSearch();
     this.inputSearch.value = val;
-    this.inputSearchForm.append(this.inputSearch);
+    this.inputSearchForm.append(this.inputSearch, this.btnSearch);
+
     this.itemsFind = document.createElement("div");
     this.itemsFind.classList.add("items__find");
     this.itemsFindText = document.createElement("div");
@@ -152,6 +158,8 @@ export class MainPage extends Page {
     this.buttonSortStockUp.addEventListener("click", this.sortItemsStockUp);
     this.buttonSortStockDown.addEventListener("click", this.sortItemsStockDown);
 
+    this.btnSearch.addEventListener("click", this.clinSearch);
+
     this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
 
@@ -177,21 +185,7 @@ export class MainPage extends Page {
     localStorage.removeItem("data");
     localStorage.removeItem("checkedCategory");
     localStorage.removeItem("checkedBrand");
-    this.isFilter = false;
-    // this.currentData = DATA;
-
-    const mainItems = document.createElement("section") as HTMLElement;
-    const sorts = this.createSorts() as HTMLElement;
-    const filters = this.createFilters(this.currentData) as HTMLElement;
-    const allCards = this.createCards(DATA) as HTMLElement;
-
-    mainItems.classList.add("main__items");
-    this.container.innerHTML = "";
-    this.container.append(filters); // блок с фильтрами
-    mainItems.append(sorts); // блок с сортировками
-    mainItems.append(allCards); // все товары
-    this.container.append(mainItems);
-    // localStorageUtil.putData(this.currentData);
+    this.render();
   };
 
   public createFilters(data: Array<SET>) {
@@ -242,8 +236,10 @@ export class MainPage extends Page {
         event.preventDefault();
         if (this.checked) {
           getFilter(item as string);
+          onload();
         } else {
           remove(item as string);
+          onload();
         }
       });
     });
@@ -290,8 +286,10 @@ export class MainPage extends Page {
         event.preventDefault();
         if (this.checked) {
           getFilter(item as string);
+          onload();
         } else {
           remove(item as string);
+          onload();
         }
       });
     });
@@ -419,7 +417,6 @@ export class MainPage extends Page {
       localStorageUtil.putCheckedBrand(item);
     }
     this.createCards(DATA);
-    // return this.currentData;
   }
 
   private createSorts() {
@@ -441,7 +438,7 @@ export class MainPage extends Page {
   public searchCards(input: string) {
     localStorageUtil.putSearch(input);
     this.createCards(DATA);
-    // return this.currentData;
+    
   }
 
   private setCardsNumber(num: number) {
@@ -574,7 +571,7 @@ export class MainPage extends Page {
       this.itemsContainer.innerHTML = `<div class="no-card"> No products found</div>`;
     }
     this.setCardsNumber(data.length);
-    this.currentData = data;
+    localStorageUtil.putData(data);
     return this.itemsContainer;
   }
 
@@ -604,6 +601,13 @@ export class MainPage extends Page {
   public sortItemsStockDown = () => {
     localStorageUtil.putSort("StockDown");
     this.createCards(DATA);
+  };
+
+  public clinSearch = () => {
+    localStorageUtil.putSearch("");
+    const val = localStorageUtil.getSearch();
+    this.inputSearch.value = val;
+    this.render();
   };
 
   public cardsShowRow() {
@@ -641,9 +645,9 @@ export class MainPage extends Page {
     const mainItems = document.createElement("section") as HTMLElement;
 
     const sorts = this.createSorts() as HTMLElement;
+    const allCards = this.createCards(DATA) as HTMLElement;
     this.currentData = localStorageUtil.getData();
     const filters = this.createFilters(this.currentData) as HTMLElement;
-    const allCards = this.createCards(DATA) as HTMLElement;
 
     mainItems.classList.add("main__items");
     this.container.innerHTML = "";
@@ -667,6 +671,10 @@ function getFilter(item: string) {
 
 function remove(item: string) {
   P.removeFilter(item);
+}
+
+function onload() {
+  P.render();
 }
 
 document.onclick = function (event: Event) {
