@@ -510,7 +510,7 @@ export class MainPage extends Page {
       itemsHTML += `
       <div class="cards__item card" href="#products/${id}">
       <div class="card__image">
-        <img src=${thumbnail} alt="product image" class="card__img">
+        <img src=${thumbnail} alt="product image" class="card__img" loading="lazy">
       </div>
       <div class="card__about-act">
       <div class="card__about">
