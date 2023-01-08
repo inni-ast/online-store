@@ -119,11 +119,13 @@ export class Product extends Page {
     for (let i = 0; i < DATA[id].images.length; i++) {
       const productSlidesPhoto = document.createElement("img");
       productSlidesPhoto.setAttribute("src", `${DATA[id].images[i]}`);
+      productSlidesPhoto.classList.add("product__slides-small");
       this.productSlides.append(productSlidesPhoto);
     }
     this.productBigPhoto.innerHTML = "";
     const productBigPhoto = document.createElement("img");
     productBigPhoto.setAttribute("src", `${DATA[id].thumbnail}`);
+    productBigPhoto.classList.add("product__slides-big");
     this.productBigPhoto.append(productBigPhoto);
 
     this.productInfo.innerHTML = "";

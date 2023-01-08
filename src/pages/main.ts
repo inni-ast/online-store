@@ -671,6 +671,16 @@ document.onclick = function (event: Event) {
       PRODUCT.getProduct(id);
     }
   }
+  //карточка товара: увеличение и смена фото
+  if (target.classList.contains("product__slides-small")) {
+    const srcSmall = target.getAttribute("src") as string;
+    const bigPhoto = document.querySelector(
+      ".product__slides-big"
+    ) as HTMLImageElement;
+    const srcBig = bigPhoto.getAttribute("src") as string;
+    target.setAttribute("src", srcBig);
+    bigPhoto.setAttribute("src", srcSmall);
+  }
   //карточка товара: click на buy и открытие модального окна покупки
   if (target.classList.contains("card__btnB")) {
     const id = target.getAttribute("data-id");
