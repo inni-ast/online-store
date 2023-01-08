@@ -117,6 +117,7 @@ export class Product extends Page {
 
     this.productSlides.innerHTML = "";
     if (DATA[id].images.length === 1) {
+      console.log(id);
       const productSlidesPhoto = document.createElement("img");
       productSlidesPhoto.setAttribute("src", `${DATA[id].images[0]}`);
       productSlidesPhoto.classList.add("product__slides-small");

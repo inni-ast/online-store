@@ -73,7 +73,11 @@ export const DATA = [
     brand: "Samsung",
     category: "smartphones",
     thumbnail: "https://i.dummyjson.com/data/products/3/thumbnail.jpg",
-    images: ["https://i.dummyjson.com/data/products/3/1.jpg"],
+    images: [
+      "https://i.dummyjson.com/data/products/3/1.jpg",
+      "https://regmedia.co.uk/2011/01/26/sams_1.jpg",
+      "https://regmedia.co.uk/2011/01/26/sams_2.jpg",
+    ],
   },
   {
     id: 4,
