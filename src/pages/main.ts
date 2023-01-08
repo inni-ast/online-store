@@ -678,7 +678,7 @@ document.onclick = function (event: Event) {
       ".product__slides-big"
     ) as HTMLImageElement;
     const srcBig = bigPhoto.getAttribute("src") as string;
-    console.log(srcBig);
+
     target.setAttribute("src", srcBig);
     bigPhoto.setAttribute("src", srcSmall);
   }
