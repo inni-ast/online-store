@@ -5,13 +5,19 @@ class LocalStorageUtil {
   keyName: string;
   data: string;
   checkedCategory: string;
-  checkedStore: string;
+  checkedBrand: string;
+  Search: string;
+  Sort: string;
+  Show: string;
 
   constructor() {
     this.keyName = "products";
     this.data = "data";
     this.checkedCategory = "checkedCategory";
-    this.checkedStore = "checkedStore";
+    this.checkedBrand = "checkedBrand";
+    this.Search = "Search";
+    this.Sort = "Sort";
+    this.Show = "Show";
   }
 
   getData() {
@@ -130,16 +136,16 @@ class LocalStorageUtil {
     };
   }
 
-  getCheckedStore() {
-    const checkedLocalStorage = localStorage.getItem(this.checkedStore);
+  getCheckedBrand() {
+    const checkedLocalStorage = localStorage.getItem(this.checkedBrand);
     if (checkedLocalStorage !== null) {
       return JSON.parse(checkedLocalStorage);
     }
     return [];
   }
 
-  putCheckedStore(item: string) {
-    const check = this.getCheckedStore();
+  putCheckedBrand(item: string) {
+    const check = this.getCheckedBrand();
     const index = check.findIndex((el: string) => el === item);
 
     if (index === -1) {
@@ -148,9 +154,60 @@ class LocalStorageUtil {
       check.splice(index, 1);
     }
     console.log("LS " + check);
-    localStorage.setItem(this.checkedStore, JSON.stringify(check));
+    localStorage.setItem(this.checkedBrand, JSON.stringify(check));
     return {
       check,
+    };
+  }
+
+  getSearch() {
+    const text = localStorage.getItem(this.Search);
+    if (text !== null) {
+      return JSON.parse(text);
+    }
+    return "";
+  }
+
+  putSearch(text: string) {
+    localStorage.removeItem("Search");
+
+    localStorage.setItem(this.Search, JSON.stringify(text));
+    return {
+      text,
+    };
+  }
+
+  getSort() {
+    const text = localStorage.getItem(this.Sort);
+    if (text !== null) {
+      return JSON.parse(text);
+    }
+    return "";
+  }
+
+  putSort(text: string) {
+    localStorage.removeItem("Sort");
+
+    localStorage.setItem(this.Sort, JSON.stringify(text));
+    return {
+      text,
+    };
+  }
+
+  getShow() {
+    const text = localStorage.getItem(this.Show);
+    if (text !== null) {
+      return JSON.parse(text);
+    }
+    return "";
+  }
+
+  putShow(text: string) {
+    localStorage.removeItem("Show");
+
+    localStorage.setItem(this.Show, JSON.stringify(text));
+    return {
+      text,
     };
   }
 }
