@@ -46,6 +46,7 @@ button {
     margin: 0 auto;
     width: 100%;
     &__container {
+        width: 100%;
         display: flex;
         padding: 1%;
         flex-direction: row;
@@ -154,7 +155,7 @@ button {
     overflow: hidden;
     min-width: 210px;
     width: 23%;
-    height: 500px;
+    height: 450px;
     background: $back-card;
     box-shadow: 0px 14px 39px -11px rgba(0, 0, 0, 0.06);
     border-radius: 10px;
@@ -172,7 +173,7 @@ button {
     }
     &__image {
         width: 100%;
-        height: 40%;
+        height: 30%;
         margin-bottom: 10px;
         overflow: hidden;
         transition: transform 0.7s;
@@ -185,7 +186,7 @@ button {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        height: 52%;
+        height: 60%;
         margin: 10px 5px 0 20px;
     }
     &__about::nth-child() {
@@ -213,11 +214,12 @@ button {
 .column {
     .card {
         flex-direction: row;
+        justify-content: space-around;
         width: 90%;
         height: 250px;
         margin: 10px auto;
         .card__image {
-            width: 60%;
+            width: 40%;
             height: 100%;
         }
         .card__about-act {
@@ -298,8 +300,8 @@ button {
     background-color: $but-hov;
 }
 
-.active {
-    background-color: $but-hov
+.button__column.button-vie.active {
+    background-color: $but-hov;
 }
 
 .no-card {
@@ -307,6 +309,19 @@ button {
     font-size: 1.5rem;
     font-weight: 700;
     padding-top: 5%;
+}
+
+.items__filters-texp {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.rangeValues {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    // margin: 0px 10px;
 }
 
 @mixin range-slider($width, $height, $input-top, $input-bg-color, $input-thumb-color, $float:none, $input-height:20px, $input-border-radius:14px) {

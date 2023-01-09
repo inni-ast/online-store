@@ -14,7 +14,7 @@ export class MainPage extends Page {
     btnPriceDown: "Price Down",
     btnStockUp: "Stock Up",
     btnStockDown: "Stock Down",
-    btnSearchOk: "Ok",
+    btnSearch: "X",
     btnItemsRow: "row",
     btnItemsColumn: "col",
     btnResetFilters: "Reset filters",
@@ -38,7 +38,7 @@ export class MainPage extends Page {
   buttonItemsRow: HTMLElement;
   buttonItemsColumn: HTMLElement;
   inputSearchForm: HTMLFormElement;
-  btnSearchOk: HTMLElement;
+  btnSearch: HTMLElement;
   itemsFind: HTMLElement;
   itemsFindText: HTMLElement;
   itemsFindNum: HTMLElement;
@@ -55,7 +55,8 @@ export class MainPage extends Page {
     this.currentData = JSON.parse(JSON.stringify(DATA));
     this.isFilter = false;
     this.itemsContainer = document.createElement("div");
-    this.itemsContainer.classList.add("items__cards", "row");
+    this.itemsContainer.classList.add("items__cards");
+    this.itemsContainer.classList.add(localStorageUtil.getShow() || "row");
 
     this.buttonSortPriceUp = document.createElement("button");
     this.buttonSortPriceUp.id = "price-up";
@@ -82,17 +83,18 @@ export class MainPage extends Page {
     this.inputSearchForm.setAttribute("type", "submit");
     this.inputSearchForm.id = "form-search";
 
-    this.btnSearchOk = document.createElement("button");
-    this.btnSearchOk.setAttribute("type", "submit");
-    this.btnSearchOk.classList.add("search-ok");
-    this.btnSearchOk.textContent = MainPage.TextObject.btnSearchOk;
+    this.btnSearch = document.createElement("button");
+    this.btnSearch.classList.add("search-ok");
+    this.btnSearch.textContent = MainPage.TextObject.btnSearch;
 
     this.inputSearch = document.createElement("input");
     this.inputSearch.setAttribute("type", "text");
     this.inputSearch.setAttribute("name", "search");
     this.inputSearch.setAttribute("placeholder", "Search");
     this.inputSearch.classList.add("input-search");
-    this.inputSearchForm.append(this.inputSearch, this.btnSearchOk);
+    const val = localStorageUtil.getSearch();
+    this.inputSearch.value = val;
+    this.inputSearchForm.append(this.inputSearch, this.btnSearch);
 
     this.itemsFind = document.createElement("div");
     this.itemsFind.classList.add("items__find");
@@ -106,13 +108,19 @@ export class MainPage extends Page {
 
     this.buttonItemsRow = document.createElement("button");
     this.buttonItemsRow.id = "button-row";
-    this.buttonItemsRow.classList.add("button__row", "button-vie", "active");
+    this.buttonItemsRow.classList.add("button__row", "button-vie");
     this.buttonItemsRow.textContent = MainPage.TextObject.btnItemsRow;
 
     this.buttonItemsColumn = document.createElement("button");
     this.buttonItemsColumn.id = "button-column";
     this.buttonItemsColumn.classList.add("button__column", "button-vie");
     this.buttonItemsColumn.textContent = MainPage.TextObject.btnItemsColumn;
+
+    if (localStorageUtil.getShow() === "column") {
+      this.buttonItemsColumn.classList.add("active");
+    } else {
+      this.buttonItemsRow.classList.add("active");
+    }
 
     this.btnResetFilters = document.createElement("button");
     this.btnResetFilters.id = "reset-filters";
@@ -151,48 +159,35 @@ export class MainPage extends Page {
     this.buttonSortStockUp.addEventListener("click", this.sortItemsStockUp);
     this.buttonSortStockDown.addEventListener("click", this.sortItemsStockDown);
 
+    this.btnSearch.addEventListener("click", this.clinSearch);
+
     this.buttonItemsColumn.addEventListener("click", this.cardsShowColumn);
     this.buttonItemsRow.addEventListener("click", this.cardsShowRow);
 
     this.btnResetFilters.addEventListener("click", this.resetFilters);
 
-    this.inputSearchForm.addEventListener("change", function (event: Event) {
+    this.inputSearchForm.addEventListener("input", function (event: Event) {
       event.preventDefault();
+
       const target = document.getElementById("form-search") as HTMLFormElement;
       const formData = new FormData(target);
       const text = formData.get("search") as string;
       getInput(text.trim());
       return false;
     });
+    this.inputSearchForm.addEventListener("submit", function (event: Event) {
+      event.preventDefault();
+
+      return false;
+    });
   }
 
   public resetFilters = () => {
     localStorage.removeItem("data");
-    // localStorage.removeItem("products");
     localStorage.removeItem("checkedCategory");
-    localStorage.removeItem("checkedStore");
-    // localStorage.clear();
-    this.isFilter = false;
-    this.currentData = DATA;
-
-    const mainItems = document.createElement("section") as HTMLElement;
-    const sorts = this.createSorts() as HTMLElement;
-    const filters = this.createFilters(this.currentData) as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
-
-    mainItems.classList.add("main__items");
-    this.container.innerHTML = "";
-    this.container.append(filters); // блок с фильтрами
-    mainItems.append(sorts); // блок с сортировками
-    mainItems.append(allCards); // все товары
-    this.container.append(mainItems);
-    localStorageUtil.putData(this.currentData);
+    localStorage.removeItem("checkedBrand");
+    this.render();
   };
-  // changeCurrentData(data: Array<SET>) {
-  //   this.currentData.length = 0;
-  //   this.currentData.push(...data);
-  //   return this.currentData;
-  // }
 
   public createFilters(data: Array<SET>) {
     this.filterCategory.innerHTML = "";
@@ -242,8 +237,10 @@ export class MainPage extends Page {
         event.preventDefault();
         if (this.checked) {
           getFilter(item as string);
+          onload();
         } else {
           remove(item as string);
+          onload();
         }
       });
     });
@@ -260,7 +257,7 @@ export class MainPage extends Page {
     filterBrandBlock.id = "form-brand";
     filterBrandBlock.setAttribute("name", "form-brand");
     filterBrandBlock.classList.add("input-checkbox-block");
-    const checkedStore = localStorageUtil.getCheckedStore();
+    const checkedBrand = localStorageUtil.getCheckedBrand();
 
     setBrand.forEach((item) => {
       const filterDataBrand = DATA.filter((el) => el.brand === item);
@@ -273,7 +270,7 @@ export class MainPage extends Page {
       filterBrandItem.setAttribute("type", "checkbox");
       filterBrandItem.setAttribute("name", "brand");
 
-      if (checkedStore.indexOf(item) !== -1) {
+      if (checkedBrand.indexOf(item) !== -1) {
         filterBrandItem.setAttribute("checked", "checked");
       }
 
@@ -290,14 +287,48 @@ export class MainPage extends Page {
         event.preventDefault();
         if (this.checked) {
           getFilter(item as string);
+          onload();
         } else {
           remove(item as string);
+          onload();
         }
       });
     });
     this.filterBrand.append(filterBrandBlock);
 
     this.filtersHeaderContainer.innerHTML = "";
+
+    const dataFilterSort = localStorageUtil.getData();
+    let valMinPrice: string;
+    let valMaxPrice: string;
+    const filterPriceSpan = document.createElement("span");
+    filterPriceSpan.classList.add("rangeValues");
+
+    const filterPriceMin = document.createElement("div");
+    const filterPricekMax = document.createElement("div");
+    const filterPriceArrow = document.createElement("div");
+
+    if (dataFilterSort.length > 0) {
+      dataFilterSort.sort((a: SET, b: SET) => {
+        if (a.price > b.price) {
+          return 1;
+        }
+        if (a.price < b.price) {
+          return -1;
+        }
+        return 0;
+      });
+
+      valMinPrice = String(dataFilterSort[dataFilterSort.length - 1].price);
+      valMaxPrice = String(dataFilterSort[0].price);
+
+      filterPriceMin.innerHTML = valMinPrice + " $";
+      filterPricekMax.innerHTML = valMaxPrice + " $";
+      filterPriceArrow.innerHTML = " ⟷ ";
+    } else {
+      filterPriceSpan.innerHTML = "NOT FOUND";
+    }
+
     const filtersHeaderP = document.createElement("p");
     filtersHeaderP.classList.add("items__filters-texp");
     filtersHeaderP.textContent = MainPage.TextObject.inputFilterPrice;
@@ -305,15 +336,21 @@ export class MainPage extends Page {
     const filtersHeaderPrice = document.createElement("section");
     filtersHeaderPrice.classList.add("items__filters-input", "range-slider");
 
-    const filterPriceSpan = document.createElement("span");
-    filterPriceSpan.classList.add("rangeValues");
     const filterPriceStart = document.createElement("input");
     filterPriceStart.setAttribute("type", "range");
+    filterPriceStart.setAttribute("min", "0");
+    filterPriceStart.setAttribute("max", `48`);
+    // filterPriceStart.setAttribute("value", `${dataFilterSort.length - 1}`);
     filterPriceStart.classList.add("filter__price", "filter-input");
+
     const filterPriceEnd = document.createElement("input");
     filterPriceEnd.setAttribute("type", "range");
+    filterPriceEnd.setAttribute("min", "0");
+    filterPriceEnd.setAttribute("max", `48`);
+    // filterPriceStart.setAttribute("value", `0`);
     filterPriceEnd.classList.add("filter__price", "filter-input");
 
+    filterPriceSpan.append(filterPriceMin, filterPriceArrow, filterPricekMax);
     filtersHeaderPrice.append(
       filterPriceSpan,
       filterPriceStart,
@@ -322,6 +359,36 @@ export class MainPage extends Page {
     this.filtersHeaderContainer.append(filtersHeaderP, filtersHeaderPrice);
 
     this.filtersHeaderStockContainer.innerHTML = "";
+
+    let valMinStock: string;
+    let valMaxStock: string;
+
+    const filterStockSpan = document.createElement("span");
+    filterStockSpan.classList.add("rangeValues");
+    const filterStockMin = document.createElement("div");
+    const filterStockMax = document.createElement("div");
+    const filterStockArrow = document.createElement("div");
+
+    if (dataFilterSort.length > 0) {
+      dataFilterSort.sort((a: SET, b: SET) => {
+        if (a.stock > b.stock) {
+          return 1;
+        }
+        if (a.stock < b.stock) {
+          return -1;
+        }
+        return 0;
+      });
+      valMinStock = dataFilterSort[dataFilterSort.length - 1].stock;
+      valMaxStock = dataFilterSort[0].stock;
+
+      filterStockMin.innerHTML = valMinStock;
+      filterStockMax.innerHTML = valMaxStock;
+      filterStockArrow.innerHTML = " ⟷ ";
+    } else {
+      filterStockSpan.innerHTML = "NOT FOUND";
+    }
+
     const filtersHeaderPStock = document.createElement("p");
     filtersHeaderPStock.classList.add("items__filters-texp");
     filtersHeaderPStock.textContent = MainPage.TextObject.inputFilterStock;
@@ -329,14 +396,18 @@ export class MainPage extends Page {
     const filtersHeaderStock = document.createElement("section");
     filtersHeaderStock.classList.add("items__filters-input", "range-slider");
 
-    const filterStockSpan = document.createElement("span");
-    filterStockSpan.classList.add("rangeValues");
     const filterStockStart = document.createElement("input");
     filterStockStart.setAttribute("type", "range");
+    filterStockStart.setAttribute("min", "0");
+    filterStockStart.setAttribute("max", "75");
     filterStockStart.classList.add("filter__price", "filter-input");
     const filterStockEnd = document.createElement("input");
     filterStockEnd.setAttribute("type", "range");
+    filterStockEnd.setAttribute("min", "0");
+    filterStockEnd.setAttribute("max", `75`);
     filterStockEnd.classList.add("filter__price", "filter-input");
+
+    filterStockSpan.append(filterStockMin, filterStockArrow, filterStockMax);
 
     filtersHeaderStock.append(
       filterStockSpan,
@@ -381,24 +452,13 @@ export class MainPage extends Page {
       "motorcycle",
       "lighting",
     ];
-    if (!this.isFilter) {
-      this.isFilter = true;
-      this.currentData.length = 0;
-    }
-
-    const filterDataCategory = DATA.filter(
-      (el) => el.brand === item || el.category === item
-    );
-    this.currentData.push(...filterDataCategory);
-    localStorageUtil.putData(this.currentData);
     if (categories.includes(item)) {
       localStorageUtil.putCheckedCategory(item);
     } else {
-      localStorageUtil.putCheckedStore(item);
+      localStorageUtil.putCheckedBrand(item);
     }
-
-    this.createCards(this.currentData);
-    return this.currentData;
+    this.createCards(DATA);
+    // return this.currentData;
   }
 
   public removeFilter(item: string) {
@@ -424,30 +484,24 @@ export class MainPage extends Page {
       "motorcycle",
       "lighting",
     ];
-    let filter: Array<SET> = [];
-
     if (categories.includes(item)) {
-      filter = this.currentData.filter((el: SET) => el.category !== item);
       localStorageUtil.putCheckedCategory(item);
     } else {
-      filter = this.currentData.filter((el: SET) => el.brand !== item);
-      localStorageUtil.putCheckedStore(item);
+      localStorageUtil.putCheckedBrand(item);
     }
-
-    this.currentData.length = 0;
-    this.currentData.push(...filter);
-
-    localStorageUtil.putData(this.currentData);
-
-    this.createCards(this.currentData);
-
-    localStorageUtil.putData(this.currentData);
-    return this.currentData;
+    this.createCards(DATA);
   }
+
+  // public makeRange(value: string, min: string, max: string) {
+  //   const minV: number = +min;
+  //   const maxV: number = +max;
+  //   const data = localStorageUtil.getData();
+  //   const change = data[+value - 1].price;
+  //   localStorageUtil.putRange(change);
+  // }
 
   private createSorts() {
     const sortsHeader = document.createElement("div");
-
     sortsHeader.classList.add("items__sorts");
     sortsHeader.append(
       this.buttonSortPriceDown,
@@ -463,25 +517,8 @@ export class MainPage extends Page {
   }
 
   public searchCards(input: string) {
-    const sortedData = DATA.filter(
-      (el) =>
-        el.price.toString().toLowerCase().includes(input) ||
-        el.discountPercentage.toString().toLowerCase().includes(input) ||
-        el.rating.toString().toLowerCase().includes(input) ||
-        el.stock.toString().toLowerCase().includes(input) ||
-        el.title.toLocaleLowerCase().includes(input) ||
-        el.description.toLocaleLowerCase().includes(input) ||
-        el.brand.toLocaleLowerCase().includes(input) ||
-        el.category.toLocaleLowerCase().includes(input)
-    );
-    this.currentData.length = 0;
-    this.currentData.push(...sortedData);
-
-    localStorageUtil.putData(this.currentData);
-
-    this.createCards(this.currentData);
-
-    return this.currentData;
+    localStorageUtil.putSearch(input);
+    this.createCards(DATA);
   }
 
   private setCardsNumber(num: number) {
@@ -494,8 +531,87 @@ export class MainPage extends Page {
     const productsStore = localStorageUtil
       .getProducts()
       .map((x: StorageProducts) => x.id);
-    let itemsHTML = "";
 
+    data = DATA;
+    const checkedCategory = localStorageUtil.getCheckedCategory();
+    const checkedBrand = localStorageUtil.getCheckedBrand();
+    const input = localStorageUtil.getSearch();
+    const sortSort = localStorageUtil.getSort();
+
+    if (checkedCategory.length > 0) {
+      data = data.filter(
+        (el) => checkedCategory.includes(el.category) === true
+      );
+      if (checkedBrand.length > 0) {
+        data = data.filter((el) => checkedBrand.includes(el.brand) === true);
+      }
+    }
+
+    if (checkedBrand.length > 0 && checkedCategory.length === 0) {
+      data = data.filter((el) => checkedBrand.includes(el.brand) === true);
+    }
+
+    if (input.length > 0) {
+      data = data.filter(
+        (el) =>
+          el.price.toString().toLowerCase().includes(input) ||
+          el.discountPercentage.toString().toLowerCase().includes(input) ||
+          el.rating.toString().toLowerCase().includes(input) ||
+          el.stock.toString().toLowerCase().includes(input) ||
+          el.title.toLocaleLowerCase().includes(input) ||
+          el.description.toLocaleLowerCase().includes(input) ||
+          el.brand.toLocaleLowerCase().includes(input) ||
+          el.category.toLocaleLowerCase().includes(input)
+      );
+    }
+
+    if (sortSort === "PriceUp") {
+      this.toggleClassActive(this.buttonSortPriceUp);
+      data.sort((a: SET, b: SET) => {
+        if (a.price > b.price) {
+          return 1;
+        }
+        if (a.price < b.price) {
+          return -1;
+        }
+        return 0;
+      });
+    } else if (sortSort === "PriceDown") {
+      this.toggleClassActive(this.buttonSortPriceDown);
+      data.sort((a: SET, b: SET) => {
+        if (a.price < b.price) {
+          return 1;
+        }
+        if (a.price > b.price) {
+          return -1;
+        }
+        return 0;
+      });
+    } else if (sortSort === "StockUp") {
+      this.toggleClassActive(this.buttonSortStockUp);
+      data.sort((a: SET, b: SET) => {
+        if (a.stock > b.stock) {
+          return 1;
+        }
+        if (a.stock < b.stock) {
+          return -1;
+        }
+        return 0;
+      });
+    } else if (sortSort === "StockDown") {
+      this.toggleClassActive(this.buttonSortStockDown);
+      data.sort((a: SET, b: SET) => {
+        if (a.stock < b.stock) {
+          return 1;
+        }
+        if (a.stock > b.stock) {
+          return -1;
+        }
+        return 0;
+      });
+    }
+
+    let itemsHTML = "";
     data.forEach(({ id, thumbnail, title, brand, price, stock, category }) => {
       let activeClass = "";
       let activeText = "";
@@ -510,7 +626,7 @@ export class MainPage extends Page {
       itemsHTML += `
       <div class="cards__item card" href="#products/${id}">
       <div class="card__image">
-        <img src=${thumbnail} alt="product image" class="card__img">
+        <img src=${thumbnail} alt="product image" class="card__img" loading="lazy">
       </div>
       <div class="card__about-act">
       <div class="card__about">
@@ -534,23 +650,10 @@ export class MainPage extends Page {
     if (data.length === 0) {
       this.itemsContainer.innerHTML = `<div class="no-card"> No products found</div>`;
     }
-    this.setCardsNumber(this.currentData.length);
+    this.setCardsNumber(data.length);
+    localStorageUtil.putData(data);
     return this.itemsContainer;
   }
-
-  public sortItemsPriceUp = () => {
-    this.currentData.sort((a: SET, b: SET) => {
-      if (a.price > b.price) {
-        return 1;
-      }
-      if (a.price < b.price) {
-        return -1;
-      }
-      return 0;
-    });
-    this.createCards(this.currentData);
-    this.toggleClassActive(this.buttonSortPriceUp);
-  };
 
   private toggleClassActive(btn: HTMLElement) {
     this.buttonSortStockUp.classList.remove("active-btn");
@@ -560,48 +663,35 @@ export class MainPage extends Page {
     btn.classList.add("active-btn");
   }
 
+  public sortItemsPriceUp = () => {
+    localStorageUtil.putSort("PriceUp");
+    this.createCards(DATA);
+  };
+
   public sortItemsPriceDown = () => {
-    this.currentData.sort((a: SET, b: SET) => {
-      if (a.price < b.price) {
-        return 1;
-      }
-      if (a.price > b.price) {
-        return -1;
-      }
-      return 0;
-    });
-    this.createCards(this.currentData);
-    this.toggleClassActive(this.buttonSortPriceDown);
+    localStorageUtil.putSort("PriceDown");
+    this.createCards(DATA);
   };
 
   public sortItemsStockUp = () => {
-    this.currentData.sort((a: SET, b: SET) => {
-      if (a.stock > b.stock) {
-        return 1;
-      }
-      if (a.stock < b.stock) {
-        return -1;
-      }
-      return 0;
-    });
-    this.createCards(this.currentData);
-    this.toggleClassActive(this.buttonSortStockUp);
+    localStorageUtil.putSort("StockUp");
+    this.createCards(DATA);
   };
+
   public sortItemsStockDown = () => {
-    this.currentData.sort((a: SET, b: SET) => {
-      if (a.stock < b.stock) {
-        return 1;
-      }
-      if (a.stock > b.stock) {
-        return -1;
-      }
-      return 0;
-    });
-    this.createCards(this.currentData);
-    this.toggleClassActive(this.buttonSortStockDown);
+    localStorageUtil.putSort("StockDown");
+    this.createCards(DATA);
+  };
+
+  public clinSearch = () => {
+    localStorageUtil.putSearch("");
+    const val = localStorageUtil.getSearch();
+    this.inputSearch.value = val;
+    this.render();
   };
 
   public cardsShowRow() {
+    localStorageUtil.putShow("row");
     const container = document.querySelector(".items__cards");
     const btnAdd = document.querySelector("#button-row");
     const btnRemove = document.querySelector("#button-column");
@@ -612,11 +702,11 @@ export class MainPage extends Page {
         container.classList.add("row");
       }
     }
-
     btnAdd?.classList.add("active");
     btnRemove?.classList.remove("active");
   }
-  public cardsShowColumn = () => {
+  public cardsShowColumn() {
+    localStorageUtil.putShow("column");
     const container = document.querySelector(".items__cards");
     const btnAdd = document.querySelector("#button-column");
     const btnRemove = document.querySelector("#button-row");
@@ -629,14 +719,15 @@ export class MainPage extends Page {
     }
     btnAdd?.classList.add("active");
     btnRemove?.classList.remove("active");
-  };
+  }
 
   render() {
     const mainItems = document.createElement("section") as HTMLElement;
+
     const sorts = this.createSorts() as HTMLElement;
+    const allCards = this.createCards(DATA) as HTMLElement;
     this.currentData = localStorageUtil.getData();
     const filters = this.createFilters(this.currentData) as HTMLElement;
-    const allCards = this.createCards(this.currentData) as HTMLElement;
 
     mainItems.classList.add("main__items");
     this.container.innerHTML = "";
@@ -662,8 +753,13 @@ function remove(item: string) {
   P.removeFilter(item);
 }
 
+function onload() {
+  P.render();
+}
+
 document.onclick = function (event: Event) {
   const target = event.target as HTMLElement;
+
   //октрытие карточки товара
   if (target.classList.contains("btn__product")) {
     const id = Number(target.getAttribute("data-id"));

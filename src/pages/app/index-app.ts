@@ -1,9 +1,8 @@
 import { Page } from "../../core/templates/page";
-// import { MainPage } from "../main";
 import { Header } from "../header";
 import { ErrorPage, ErrorTypes } from "../error";
-import { DATA } from "../../modules/data";
-import { preloadImages, preloadImagesProduct } from "../../modules/funсtions";
+// import { DATA } from "../../modules/data";
+// import { preloadImages } from "../../modules/funсtions";
 import { P } from "../main";
 import { BASKET } from "../basket";
 import { PRODUCT } from "../product";
@@ -48,6 +47,11 @@ export class App {
   private routeChange() {
     window.addEventListener("hashchange", () => {
       const hash = window.location.hash.slice(1);
+      console.log(hash);
+      // const productHash = /products\/[1-9]{1}[0-9]{0,2}/;
+      // if (hash.match(productHash)) {
+      //   console.log("true hash");
+      // }
       App.renderNewPage(hash);
     });
   }
@@ -55,7 +59,6 @@ export class App {
     App.renderNewPage("main-container");
     this.header.run();
     this.routeChange();
-    preloadImages(DATA);
-    preloadImagesProduct(DATA);
+    // preloadImages(DATA);
   }
 }
