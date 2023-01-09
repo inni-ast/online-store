@@ -9,6 +9,7 @@ class LocalStorageUtil {
   Search: string;
   Sort: string;
   Show: string;
+  Range: string;
 
   constructor() {
     this.keyName = "products";
@@ -18,6 +19,7 @@ class LocalStorageUtil {
     this.Search = "Search";
     this.Sort = "Sort";
     this.Show = "Show";
+    this.Range = "Range";
   }
 
   getData() {
@@ -206,6 +208,23 @@ class LocalStorageUtil {
     localStorage.removeItem("Show");
 
     localStorage.setItem(this.Show, JSON.stringify(text));
+    return {
+      text,
+    };
+  }
+
+  getRange() {
+    const text = localStorage.getItem(this.Range);
+    if (text !== null) {
+      return JSON.parse(text);
+    }
+    return "";
+  }
+
+  putRange(text: string) {
+    localStorage.removeItem("Range");
+
+    localStorage.setItem(this.Range, JSON.stringify(text));
     return {
       text,
     };

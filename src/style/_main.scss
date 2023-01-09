@@ -46,6 +46,7 @@ button {
     margin: 0 auto;
     width: 100%;
     &__container {
+        width: 100%;
         display: flex;
         padding: 1%;
         flex-direction: row;
@@ -308,6 +309,19 @@ button {
     font-size: 1.5rem;
     font-weight: 700;
     padding-top: 5%;
+}
+
+.items__filters-texp {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.rangeValues {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    // margin: 0px 10px;
 }
 
 @mixin range-slider($width, $height, $input-top, $input-bg-color, $input-thumb-color, $float:none, $input-height:20px, $input-border-radius:14px) {
