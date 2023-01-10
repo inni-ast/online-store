@@ -9,7 +9,8 @@ class LocalStorageUtil {
   Search: string;
   Sort: string;
   Show: string;
-  Range: string;
+  RangePrice: string;
+  RangeStock: string;
 
   constructor() {
     this.keyName = "products";
@@ -19,7 +20,8 @@ class LocalStorageUtil {
     this.Search = "Search";
     this.Sort = "Sort";
     this.Show = "Show";
-    this.Range = "Range";
+    this.RangePrice = "RangePrice";
+    this.RangeStock = "RangeStock";
   }
 
   getData() {
@@ -213,20 +215,69 @@ class LocalStorageUtil {
     };
   }
 
-  getRange() {
-    const text = localStorage.getItem(this.Range);
+  getRangePrice() {
+    const text = localStorage.getItem(this.RangePrice);
     if (text !== null) {
       return JSON.parse(text);
     }
     return "";
   }
 
-  putRange(text: string) {
-    localStorage.removeItem("Range");
+  putRangePrice(text: string) {
+    const MaxMin = this.getRangePrice() || [49, 1];
 
-    localStorage.setItem(this.Range, JSON.stringify(text));
+    if (MaxMin[0] === +text - 1 || MaxMin[0] === +text + 1) {
+      MaxMin[0] = +text;
+    } else if (MaxMin[1] === +text - 1 || MaxMin[1] === +text + 1) {
+      MaxMin[1] = +text;
+    }
+
+    MaxMin.sort((a: number, b: number) => {
+      if (a < b) {
+        return 1;
+      }
+      if (a > b) {
+        return -1;
+      }
+      return 0;
+    });
+
+    localStorage.setItem(this.RangePrice, JSON.stringify(MaxMin));
     return {
-      text,
+      MaxMin,
+    };
+  }
+
+  getRangeStock() {
+    const text = localStorage.getItem(this.RangeStock);
+    if (text !== null) {
+      return JSON.parse(text);
+    }
+    return "";
+  }
+
+  putRangeStock(text: string) {
+    const MaxMin = this.getRangeStock() || [76, 1];
+
+    if (MaxMin[0] === +text - 1 || MaxMin[0] === +text + 1) {
+      MaxMin[0] = +text;
+    } else if (MaxMin[1] === +text - 1 || MaxMin[1] === +text + 1) {
+      MaxMin[1] = +text;
+    }
+
+    MaxMin.sort((a: number, b: number) => {
+      if (a > b) {
+        return -1;
+      }
+      if (a < b) {
+        return 1;
+      }
+      return 0;
+    });
+
+    localStorage.setItem(this.RangeStock, JSON.stringify(MaxMin));
+    return {
+      MaxMin,
     };
   }
 }

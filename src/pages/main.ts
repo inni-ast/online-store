@@ -177,15 +177,47 @@ export class MainPage extends Page {
     });
     this.inputSearchForm.addEventListener("submit", function (event: Event) {
       event.preventDefault();
-
       return false;
     });
+    this.filtersHeaderContainer.addEventListener(
+      "input",
+      function (event: Event) {
+        event.preventDefault();
+        const target = event.target as HTMLInputElement;
+        if (target.classList.contains("filter__price")) {
+          localStorageUtil.putRangePrice(target.value);
+        }
+
+        setTimeout(() => {
+          onload();
+        }, 1000);
+
+        return false;
+      }
+    );
+    this.filtersHeaderStockContainer.addEventListener(
+      "input",
+      function (event: Event) {
+        event.preventDefault();
+        const target = event.target as HTMLInputElement;
+        if (target.classList.contains("filter__stock")) {
+          localStorageUtil.putRangeStock(target.value);
+        }
+
+        setTimeout(() => {
+          onload();
+        }, 1000);
+        return false;
+      }
+    );
   }
 
   public resetFilters = () => {
     localStorage.removeItem("data");
     localStorage.removeItem("checkedCategory");
     localStorage.removeItem("checkedBrand");
+    localStorage.removeItem("RangeStock");
+    localStorage.removeItem("RangePrice");
     this.render();
   };
 
@@ -251,6 +283,8 @@ export class MainPage extends Page {
     DATA.map((a: SET): void => {
       setBrand.add(a.brand);
     });
+
+    console.log(setBrand);
     this.filterBrand.innerHTML = "";
     this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
     const filterBrandBlock = document.createElement("form");
@@ -297,16 +331,59 @@ export class MainPage extends Page {
     this.filterBrand.append(filterBrandBlock);
 
     this.filtersHeaderContainer.innerHTML = "";
-
     const dataFilterSort = localStorageUtil.getData();
-    let valMinPrice: string;
-    let valMaxPrice: string;
+
+    const setPrice = new Set();
+
+    DATA.map((a: SET): void => {
+      setPrice.add(a.price);
+    });
+
+    const setPrice1: Array<number> = [];
+    setPrice.forEach((item) => {
+      setPrice1.push(Number(item));
+    });
+
+    setPrice1.sort((a: number, b: number) => {
+      if (a < b) {
+        return 1;
+      }
+      if (a > b) {
+        return -1;
+      }
+      return 0;
+    });
+
+    const filtersHeaderP = document.createElement("p");
+    filtersHeaderP.classList.add("items__filters-texp");
+    filtersHeaderP.textContent = MainPage.TextObject.inputFilterPrice;
+
+    const filtersHeaderPrice = document.createElement("section");
+    filtersHeaderPrice.classList.add("items__filters-input", "range-slider");
+
+    const filterPriceStart = document.createElement("input");
+    filterPriceStart.setAttribute("type", "range");
+    filterPriceStart.setAttribute("min", "1");
+    filterPriceStart.setAttribute("max", `${setPrice.size}`);
+    filterPriceStart.classList.add("filter__price", "filter-input");
+
+    const filterPriceEnd = document.createElement("input");
+    filterPriceEnd.setAttribute("type", "range");
+    filterPriceEnd.setAttribute("min", "1");
+    filterPriceEnd.setAttribute("max", `${setPrice.size}`);
+    filterPriceEnd.classList.add("filter__price", "filter-input");
+
+    const MaxMinPrice = localStorageUtil.getRangePrice() || [setPrice.size, 1];
+
     const filterPriceSpan = document.createElement("span");
     filterPriceSpan.classList.add("rangeValues");
 
     const filterPriceMin = document.createElement("div");
     const filterPricekMax = document.createElement("div");
     const filterPriceArrow = document.createElement("div");
+
+    filterPriceStart.setAttribute("value", `${MaxMinPrice[1]}`);
+    filterPriceEnd.setAttribute("value", `${MaxMinPrice[0]}`);
 
     if (dataFilterSort.length > 0) {
       dataFilterSort.sort((a: SET, b: SET) => {
@@ -319,36 +396,15 @@ export class MainPage extends Page {
         return 0;
       });
 
-      valMinPrice = String(dataFilterSort[dataFilterSort.length - 1].price);
-      valMaxPrice = String(dataFilterSort[0].price);
+      const minVal = setPrice1[+MaxMinPrice[1] - 1];
+      const maxVal = setPrice1[+MaxMinPrice[0] - 1];
 
-      filterPriceMin.innerHTML = valMinPrice + " $";
-      filterPricekMax.innerHTML = valMaxPrice + " $";
+      filterPriceMin.innerHTML = maxVal + " $";
+      filterPricekMax.innerHTML = minVal + " $";
       filterPriceArrow.innerHTML = " ⟷ ";
     } else {
       filterPriceSpan.innerHTML = "NOT FOUND";
     }
-
-    const filtersHeaderP = document.createElement("p");
-    filtersHeaderP.classList.add("items__filters-texp");
-    filtersHeaderP.textContent = MainPage.TextObject.inputFilterPrice;
-
-    const filtersHeaderPrice = document.createElement("section");
-    filtersHeaderPrice.classList.add("items__filters-input", "range-slider");
-
-    const filterPriceStart = document.createElement("input");
-    filterPriceStart.setAttribute("type", "range");
-    filterPriceStart.setAttribute("min", "0");
-    filterPriceStart.setAttribute("max", `48`);
-    // filterPriceStart.setAttribute("value", `${dataFilterSort.length - 1}`);
-    filterPriceStart.classList.add("filter__price", "filter-input");
-
-    const filterPriceEnd = document.createElement("input");
-    filterPriceEnd.setAttribute("type", "range");
-    filterPriceEnd.setAttribute("min", "0");
-    filterPriceEnd.setAttribute("max", `48`);
-    // filterPriceStart.setAttribute("value", `0`);
-    filterPriceEnd.classList.add("filter__price", "filter-input");
 
     filterPriceSpan.append(filterPriceMin, filterPriceArrow, filterPricekMax);
     filtersHeaderPrice.append(
@@ -360,14 +416,54 @@ export class MainPage extends Page {
 
     this.filtersHeaderStockContainer.innerHTML = "";
 
-    let valMinStock: string;
-    let valMaxStock: string;
+    const setStock = new Set();
+
+    DATA.map((a: SET): void => {
+      setStock.add(a.stock);
+    });
+
+    const setStock1: Array<number> = [];
+    setStock.forEach((item) => {
+      setStock1.push(Number(item));
+    });
+
+    setStock1.sort((a: number, b: number) => {
+      if (a < b) {
+        return 1;
+      }
+      if (a > b) {
+        return -1;
+      }
+      return 0;
+    });
 
     const filterStockSpan = document.createElement("span");
     filterStockSpan.classList.add("rangeValues");
     const filterStockMin = document.createElement("div");
     const filterStockMax = document.createElement("div");
     const filterStockArrow = document.createElement("div");
+
+    const filtersHeaderPStock = document.createElement("p");
+    filtersHeaderPStock.classList.add("items__filters-texp");
+    filtersHeaderPStock.textContent = MainPage.TextObject.inputFilterStock;
+
+    const filtersHeaderStock = document.createElement("section");
+    filtersHeaderStock.classList.add("items__filters-input", "range-slider");
+
+    const filterStockStart = document.createElement("input");
+    filterStockStart.setAttribute("type", "range");
+    filterStockStart.setAttribute("min", "1");
+    filterStockStart.setAttribute("max", `${setStock.size}`);
+    filterStockStart.classList.add("filter__stock", "filter-input");
+    const filterStockEnd = document.createElement("input");
+    filterStockEnd.setAttribute("type", "range");
+    filterStockEnd.setAttribute("min", "1");
+    filterStockEnd.setAttribute("max", `${setStock.size}`);
+    filterStockEnd.classList.add("filter__stock", "filter-input");
+
+    const MaxMinStock = localStorageUtil.getRangeStock() || [setStock.size, 1];
+    filterStockStart.setAttribute("value", `${MaxMinStock[1]}`);
+    filterStockEnd.setAttribute("value", `${MaxMinStock[0]}`);
 
     if (dataFilterSort.length > 0) {
       dataFilterSort.sort((a: SET, b: SET) => {
@@ -379,33 +475,16 @@ export class MainPage extends Page {
         }
         return 0;
       });
-      valMinStock = dataFilterSort[dataFilterSort.length - 1].stock;
-      valMaxStock = dataFilterSort[0].stock;
 
-      filterStockMin.innerHTML = valMinStock;
-      filterStockMax.innerHTML = valMaxStock;
+      const minVal = setStock1[+MaxMinStock[1] - 1];
+      const maxVal = setStock1[+MaxMinStock[0] - 1];
+
+      filterStockMin.innerHTML = `${maxVal}`;
+      filterStockMax.innerHTML = `${minVal}`;
       filterStockArrow.innerHTML = " ⟷ ";
     } else {
       filterStockSpan.innerHTML = "NOT FOUND";
     }
-
-    const filtersHeaderPStock = document.createElement("p");
-    filtersHeaderPStock.classList.add("items__filters-texp");
-    filtersHeaderPStock.textContent = MainPage.TextObject.inputFilterStock;
-
-    const filtersHeaderStock = document.createElement("section");
-    filtersHeaderStock.classList.add("items__filters-input", "range-slider");
-
-    const filterStockStart = document.createElement("input");
-    filterStockStart.setAttribute("type", "range");
-    filterStockStart.setAttribute("min", "0");
-    filterStockStart.setAttribute("max", "75");
-    filterStockStart.classList.add("filter__price", "filter-input");
-    const filterStockEnd = document.createElement("input");
-    filterStockEnd.setAttribute("type", "range");
-    filterStockEnd.setAttribute("min", "0");
-    filterStockEnd.setAttribute("max", `75`);
-    filterStockEnd.classList.add("filter__price", "filter-input");
 
     filterStockSpan.append(filterStockMin, filterStockArrow, filterStockMax);
 
@@ -492,14 +571,6 @@ export class MainPage extends Page {
     this.createCards(DATA);
   }
 
-  // public makeRange(value: string, min: string, max: string) {
-  //   const minV: number = +min;
-  //   const maxV: number = +max;
-  //   const data = localStorageUtil.getData();
-  //   const change = data[+value - 1].price;
-  //   localStorageUtil.putRange(change);
-  // }
-
   private createSorts() {
     const sortsHeader = document.createElement("div");
     sortsHeader.classList.add("items__sorts");
@@ -537,6 +608,8 @@ export class MainPage extends Page {
     const checkedBrand = localStorageUtil.getCheckedBrand();
     const input = localStorageUtil.getSearch();
     const sortSort = localStorageUtil.getSort();
+    const rangePrice = localStorageUtil.getRangePrice();
+    const rangeStock = localStorageUtil.getRangeStock();
 
     if (checkedCategory.length > 0) {
       data = data.filter(
@@ -609,6 +682,60 @@ export class MainPage extends Page {
         }
         return 0;
       });
+    }
+
+    if (rangeStock) {
+      const setPrice = new Set();
+      DATA.map((a: SET): void => {
+        setPrice.add(a.stock);
+      });
+
+      const setPrice1: Array<number> = [];
+      setPrice.forEach((item) => {
+        setPrice1.push(Number(item));
+      });
+
+      setPrice1.sort((a: number, b: number) => {
+        if (a < b) {
+          return 1;
+        }
+        if (a > b) {
+          return -1;
+        }
+        return 0;
+      });
+
+      const minVal = setPrice1[+rangeStock[1] - 1];
+      const maxVal = setPrice1[+rangeStock[0] - 1];
+
+      data = data.filter((el) => el.stock <= minVal && el.stock >= maxVal);
+    }
+
+    if (rangePrice) {
+      const setPrice = new Set();
+      DATA.map((a: SET): void => {
+        setPrice.add(a.price);
+      });
+
+      const setPrice1: Array<number> = [];
+      setPrice.forEach((item) => {
+        setPrice1.push(Number(item));
+      });
+
+      setPrice1.sort((a: number, b: number) => {
+        if (a < b) {
+          return 1;
+        }
+        if (a > b) {
+          return -1;
+        }
+        return 0;
+      });
+
+      const minVal = setPrice1[+rangePrice[1] - 1];
+      const maxVal = setPrice1[+rangePrice[0] - 1];
+
+      data = data.filter((el) => el.price <= minVal && el.price >= maxVal);
     }
 
     let itemsHTML = "";
