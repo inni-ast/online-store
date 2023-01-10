@@ -33,7 +33,6 @@ export class Header {
         (total: number, amount: StorageProducts) => amount.count + total,
         0
       );
-    this.basketEl.textContent = String(productsStore.length);
     this.totalPrice = localStorageUtil
       .getProducts()
       .reduce(
@@ -42,6 +41,7 @@ export class Header {
         0
       );
     this.priceEl.textContent = `${String(this.totalPrice)} $`;
+    this.basketEl.textContent = `${String(this.basket)}`;
     return this.basket;
   }
 
