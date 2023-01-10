@@ -394,25 +394,23 @@ document.oninput = function (event: Event) {
       BASKET.setPromoSh(5);
     }
   }
-  //окно покупки: срок действия карты
-  // if (target.classList.contains("form-card__input-data")) {
-  //   if (/[0-9]{2}/.test(value)) {
-  //     value += "/";
-  //     console.log(value);
-  //   }
-  // }
 };
 
 document.onsubmit = function (event: Event) {
-  event.preventDefault();
-  alert("Thank you! Your order has been placed");
-  setTimeout(() => {
-    overlay.innerHTML = "";
-    BASKET.handlerClear();
-    App.renderNewPage("main-container");
-    document.body.classList.remove("lock");
-    overlay.classList.remove("active");
-  }, 2000);
+  const target = event.target as HTMLInputElement;
+  console.log(target);
+
+  if (target.classList.contains("form-buy")) {
+    event.preventDefault();
+    alert("Thank you! Your order has been placed");
+    setTimeout(() => {
+      overlay.innerHTML = "";
+      BASKET.handlerClear();
+      App.renderNewPage("main-container");
+      document.body.classList.remove("lock");
+      overlay.classList.remove("active");
+    }, 2000);
+  }
 };
 
 document.onkeyup = function (event: Event) {
