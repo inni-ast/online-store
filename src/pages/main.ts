@@ -93,6 +93,7 @@ export class MainPage extends Page {
     this.inputSearch.setAttribute("placeholder", "Search");
     this.inputSearch.classList.add("input-search");
     const val = localStorageUtil.getSearch();
+
     this.inputSearch.value = val;
     this.inputSearchForm.append(this.inputSearch, this.btnSearch);
 
@@ -284,7 +285,6 @@ export class MainPage extends Page {
       setBrand.add(a.brand);
     });
 
-    console.log(setBrand);
     this.filterBrand.innerHTML = "";
     this.filterBrand.textContent = MainPage.TextObject.divFilterBrand;
     const filterBrandBlock = document.createElement("form");
@@ -537,7 +537,6 @@ export class MainPage extends Page {
       localStorageUtil.putCheckedBrand(item);
     }
     this.createCards(DATA);
-    // return this.currentData;
   }
 
   public removeFilter(item: string) {
@@ -858,9 +857,9 @@ export class MainPage extends Page {
 
     mainItems.classList.add("main__items");
     this.container.innerHTML = "";
-    this.container.append(filters); // блок с фильтрами
-    mainItems.append(sorts); // блок с сортировками
-    mainItems.append(allCards); // все товары
+    this.container.append(filters);
+    mainItems.append(sorts);
+    mainItems.append(allCards);
     this.container.append(mainItems);
     return this.container;
   }
@@ -914,7 +913,6 @@ document.onclick = function (event: Event) {
       const products = localStorageUtil.getProducts();
 
       if (products.length === 0) {
-        console.log("length 0");
         const { pushProduct } = localStorageUtil.putProducts(+id, +price);
         if (pushProduct) {
           header.addProduct(+price);

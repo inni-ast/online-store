@@ -1,8 +1,3 @@
-interface Info {
-  total: number;
-  skip: number;
-  limit: number;
-}
 export type StorageProducts = { id: number; price: number; count: number };
 
 export interface SET {
@@ -18,12 +13,7 @@ export interface SET {
   thumbnail: string;
   images: Array<string>;
 }
-const info: Info = {
-  total: 100,
-  skip: 0,
-  limit: 100,
-};
-console.log(info);
+
 export const DATA = [
   {
     id: 1,

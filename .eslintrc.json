@@ -22,7 +22,7 @@
   "rules": {
     "prettier/prettier": "error",
     "no-debugger": "error",
-    "no-console": 0,
+    "no-console": "error",
     "class-methods-use-this": "off",
     "@typescript-eslint/no-explicit-any": 2,
     "@typescript-eslint/no-var-requires": 0

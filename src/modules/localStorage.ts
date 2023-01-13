@@ -133,7 +133,6 @@ class LocalStorageUtil {
     } else {
       check.splice(index, 1);
     }
-    console.log("LS " + check);
     localStorage.setItem(this.checkedCategory, JSON.stringify(check));
     return {
       check,
@@ -157,7 +156,6 @@ class LocalStorageUtil {
     } else {
       check.splice(index, 1);
     }
-    console.log("LS " + check);
     localStorage.setItem(this.checkedBrand, JSON.stringify(check));
     return {
       check,

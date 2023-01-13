@@ -4,7 +4,6 @@ import { localStorageUtil } from "../modules/localStorage";
 import { StorageProducts } from "../modules/data";
 import { header } from "./header";
 import { App } from "./app/index-app";
-// import { Visa } from "../img/visa.png";
 
 const overlay = document.getElementById("overlay-modal") as HTMLDivElement;
 export class Basket extends Page {
@@ -33,7 +32,7 @@ export class Basket extends Page {
     this.isPromoWin = 0;
     this.isPromoSh = 0;
   }
-  // очищает всю корзину
+
   handlerClear() {
     this.basketContainer.innerHTML = "";
     localStorage.removeItem("products");
@@ -398,7 +397,6 @@ document.oninput = function (event: Event) {
 
 document.onsubmit = function (event: Event) {
   const target = event.target as HTMLInputElement;
-  console.log(target);
 
   if (target.classList.contains("form-buy")) {
     event.preventDefault();

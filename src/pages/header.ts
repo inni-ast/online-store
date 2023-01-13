@@ -77,7 +77,6 @@ export class Header {
   setPriceFromBasket(num: number) {
     this.totalPrice = num;
     this.priceEl.textContent = `${String(this.totalPrice)} $`;
-    console.log("price" + num);
     return this.totalPrice;
   }
   setNumFromBasket(num: number) {
@@ -88,6 +87,5 @@ export class Header {
 }
 
 export const productsStore = localStorageUtil.getProducts();
-
 export const dataStore = localStorageUtil.getData();
 export const header = new Header();
