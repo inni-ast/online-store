@@ -1,4 +1,5 @@
 import { Page } from "../core/templates/page";
+import { Error404 } from "../modules/const";
 
 export const enum ErrorTypes {
   NotFound = 404,
@@ -6,11 +7,6 @@ export const enum ErrorTypes {
 
 export class ErrorPage extends Page {
   private errorType: ErrorTypes | string;
-
-  static TextObject = {
-    mainTitle: "Error! The page was not found.",
-    total: "404",
-  };
 
   constructor(
     el: string,
@@ -23,7 +19,7 @@ export class ErrorPage extends Page {
   }
 
   render() {
-    const title = this.createTitle(ErrorPage.TextObject.mainTitle);
+    const title = this.createTitle(Error404);
     this.container.append(title);
     return this.container;
   }

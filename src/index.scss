@@ -1,5 +1,4 @@
 @import 'libs/normalize';
-@import 'style/fonts';
 @import 'style/var';
 @import 'style/style';
 @import 'style/header';
@@ -7,6 +6,7 @@
 @import 'style/product';
 @import 'style/basket';
 @import 'style/buy-window';
+
 .wrapper {
   max-width: 1300px;
   margin: 0 auto;

@@ -92,7 +92,7 @@ export class MainPage extends Page {
     this.inputSearch.setAttribute("name", "search");
     this.inputSearch.setAttribute("placeholder", "Search");
     this.inputSearch.classList.add("input-search");
-    const val = localStorageUtil.getSearch();
+    const val = localStorageUtil.getParams("Search");
 
     this.inputSearch.value = val;
     this.inputSearchForm.append(this.inputSearch, this.btnSearch);
@@ -331,7 +331,7 @@ export class MainPage extends Page {
     this.filterBrand.append(filterBrandBlock);
 
     this.filtersHeaderContainer.innerHTML = "";
-    const dataFilterSort = localStorageUtil.getData();
+    const dataFilterSort = localStorageUtil.getFromLS("data");
 
     const setPrice = new Set();
 
@@ -599,14 +599,14 @@ export class MainPage extends Page {
 
   private createCards(data: Array<SET>) {
     const productsStore = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .map((x: StorageProducts) => x.id);
 
     data = DATA;
     const checkedCategory = localStorageUtil.getCheckedCategory();
     const checkedBrand = localStorageUtil.getCheckedBrand();
-    const input = localStorageUtil.getSearch();
-    const sortSort = localStorageUtil.getSort();
+    const input = localStorageUtil.getParams("Search");
+    const sortSort = localStorageUtil.getParams("Sort");
     const rangePrice = localStorageUtil.getRangePrice();
     const rangeStock = localStorageUtil.getRangeStock();
 
@@ -811,7 +811,7 @@ export class MainPage extends Page {
 
   public clinSearch = () => {
     localStorageUtil.putSearch("");
-    const val = localStorageUtil.getSearch();
+    const val = localStorageUtil.getParams("Search");
     this.inputSearch.value = val;
     this.render();
   };
@@ -852,7 +852,7 @@ export class MainPage extends Page {
 
     const sorts = this.createSorts() as HTMLElement;
     const allCards = this.createCards(DATA) as HTMLElement;
-    this.currentData = localStorageUtil.getData();
+    this.currentData = localStorageUtil.getFromLS("data");
     const filters = this.createFilters(this.currentData) as HTMLElement;
 
     mainItems.classList.add("main__items");
@@ -910,7 +910,7 @@ document.onclick = function (event: Event) {
     const price = target.getAttribute("data-price");
 
     if (id && price) {
-      const products = localStorageUtil.getProducts();
+      const products = localStorageUtil.getFromLS("products");
 
       if (products.length === 0) {
         const { pushProduct } = localStorageUtil.putProducts(+id, +price);

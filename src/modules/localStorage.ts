@@ -2,58 +2,45 @@ import { header } from "../pages/header";
 import { SET } from "./data";
 
 class LocalStorageUtil {
-  keyName: string;
-  data: string;
-  checkedCategory: string;
-  checkedBrand: string;
-  Search: string;
-  Sort: string;
-  Show: string;
-  RangePrice: string;
-  RangeStock: string;
-
-  constructor() {
-    this.keyName = "products";
-    this.data = "data";
-    this.checkedCategory = "checkedCategory";
-    this.checkedBrand = "checkedBrand";
-    this.Search = "Search";
-    this.Sort = "Sort";
+  public Show: string;
+  constructor(
+    public keyName = "products",
+    public data = "data",
+    public checkedCategory = "checkedCategory",
+    public checkedBrand = "checkedBrand",
+    public Search = "Search",
+    public Sort = "Sort",
+    public RangePrice = "RangePrice",
+    public RangeStock = "RangeStock"
+  ) {
     this.Show = "Show";
-    this.RangePrice = "RangePrice";
-    this.RangeStock = "RangeStock";
   }
 
-  getData() {
-    const dataLocalStorage = localStorage.getItem(this.data);
+  getFromLS(key: string) {
+    const data = localStorage.getItem(key);
 
-    if (dataLocalStorage !== null) {
-      return JSON.parse(dataLocalStorage);
+    if (data !== null) {
+      return JSON.parse(data);
     }
     return [];
   }
+
   putData(data: Array<SET>) {
     localStorage.removeItem(this.data);
     const pushed = true;
 
     const dataSet = Array.from(new Set(data));
     localStorage.setItem(this.data, JSON.stringify(dataSet));
-    const products = this.getData();
+    const products = this.getFromLS("data");
 
     return {
       pushed,
       products,
     };
   }
-  getProducts() {
-    const productsLocalStorage = localStorage.getItem(this.keyName);
-    if (productsLocalStorage !== null) {
-      return JSON.parse(productsLocalStorage);
-    }
-    return [];
-  }
+
   putProductsToBasket(id: number, price: number, count = 1) {
-    const products = this.getProducts();
+    const products = this.getFromLS("products");
     let pushProduct = false;
     const index = products.findIndex((el: SET) => el.id === id);
 
@@ -69,7 +56,7 @@ class LocalStorageUtil {
   }
 
   removeProductsFromBasket(id: number, price: number, count: number) {
-    const products = this.getProducts();
+    const products = this.getFromLS("products");
     let pushProduct = false;
     const index = products.findIndex((el: SET) => el.id === id);
 
@@ -86,7 +73,7 @@ class LocalStorageUtil {
   }
 
   putProducts(id: number, price: number, count = 1) {
-    const products = this.getProducts();
+    const products = this.getFromLS("products");
 
     let pushProduct = false;
     const index = products.findIndex((el: SET) => el.id === id);
@@ -162,8 +149,9 @@ class LocalStorageUtil {
     };
   }
 
-  getSearch() {
-    const text = localStorage.getItem(this.Search);
+  getParams(key: string) {
+    const text = localStorage.getItem(key);
+
     if (text !== null) {
       return JSON.parse(text);
     }
@@ -177,14 +165,6 @@ class LocalStorageUtil {
     return {
       text,
     };
-  }
-
-  getSort() {
-    const text = localStorage.getItem(this.Sort);
-    if (text !== null) {
-      return JSON.parse(text);
-    }
-    return "";
   }
 
   putSort(text: string) {

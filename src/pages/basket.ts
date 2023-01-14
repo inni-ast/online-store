@@ -4,15 +4,17 @@ import { localStorageUtil } from "../modules/localStorage";
 import { StorageProducts } from "../modules/data";
 import { header } from "./header";
 import { App } from "./app/index-app";
+import { summaryHTML } from "../modules/renderSummaryHTML";
+import { renderBuyWindowHTML } from "../modules/renderBuyWindow";
+import { renderItem } from "../modules/renderItemInBasket";
 
-const overlay = document.getElementById("overlay-modal") as HTMLDivElement;
+export const overlay = document.getElementById(
+  "overlay-modal"
+) as HTMLDivElement;
 export class Basket extends Page {
   basketContainer: HTMLElement;
   summaryContainer: HTMLElement;
   buyContainer: HTMLElement;
-  allProductsPrice: number;
-  isPromoWin: number;
-  isPromoSh: number;
   static TextObject = {
     mainTitle: "Products In Cart",
     total: "Summary",
@@ -20,7 +22,14 @@ export class Basket extends Page {
     rating: "Rating:",
     discount: "Discount:",
   };
-  constructor(el: string, id: string, nameClass: string) {
+  constructor(
+    el: string,
+    id: string,
+    nameClass: string,
+    public allProductsPrice = 0,
+    public isPromoWin = 0,
+    public isPromoSh = 0
+  ) {
     super(el, id, nameClass);
     this.basketContainer = document.createElement("div");
     this.basketContainer.classList.add("basket__container");
@@ -28,9 +37,6 @@ export class Basket extends Page {
     this.summaryContainer.classList.add("basket__summary");
     this.buyContainer = document.createElement("div");
     this.buyContainer.classList.add("basket__buy");
-    this.allProductsPrice = 0;
-    this.isPromoWin = 0;
-    this.isPromoSh = 0;
   }
 
   handlerClear() {
@@ -58,26 +64,8 @@ export class Basket extends Page {
     this.allProductsPrice = num;
   }
   renderSummary(products: number, price: number) {
-    const html = `
-      <div class="summary">
-          <h3 class="summary__title">SUMMARY</h3>
-          <p class="summary__products">Products in cart: ${products} </p>
-          <p class="summary__price">Price: ${price} $</p>
-          <p class="summary__price-promo hidden"></p>
-          <input type="text" placeholder="Enter promo code"
-          class="summary__input">
-          <div class="summary__sh hidden">
-            <p class="summary__sh-promo">Promo 'sh' - 5% </p>
-            <button  class="button button-sh">ADD</button>
-          </div>
-          <div class="summary__win hidden">
-          <p class="summary__win-promo">Promo 'win' - 15% </p>
-          <button  class="button button-win">ADD</button>
-        </div>
-          <p class="summary__promo">Promo for test: 'sh', 'win'</p>
-          <button class="button summary__button">BUY</button>
-      </div>
-    `;
+    const html = summaryHTML(products, price);
+
     this.summaryContainer.innerHTML = "";
     this.summaryContainer.innerHTML = html;
     this.basketContainer.appendChild(this.summaryContainer);
@@ -98,61 +86,8 @@ export class Basket extends Page {
     const form = document.createElement("form") as HTMLFormElement;
 
     form.classList.add("form-buy");
-    const html = `
-      <div class="form-buy_close"> X </div>
-      <h4 class="form-buy__title"> Personal details</h4>
+    const html = renderBuyWindowHTML();
 
-      <input type="text" id="buy-name" name="name" required
-          placeholder="Name, Surname" class="form-buy__input"
-          pattern="([a-zA-Zа-яА-Я]{3,})[ ]([a-zA-Zа-яА-Я]{3,})(([a-zA-Zа-яА-Я ]{0,}){0,})">
-      <span class="name-error"></span>
-
-      <input type="tel" id="buy-tel" name="tel" required
-          placeholder="Phone number" class="form-buy__input"
-          pattern="[+]([0-9]{9,})">
-      <span class="tel-error"></span>
-
-      <input type="text" id="buy-address" name="address" required
-          placeholder="Your address" class="form-buy__input"
-          pattern="([a-zA-Zа-яА-Я]{5,})[ ]([a-zA-Zа-яА-Я]{5,})[ ]([a-zA-Zа-яА-Я]{5,})(([a-zA-Zа-яА-Я ]{0,}){0,})">
-      <span class="address-error"></span>
-
-      <input type="email" id="buy-email" name="email" required
-          placeholder="Your email" class="form-buy__input">
-      <span class="email-error"></span>
-
-      <div class="form-buy__card form-card">
-          <h4 class="form-card__title"> Credit card details</h4>
-            <div class="form-card__block">
-              <div class="form-card__number">
-                  <div class="form-card__image">
-                    <img src="https://i.guim.co.uk/img/media/b73cc57cb1d46ae742efd06b6c58805e8600d482/16_0_2443_1466/master/2443.jpg?width=700&quality=85&auto=format&fit=max&s=fb1dca6cdd4589cd9ef2fc941935de71" class="form-card__img">
-                  </div>
-
-              <input type="text" id="card-num" name="card-num" required
-                  placeholder="Card number" class="form-card__input-number"
-                  pattern="([0-9]{16})">
-              <span class="card-num-error"></span>
-              </div>
-
-            <label class="form-card__label">
-              VALID:
-               <input type="text" id="card-valid" name="card-valid" required placeholder="Data" class="form-card__input-data"
-               pattern="(0[1-9]|1[1-2])/[0-9]{2}">
-            <span class="card-valid-error"></span>
-            </label>
-
-            <label class="form-card__label">
-              CVV:
-               <input type="text" id="card-cvv" name="card-cvv" required
-               placeholder="CVV" class="form-card__input-cvv"
-               pattern="([0-9]{3})">
-           <span class="card-cvv-error"></span>
-            </label>
-           </div>
-      </div>
-  <button type="submit" class="form-buy__btn">Submit</button>
-`;
     form.innerHTML = html;
     this.buyContainer.append(form);
     this.basketContainer.append(this.buyContainer);
@@ -160,7 +95,7 @@ export class Basket extends Page {
   }
   renderProducts() {
     const productsStore = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .map((x: StorageProducts) => x.id);
 
     let htmlCatalog = "";
@@ -185,7 +120,7 @@ export class Basket extends Page {
         }) => {
           if (productsStore.indexOf(id) !== -1) {
             let { count } = localStorageUtil
-              .getProducts()
+              .getFromLS("products")
               .find((x: StorageProducts) => x.id === id);
 
             if (count > stock) {
@@ -195,31 +130,20 @@ export class Basket extends Page {
 
             const p = +count * +price;
             numInBasket += +count;
-            htmlCatalog += `
-                <div class="basket-item">
-                      <div class="basket-item__num">${num}</div>
-                      <div class="basket-item__image">
-                        <img class="basket-item__img" src=${thumbnail} alt="image ${title}">
-                      </div>
-                      <div class="basket__about">
-                          <p class="basket-item__title">${title}</p>
-                          <p class="basket-item__desc">${description}</p>
-                          <p class="basket-item__category">Category: ${category}</p>
-                            <p class="basket-item__brand">Category: ${brand}</p>
-                          <p class="basket-item__rating">Rating: ${rating} </p>
-                          <p class="basket-item__percent">Discount:
-                        ${discountPercentage} %</p>
-                      </div>
-                    <div class="basket-item__sale">
-                      <div class="basket-item__stock">Stock: ${stock} </div>
-                        <div class="basket-item__number" >
-                          <button class="basket-item__plus" data-stock=${stock} data-prodId=${id}> +</button>
-                            <p class="basket-item__count">${count}</p>
-                              <button class="basket-item__minus" data-prodId=${id}> -</button>
-                        </div>
-                        <div class="basket-item__price">Price: ${p.toLocaleString()} USD</div>
-                    </div>
-                </div> `;
+            htmlCatalog += renderItem(
+              num,
+              thumbnail,
+              title,
+              description,
+              category,
+              brand,
+              rating,
+              discountPercentage,
+              stock,
+              id,
+              count,
+              p
+            );
             sumCatalog += p;
             num++;
           }
@@ -249,7 +173,7 @@ export class Basket extends Page {
   }
   addProduct(id: number) {
     const product = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .find((el: StorageProducts) => el.id === id);
     product["count"]++;
 
@@ -263,7 +187,7 @@ export class Basket extends Page {
   }
   removeProduct(id: number) {
     const product = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .find((el: StorageProducts) => el.id === id);
 
     product["count"]--;

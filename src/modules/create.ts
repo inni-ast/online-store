@@ -1,4 +1,5 @@
 import { ErrorCreate } from "./const";
+
 export function create(
   el: string,
   classNames: string,

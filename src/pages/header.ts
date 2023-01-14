@@ -9,7 +9,7 @@ export class Header {
 
   constructor() {
     this.totalPrice = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .reduce(
         (total: number, amount: StorageProducts) =>
           amount.price * amount.count + total,
@@ -17,7 +17,7 @@ export class Header {
       );
 
     this.basket = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .reduce(
         (total: number, amount: StorageProducts) => amount.count + total,
         0
@@ -28,13 +28,13 @@ export class Header {
 
   run() {
     this.basket = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .reduce(
         (total: number, amount: StorageProducts) => amount.count + total,
         0
       );
     this.totalPrice = localStorageUtil
-      .getProducts()
+      .getFromLS("products")
       .reduce(
         (total: number, amount: StorageProducts) =>
           amount.price * amount.count + total,
@@ -86,6 +86,6 @@ export class Header {
   }
 }
 
-export const productsStore = localStorageUtil.getProducts();
-export const dataStore = localStorageUtil.getData();
+export const productsStore = localStorageUtil.getFromLS("products");
+export const dataStore = localStorageUtil.getFromLS("data");
 export const header = new Header();
