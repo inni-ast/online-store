@@ -5,6 +5,7 @@ import { header } from "./header";
 import { BASKET } from "./basket";
 import { PRODUCT } from "./product";
 import { App } from "./app/index-app";
+import { BuyWindow } from "../modules/buyWindow";
 
 export class MainPage extends Page {
   static TextObject = {
@@ -928,15 +929,15 @@ document.onclick = function (event: Event) {
       }
     }
     App.renderNewPage("basket");
-    BASKET.renderBuyWindow();
+    BuyWindow.renderBuyWindow();
   }
   //корзина: click на buy и открытие модального окна покупки
   if (target.classList.contains("summary__button")) {
-    BASKET.renderBuyWindow();
+    BuyWindow.renderBuyWindow();
   }
   //корзина: закрытие модального окна покупки
   if (target.classList.contains("form-buy_close")) {
-    BASKET.closeBuyWindow();
+    BuyWindow.closeBuyWindow();
   }
 
   //корзина увеличение кол-ва товара

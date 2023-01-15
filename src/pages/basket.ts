@@ -5,7 +5,6 @@ import { StorageProducts } from "../modules/data";
 import { header } from "./header";
 import { App } from "./app/index-app";
 import { summaryHTML } from "../modules/renderSummaryHTML";
-import { renderBuyWindowHTML } from "../modules/renderBuyWindow";
 import { renderItem } from "../modules/renderItemInBasket";
 
 export const overlay = document.getElementById(
@@ -14,7 +13,6 @@ export const overlay = document.getElementById(
 export class Basket extends Page {
   basketContainer: HTMLElement;
   summaryContainer: HTMLElement;
-  buyContainer: HTMLElement;
   static TextObject = {
     mainTitle: "Products In Cart",
     total: "Summary",
@@ -35,8 +33,6 @@ export class Basket extends Page {
     this.basketContainer.classList.add("basket__container");
     this.summaryContainer = document.createElement("div");
     this.summaryContainer.classList.add("basket__summary");
-    this.buyContainer = document.createElement("div");
-    this.buyContainer.classList.add("basket__buy");
   }
 
   handlerClear() {
@@ -69,28 +65,6 @@ export class Basket extends Page {
     this.summaryContainer.innerHTML = "";
     this.summaryContainer.innerHTML = html;
     this.basketContainer.appendChild(this.summaryContainer);
-    return this.basketContainer;
-  }
-  closeBuyWindow() {
-    document.body.classList.remove("lock");
-    overlay.classList.remove("active");
-    this.buyContainer.classList.remove("active");
-    this.buyContainer.innerHTML = "";
-  }
-  renderBuyWindow() {
-    document.body.classList.add("lock");
-    overlay.classList.add("active");
-    this.buyContainer.classList.add("active");
-    this.buyContainer.innerHTML = "";
-
-    const form = document.createElement("form") as HTMLFormElement;
-
-    form.classList.add("form-buy");
-    const html = renderBuyWindowHTML();
-
-    form.innerHTML = html;
-    this.buyContainer.append(form);
-    this.basketContainer.append(this.buyContainer);
     return this.basketContainer;
   }
   renderProducts() {
