@@ -8,41 +8,39 @@ export class Header {
   priceEl: HTMLElement;
 
   constructor() {
-    this.totalPrice = localStorageUtil
-      .getFromLS("products")
-      .reduce(
-        (total: number, amount: StorageProducts) =>
-          amount.price * amount.count + total,
-        0
-      );
-
-    this.basket = localStorageUtil
-      .getFromLS("products")
-      .reduce(
-        (total: number, amount: StorageProducts) => amount.count + total,
-        0
-      );
+    this.totalPrice = this.findProductPrice();
+    this.basket = this.findProductCount();
     this.basketEl = document.querySelector(".basket__num") as HTMLElement;
     this.priceEl = document.querySelector(".price__total") as HTMLElement;
   }
 
   run() {
-    this.basket = localStorageUtil
+    this.basket = this.findProductCount();
+    this.totalPrice = this.findProductPrice();
+    this.priceEl.textContent = `${String(this.totalPrice)} $`;
+    this.basketEl.textContent = `${String(this.basket)}`;
+    return this.basket;
+  }
+
+  findProductCount() {
+    const product = localStorageUtil
       .getFromLS("products")
       .reduce(
         (total: number, amount: StorageProducts) => amount.count + total,
         0
       );
-    this.totalPrice = localStorageUtil
+    return product;
+  }
+
+  findProductPrice() {
+    const product = localStorageUtil
       .getFromLS("products")
       .reduce(
         (total: number, amount: StorageProducts) =>
           amount.price * amount.count + total,
         0
       );
-    this.priceEl.textContent = `${String(this.totalPrice)} $`;
-    this.basketEl.textContent = `${String(this.basket)}`;
-    return this.basket;
+    return product;
   }
 
   addPrice(price: number) {

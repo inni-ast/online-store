@@ -887,14 +887,12 @@ function onload() {
 document.onclick = function (event: Event) {
   const target = event.target as HTMLElement;
 
-  //октрытие карточки товара
   if (target.classList.contains("btn__product")) {
     const id = Number(target.getAttribute("data-id"));
     if (id) {
       PRODUCT.getProduct(id);
     }
   }
-  //карточка товара: увеличение и смена фото
   if (target.classList.contains("product__slides-small")) {
     const srcSmall = target.getAttribute("src") as string;
     const bigPhoto = document.querySelector(
@@ -905,7 +903,6 @@ document.onclick = function (event: Event) {
     target.setAttribute("src", srcBig);
     bigPhoto.setAttribute("src", srcSmall);
   }
-  //карточка товара: click на buy и открытие модального окна покупки
   if (target.classList.contains("card__btnB")) {
     const id = target.getAttribute("data-id");
     const price = target.getAttribute("data-price");
@@ -931,16 +928,13 @@ document.onclick = function (event: Event) {
     App.renderNewPage("basket");
     BuyWindow.renderBuyWindow();
   }
-  //корзина: click на buy и открытие модального окна покупки
   if (target.classList.contains("summary__button")) {
     BuyWindow.renderBuyWindow();
   }
-  //корзина: закрытие модального окна покупки
   if (target.classList.contains("form-buy_close")) {
     BuyWindow.closeBuyWindow();
   }
 
-  //корзина увеличение кол-ва товара
   if (target.classList.contains("basket-item__plus")) {
     const id = target.getAttribute("data-prodId");
 
@@ -948,7 +942,6 @@ document.onclick = function (event: Event) {
       BASKET.addProduct(+id);
     }
   }
-  //корзина уменьшение кол-ва товара
   if (target.classList.contains("basket-item__minus")) {
     const id = target.getAttribute("data-prodId");
 
@@ -956,7 +949,6 @@ document.onclick = function (event: Event) {
       BASKET.removeProduct(+id);
     }
   }
-  // добавление товара в корзину из каталога
   if (target.classList.contains("card__btn")) {
     const id = target.getAttribute("data-id");
     const price = target.getAttribute("data-price");

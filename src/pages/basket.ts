@@ -74,7 +74,7 @@ export class Basket extends Page {
 
     let htmlCatalog = "";
     let sumCatalog = 0;
-    let num = 1; // счетчик товаров по порядку
+    let num = 1;
     let numInBasket = 0;
     this.summaryContainer.innerHTML = "";
 
@@ -93,10 +93,7 @@ export class Basket extends Page {
           discountPercentage,
         }) => {
           if (productsStore.indexOf(id) !== -1) {
-            let { count } = localStorageUtil
-              .getFromLS("products")
-              .find((x: StorageProducts) => x.id === id);
-
+            let { count } = this.findProduct(id);
             if (count > stock) {
               count = stock;
               localStorageUtil.putProductsToBasket(id, price, count);
@@ -146,11 +143,8 @@ export class Basket extends Page {
     return this.basketContainer;
   }
   addProduct(id: number) {
-    const product = localStorageUtil
-      .getFromLS("products")
-      .find((el: StorageProducts) => el.id === id);
+    const product = this.findProduct(id);
     product["count"]++;
-
     localStorageUtil.putProductsToBasket(
       product.id,
       product.price,
@@ -159,11 +153,9 @@ export class Basket extends Page {
 
     BASKET.render();
   }
-  removeProduct(id: number) {
-    const product = localStorageUtil
-      .getFromLS("products")
-      .find((el: StorageProducts) => el.id === id);
 
+  removeProduct(id: number) {
+    const product = this.findProduct(id);
     product["count"]--;
     localStorageUtil.removeProductsFromBasket(
       product.id,
@@ -173,6 +165,14 @@ export class Basket extends Page {
 
     BASKET.render();
   }
+
+  findProduct(id: number) {
+    const product = localStorageUtil
+      .getFromLS("products")
+      .find((el: StorageProducts) => el.id === id);
+    return product;
+  }
+
   addPromoWin() {
     const divWin = document.querySelector(".summary__win") as HTMLElement;
     const divPrice = document.querySelector(".summary__price") as HTMLElement;
@@ -280,7 +280,6 @@ document.oninput = function (event: Event) {
   const target = event.target as HTMLInputElement;
   const value = target.value as string;
 
-  //корзина: промокоды
   if (target.classList.contains("summary__input")) {
     if (value === "win") {
       BASKET.addPromoWin();
@@ -313,7 +312,6 @@ document.onkeyup = function (event: Event) {
   const target = event.target as HTMLInputElement;
   let value = target.value as string;
 
-  //окно покупки: срок действия карты
   if (target.classList.contains("form-card__input-data")) {
     if (value.length === 2 && /0[1-9]|1[1-2]/.test(value)) {
       const v = value.replace(value, (value += "/"));
@@ -323,7 +321,6 @@ document.onkeyup = function (event: Event) {
       target.value = value.slice(0, 5);
     }
   }
-  //окно покупки: смена логотипа карты
   if (target.classList.contains("form-card__input-number")) {
     if (value.length === 1) {
       const img = document.querySelector(".form-card__img") as HTMLImageElement;

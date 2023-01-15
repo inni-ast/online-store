@@ -321,7 +321,6 @@ button {
     flex-direction: row-reverse;
     align-items: center;
     justify-content: space-around;
-    // margin: 0px 10px;
 }
 
 @mixin range-slider($width, $height, $input-top, $input-bg-color, $input-thumb-color, $float:none, $input-height:20px, $input-border-radius:14px) {
