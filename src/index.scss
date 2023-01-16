@@ -1,0 +1,26 @@
+@import 'libs/normalize';
+@import 'style/var';
+@import 'style/style';
+@import 'style/header';
+@import 'style/main';
+@import 'style/product';
+@import 'style/basket';
+@import 'style/buy-window';
+
+.wrapper {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1%;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.block {
+  display:block;
+}
+.flex {
+  display:flex;
+  justify-content:space-between;
+  gap: 1%;
+}
+

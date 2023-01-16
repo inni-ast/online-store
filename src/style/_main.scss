@@ -1,0 +1,407 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+button {
+    background-color: $but;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 19px;
+    color: white;
+    border: none;
+    transition: all 0.7s;
+    cursor: pointer;
+    &:hover {
+        background-color: $but-hov;
+    }
+}
+
+.active-btn {
+    background-color: $but-hov;
+}
+
+#form-search {
+    display: flex;
+    gap: 1%;
+    position: relative;
+}
+
+.search-ok {
+    position: absolute;
+    top: 8px;
+    right: 15px;
+    max-width: 15px;
+    max-height: 15px;
+    border-radius: 5px;
+}
+
+.main {
+    margin: 0 auto;
+    width: 100%;
+    &__container {
+        width: 100%;
+        display: flex;
+        padding: 1%;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 10px;
+        @media (max-width: 650px) {
+            flex-direction: column;
+        }
+    }
+    &__filters {
+        margin-right: 1%;
+    }
+    &__items {
+        display: flex;
+        justify-content: flex-start;
+        color: $text;
+        flex-direction: column;
+        width: 80%;
+        @media (max-width: 950px) {
+            width: 100%;
+            margin: 0 auto;
+        }
+    }
+}
+
+.items {
+    &__sorts {
+        display: flex;
+        flex-direction: row;
+        margin-bottom: 10px;
+        font-size: 16px;
+        @media (max-width: 1050px) {
+            flex-wrap: wrap;
+            row-gap: 5px;
+        }
+        .input-search {
+            height: 40px;
+            background: $back-input;
+            outline: none;
+            border: none;
+            border-radius: 36px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 20px;
+            cursor: pointer;
+            &:active,
+            &:focus {
+                border: 1px solid $but;
+            }
+        }
+        .button {
+            width: 13%;
+            height: 40px;
+            margin-right: 10px;
+            background: $but;
+            border-radius: 1000px;
+            &:hover {
+                cursor: pointer;
+                background-color: $but-hov;
+            }
+        }
+        .button-vie {
+            width: 5%;
+            height: 40px;
+            margin-left: 10px;
+            background: linear-gradient(90deg, rgba(255, 198, 80, 0.3) 0%, rgba(254, 202, 110, 0.3) 97.25%);
+            border-radius: 1000px;
+            &:hover {
+                cursor: pointer;
+                background-color: $but-hov;
+            }
+        }
+        .button__row {
+            margin-left: 30px;
+        }
+    }
+    &__cards {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        width: 100%;
+    }
+}
+
+.items__cards {
+    @media (max-width: 950px) {
+        width: 100%;
+        margin: 0 auto;
+        justify-content: center;
+    }
+}
+
+.row {
+    flex-direction: row;
+}
+
+.column {
+    flex-direction: column;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 210px;
+    width: 23%;
+    height: 450px;
+    background: $back-card;
+    box-shadow: 0px 14px 39px -11px rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    border: 0.1px solid $but;
+    margin-right: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: all 0.7s;
+    &:hover {
+        background-color: $back-input;
+    }
+    &:hover .card__image {
+        transition: all 0.7s;
+        transform: scale(1.1);
+    }
+    &__image {
+        width: 100%;
+        height: 30%;
+        margin-bottom: 10px;
+        overflow: hidden;
+        transition: transform 0.7s;
+    }
+    &__img {
+        max-width: 100%;
+        min-height: 100%;
+    }
+    &__about-act {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 60%;
+        margin: 10px 5px 0 20px;
+    }
+    &__about::nth-child() {
+        margin: 0;
+        padding: 0;
+    }
+    &__btn {
+        width: 150px;
+        height: 45px;
+        border-radius: 80px;
+        @media (max-width: 530px) {
+            width: 130px;
+        }
+    }
+    &__btnB {
+        width: 150px;
+        height: 45px;
+        border-radius: 80px;
+        @media (max-width: 530px) {
+            width: 130px;
+        }
+    }
+}
+
+.column {
+    .card {
+        flex-direction: row;
+        justify-content: space-around;
+        width: 90%;
+        height: 250px;
+        margin: 10px auto;
+        .card__image {
+            width: 40%;
+            height: 100%;
+        }
+        .card__about-act {
+            width: 40%;
+            width: 40%;
+            height: 90%;
+        }
+    }
+}
+
+.items__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.items__filters-container {
+    margin-bottom: 10px;
+}
+
+.filter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border: 1px solid $but;
+    border-radius: 20px;
+    background-color: $back-input;
+    overflow: hidden;
+    padding: 10px;
+    padding-right: 0;
+}
+
+.input-checkbox-block {
+    display: flex;
+    flex-direction: column;
+    height: 210px;
+    overflow-y: scroll;
+}
+
+.input-checkbox-text {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    cursor: pointer;
+    margin-bottom: 2%;
+    gap: 2%;
+}
+
+.filters-buttons {
+    display: flex;
+    justify-content: space-around;
+    gap: 2%;
+}
+
+.button__reset,
+.button__copy {
+    flex: 1;
+    padding: 5px 7px;
+    background: rgb(255, 200, 94);
+    border-radius: 5px;
+    &:hover {
+        background-color: $but-hov;
+    }
+}
+
+.button.active-btn {
+    background-color: $but-hov;
+}
+
+.no-card {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-top: 5%;
+}
+
+.button__row.button-vie.active {
+    background-color: $but-hov;
+}
+
+.button__column.button-vie.active {
+    background-color: $but-hov;
+}
+
+.no-card {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+    padding-top: 5%;
+}
+
+.items__filters-texp {
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.rangeValues {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-around;
+}
+
+@mixin range-slider($width, $height, $input-top, $input-bg-color, $input-thumb-color, $float:none, $input-height:20px, $input-border-radius:14px) {
+    position: relative;
+    width: $width;
+    height: $height;
+    float: $float;
+    text-align: center;
+    input[type="range"] {
+        pointer-events: none;
+        position: absolute;
+        -webkit-appearance: none;
+        -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+        border: none;
+        border-radius: $input-border-radius;
+        background: $input-bg-color;
+        box-shadow: inset 0 1px 0 0 darken($input-bg-color, 15%), inset 0 -1px 0 0 darken($input-bg-color, 10%);
+        -webkit-box-shadow: inset 0 1px 0 0 darken($input-bg-color, 15%), inset 0 -1px 0 0 darken($input-bg-color, 10%);
+        overflow: hidden;
+        left: 0;
+        top: $input-top;
+        width: $width;
+        outline: none;
+        height: $input-height;
+        margin: 0;
+        padding: 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+        pointer-events: all;
+        position: relative;
+        z-index: 1;
+        outline: 0;
+        -webkit-appearance: none;
+        width: $input-height;
+        height: $input-height;
+        border: none;
+        border-radius: $input-border-radius;
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, lighten($input-thumb-color, 60%)), color-stop(100%, $input-thumb-color));
+        background-image: -webkit-linear-gradient(top, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+        background-image: linear-gradient(to bottom, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+    }
+    input[type="range"]::-moz-range-thumb {
+        pointer-events: all;
+        position: relative;
+        z-index: 10;
+        -moz-appearance: none;
+        width: $input-height;
+        height: $input-height;
+        border: none;
+        border-radius: $input-border-radius;
+        background-image: linear-gradient(to bottom, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+        /* W3C */
+    }
+    input[type="range"]::-ms-thumb {
+        pointer-events: all;
+        position: relative;
+        z-index: 10;
+        -ms-appearance: none;
+        width: $input-height;
+        height: $input-height;
+        border-radius: $input-border-radius;
+        border: 0;
+        background-image: linear-gradient(to bottom, lighten($input-thumb-color, 60%) 0, $input-thumb-color 100%);
+        /* W3C */
+    }
+    input[type=range]::-moz-range-track {
+        position: relative;
+        z-index: -1;
+        background-color: rgba(0, 0, 0, 1);
+        border: 0;
+    }
+    input[type=range]:last-of-type::-moz-range-track {
+        -moz-appearance: none;
+        background: none transparent;
+        border: 0;
+    }
+    input[type=range]::-moz-focus-outer {
+        border: 0;
+    }
+}
+
+section.range-slider {
+    @include range-slider(100%, 50px, 25px, #F1EFEF, #413F41, left);
+}
