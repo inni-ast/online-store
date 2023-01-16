@@ -1,11 +1,8 @@
 import { Page } from "../core/templates/page";
-import { SET, DATA, StorageProducts } from "../modules/data";
+import { SET, DATA } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
-import { header } from "./header";
-import { BASKET } from "./basket";
-import { PRODUCT } from "./product";
-import { App } from "./app/index-app";
-import { BuyWindow } from "../modules/buyWindow";
+import { createData } from "../modules/createData";
+import { createCards } from "../modules/createCards";
 
 export class MainPage extends Page {
   static TextObject = {
@@ -79,6 +76,19 @@ export class MainPage extends Page {
     this.buttonSortStockDown.id = "rating-down";
     this.buttonSortStockDown.classList.add("button", "button__rating-down");
     this.buttonSortStockDown.textContent = MainPage.TextObject.btnStockDown;
+
+    const Sort = localStorageUtil.getParams("Sort");
+    if (Sort) {
+      if (Sort === "PriceUp") {
+        this.buttonSortPriceUp.classList.add("active-btn");
+      } else if (Sort === "PriceDown") {
+        this.buttonSortPriceDown.classList.add("active-btn");
+      } else if (Sort === "StockUp") {
+        this.buttonSortStockUp.classList.add("active-btn");
+      } else {
+        this.buttonSortStockDown.classList.add("active-btn");
+      }
+    }
 
     this.inputSearchForm = document.createElement("form");
     this.inputSearchForm.setAttribute("type", "submit");
@@ -599,178 +609,8 @@ export class MainPage extends Page {
   }
 
   private createCards(data: Array<SET>) {
-    const productsStore = localStorageUtil
-      .getFromLS("products")
-      .map((x: StorageProducts) => x.id);
-
-    data = DATA;
-    const checkedCategory = localStorageUtil.getCheckedCategory();
-    const checkedBrand = localStorageUtil.getCheckedBrand();
-    const input = localStorageUtil.getParams("Search");
-    const sortSort = localStorageUtil.getParams("Sort");
-    const rangePrice = localStorageUtil.getRangePrice();
-    const rangeStock = localStorageUtil.getRangeStock();
-
-    if (checkedCategory.length > 0) {
-      data = data.filter(
-        (el) => checkedCategory.includes(el.category) === true
-      );
-      if (checkedBrand.length > 0) {
-        data = data.filter((el) => checkedBrand.includes(el.brand) === true);
-      }
-    }
-
-    if (checkedBrand.length > 0 && checkedCategory.length === 0) {
-      data = data.filter((el) => checkedBrand.includes(el.brand) === true);
-    }
-
-    if (input.length > 0) {
-      data = data.filter(
-        (el) =>
-          el.price.toString().toLowerCase().includes(input) ||
-          el.discountPercentage.toString().toLowerCase().includes(input) ||
-          el.rating.toString().toLowerCase().includes(input) ||
-          el.stock.toString().toLowerCase().includes(input) ||
-          el.title.toLocaleLowerCase().includes(input) ||
-          el.description.toLocaleLowerCase().includes(input) ||
-          el.brand.toLocaleLowerCase().includes(input) ||
-          el.category.toLocaleLowerCase().includes(input)
-      );
-    }
-
-    if (sortSort === "PriceUp") {
-      this.toggleClassActive(this.buttonSortPriceUp);
-      data.sort((a: SET, b: SET) => {
-        if (a.price > b.price) {
-          return 1;
-        }
-        if (a.price < b.price) {
-          return -1;
-        }
-        return 0;
-      });
-    } else if (sortSort === "PriceDown") {
-      this.toggleClassActive(this.buttonSortPriceDown);
-      data.sort((a: SET, b: SET) => {
-        if (a.price < b.price) {
-          return 1;
-        }
-        if (a.price > b.price) {
-          return -1;
-        }
-        return 0;
-      });
-    } else if (sortSort === "StockUp") {
-      this.toggleClassActive(this.buttonSortStockUp);
-      data.sort((a: SET, b: SET) => {
-        if (a.stock > b.stock) {
-          return 1;
-        }
-        if (a.stock < b.stock) {
-          return -1;
-        }
-        return 0;
-      });
-    } else if (sortSort === "StockDown") {
-      this.toggleClassActive(this.buttonSortStockDown);
-      data.sort((a: SET, b: SET) => {
-        if (a.stock < b.stock) {
-          return 1;
-        }
-        if (a.stock > b.stock) {
-          return -1;
-        }
-        return 0;
-      });
-    }
-
-    if (rangeStock) {
-      const setPrice = new Set();
-      DATA.map((a: SET): void => {
-        setPrice.add(a.stock);
-      });
-
-      const setPrice1: Array<number> = [];
-      setPrice.forEach((item) => {
-        setPrice1.push(Number(item));
-      });
-
-      setPrice1.sort((a: number, b: number) => {
-        if (a < b) {
-          return 1;
-        }
-        if (a > b) {
-          return -1;
-        }
-        return 0;
-      });
-
-      const minVal = setPrice1[+rangeStock[1] - 1];
-      const maxVal = setPrice1[+rangeStock[0] - 1];
-
-      data = data.filter((el) => el.stock <= minVal && el.stock >= maxVal);
-    }
-
-    if (rangePrice) {
-      const setPrice = new Set();
-      DATA.map((a: SET): void => {
-        setPrice.add(a.price);
-      });
-
-      const setPrice1: Array<number> = [];
-      setPrice.forEach((item) => {
-        setPrice1.push(Number(item));
-      });
-
-      setPrice1.sort((a: number, b: number) => {
-        if (a < b) {
-          return 1;
-        }
-        if (a > b) {
-          return -1;
-        }
-        return 0;
-      });
-
-      const minVal = setPrice1[+rangePrice[1] - 1];
-      const maxVal = setPrice1[+rangePrice[0] - 1];
-
-      data = data.filter((el) => el.price <= minVal && el.price >= maxVal);
-    }
-
-    let itemsHTML = "";
-    data.forEach(({ id, thumbnail, title, brand, price, stock, category }) => {
-      let activeClass = "";
-      let activeText = "";
-
-      if (productsStore.indexOf(id) === -1) {
-        activeText = MainPage.TextObject.addToCard;
-      } else {
-        activeText = MainPage.TextObject.dropFromCard;
-        activeClass = " active-btn";
-      }
-
-      itemsHTML += `
-      <div class="cards__item card" href="#products/${id}">
-      <div class="card__image">
-        <img src=${thumbnail} alt="product image" class="card__img" loading="lazy">
-      </div>
-      <div class="card__about-act">
-      <div class="card__about">
-        <h3 class="card__title">${title}</h3>
-        <p class="card__category">Category: ${category}</p>
-        <p class="card__brand">Brand: ${brand}</p>
-        <p class="card__price">Price: ${price.toLocaleString()} USD</p>
-        <p class="card__stock">Stock: ${stock}</p>
-      </div>
-      <div class="card__act">
-      <a href="#products"><button class="card__btn btn__product" data-id=${id}>Details</button></a>
-        <button class="card__btn${activeClass}" data-price=${price} data-id=${id}>${activeText}</button>
-      </div>
-      </div>
-    </div>
-      `;
-    });
+    data = createData(DATA);
+    const itemsHTML = createCards(data);
 
     this.itemsContainer.innerHTML = "";
     this.itemsContainer.innerHTML = itemsHTML;
@@ -782,7 +622,7 @@ export class MainPage extends Page {
     return this.itemsContainer;
   }
 
-  private toggleClassActive(btn: HTMLElement) {
+  public toggleClassActive(btn: HTMLElement) {
     this.buttonSortStockUp.classList.remove("active-btn");
     this.buttonSortStockDown.classList.remove("active-btn");
     this.buttonSortPriceUp.classList.remove("active-btn");
@@ -792,21 +632,25 @@ export class MainPage extends Page {
 
   public sortItemsPriceUp = () => {
     localStorageUtil.putSort("PriceUp");
+    this.toggleClassActive(this.buttonSortPriceUp);
     this.createCards(DATA);
   };
 
   public sortItemsPriceDown = () => {
     localStorageUtil.putSort("PriceDown");
+    this.toggleClassActive(this.buttonSortPriceDown);
     this.createCards(DATA);
   };
 
   public sortItemsStockUp = () => {
     localStorageUtil.putSort("StockUp");
+    this.toggleClassActive(this.buttonSortStockUp);
     this.createCards(DATA);
   };
 
   public sortItemsStockDown = () => {
     localStorageUtil.putSort("StockDown");
+    this.toggleClassActive(this.buttonSortPriceDown);
     this.createCards(DATA);
   };
 
@@ -883,89 +727,3 @@ function remove(item: string) {
 function onload() {
   P.render();
 }
-
-document.onclick = function (event: Event) {
-  const target = event.target as HTMLElement;
-
-  if (target.classList.contains("btn__product")) {
-    const id = Number(target.getAttribute("data-id"));
-    if (id) {
-      PRODUCT.getProduct(id);
-    }
-  }
-  if (target.classList.contains("product__slides-small")) {
-    const srcSmall = target.getAttribute("src") as string;
-    const bigPhoto = document.querySelector(
-      ".product__slides-big"
-    ) as HTMLImageElement;
-    const srcBig = bigPhoto.getAttribute("src") as string;
-
-    target.setAttribute("src", srcBig);
-    bigPhoto.setAttribute("src", srcSmall);
-  }
-  if (target.classList.contains("card__btnB")) {
-    const id = target.getAttribute("data-id");
-    const price = target.getAttribute("data-price");
-
-    if (id && price) {
-      const products = localStorageUtil.getFromLS("products");
-
-      if (products.length === 0) {
-        const { pushProduct } = localStorageUtil.putProducts(+id, +price);
-        if (pushProduct) {
-          header.addProduct(+price);
-        }
-      } else {
-        const index = products.findIndex((el: SET) => el.id === +id);
-
-        if (index === -1) {
-          products.push({ id: +id, price: +price, count: 1 });
-          localStorage.setItem("products", JSON.stringify(products));
-          header.addProduct(+price);
-        }
-      }
-    }
-    App.renderNewPage("basket");
-    BuyWindow.renderBuyWindow();
-  }
-  if (target.classList.contains("summary__button")) {
-    BuyWindow.renderBuyWindow();
-  }
-  if (target.classList.contains("form-buy_close")) {
-    BuyWindow.closeBuyWindow();
-  }
-
-  if (target.classList.contains("basket-item__plus")) {
-    const id = target.getAttribute("data-prodId");
-
-    if (id) {
-      BASKET.addProduct(+id);
-    }
-  }
-  if (target.classList.contains("basket-item__minus")) {
-    const id = target.getAttribute("data-prodId");
-
-    if (id) {
-      BASKET.removeProduct(+id);
-    }
-  }
-  if (target.classList.contains("card__btn")) {
-    const id = target.getAttribute("data-id");
-    const price = target.getAttribute("data-price");
-
-    if (id && price) {
-      if (target.classList.contains("card__btn")) {
-        const { pushProduct } = localStorageUtil.putProducts(+id, +price);
-
-        if (pushProduct) {
-          target.classList.add("active-btn");
-          target.innerHTML = MainPage.TextObject.dropFromCard;
-          header.addProduct(+price);
-        } else {
-          target.classList.remove("active-btn");
-          target.innerHTML = MainPage.TextObject.addToCard;
-        }
-      }
-    }
-  }
-};
