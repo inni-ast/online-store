@@ -7,9 +7,7 @@ import { BASKET } from "../pages/basket";
 import { SET } from "./data";
 import { MainPage } from "../pages/main";
 
-document.onclick = function (event: Event) {
-  const target = event.target as HTMLElement;
-
+export function onClick(target: HTMLElement) {
   if (target.classList.contains("btn__product")) {
     const id = Number(target.getAttribute("data-id"));
     if (id) {
@@ -91,4 +89,4 @@ document.onclick = function (event: Event) {
       }
     }
   }
-};
+}
