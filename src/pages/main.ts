@@ -3,6 +3,7 @@ import { SET, DATA } from "../modules/data";
 import { localStorageUtil } from "../modules/localStorage";
 import { createData } from "../modules/createData";
 import { createCards } from "../modules/createCards";
+import { onClick } from "../modules/onclickDocument";
 
 export class MainPage extends Page {
   static TextObject = {
@@ -727,3 +728,8 @@ function remove(item: string) {
 function onload() {
   P.render();
 }
+
+document.onclick = function (event: Event) {
+  const target = event.target as HTMLElement;
+  onClick(target);
+};
